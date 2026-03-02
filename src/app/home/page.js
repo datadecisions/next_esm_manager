@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { Calculator, Pencil, Paperclip, Wrench } from "lucide-react";
-
-const mockData = { managerName: "Manager" };
 
 const primaryCards = [
   { title: "Accounting", text: "View accounting summary graphs, AR and AP data.", href: "/accounting", icon: Calculator },
-  { title: "Work Orders", text: "View, edit, and create individual work orders.", href: "/work-orders", icon: Pencil },
-  { title: "Purchase Orders", text: "Create and maintain purchase orders.", href: "/purchase-orders", icon: Paperclip },
   { title: "Parts", text: "View, edit, and approve individual parts and orders.", href: "/parts", icon: Wrench },
+  { title: "Purchase Orders", text: "Create and maintain purchase orders.", href: "/purchase-orders", icon: Paperclip },
+  { title: "Work Orders", text: "View, edit, and create individual work orders.", href: "/work-orders", icon: Pencil },
 ];
 
 const PrimaryCard = ({ title, text, href, icon: Icon }) => (
@@ -27,7 +26,10 @@ const PrimaryCard = ({ title, text, href, icon: Icon }) => (
   </Link>
 );
 
-export default function Home() {
+export default async function Home() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("auth_user_name")?.value;
+  const userName = raw ? decodeURIComponent(raw) : "Manager";
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
       <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -35,7 +37,7 @@ export default function Home() {
           <div>
             <h2 className="text-2xl font-light text-slate-600 sm:text-3xl dark:text-slate-400">Welcome back,</h2>
             <h3 className="mt-1 text-3xl font-semibold text-slate-900 sm:text-4xl dark:text-white">
-              {mockData.managerName}
+              {userName}
             </h3>
           </div>
           <div className="w-full max-w-sm">

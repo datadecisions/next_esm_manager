@@ -1,14 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../../components/ThemeToggle";
+import { authenticate } from "@/lib/api";
+import { setAuthToken } from "@/lib/auth";
 
 export default function SignIn() {
   const router = useRouter();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push("/home");
+    setError(null);
+    setLoading(true);
+    const form = e.target;
+    const username = form.username.value.trim();
+    const password = form.password.value;
+
+    const result = await authenticate({ username, password });
+
+    if (result.success) {
+      setAuthToken(result.token, { name: result.name });
+      router.push("/home");
+      router.refresh();
+    } else {
+      setError(result.message);
+      setLoading(false);
+    }
   }
 
   return (
@@ -32,6 +52,11 @@ export default function SignIn() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
+              {error}
+            </div>
+          )}
           <div>
             <label htmlFor="username" className="sr-only">Username</label>
             <input
@@ -56,9 +81,10 @@ export default function SignIn() {
           </div>
           <button
             type="submit"
-            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-400 hover:to-sky-400 hover:shadow-cyan-400/30 active:scale-[0.98]"
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-400 hover:to-sky-400 hover:shadow-cyan-400/30 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Sign in
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
 
