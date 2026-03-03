@@ -1,11 +1,287 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ArrowLeft, User, Wrench } from "lucide-react";
+import { fadeInUp } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CustomerCombobox } from "@/components/CustomerCombobox";
+import { EquipmentCombobox } from "@/components/EquipmentCombobox";
+import { getAuthToken } from "@/lib/auth";
+import { getCustomerByNum, getSalesCodes, getExpenseCodes } from "@/lib/api/customer";
+import { getBranches, getBranchDepts } from "@/lib/api/dispatch";
+import { getOpenOrdersForEquipment } from "@/lib/api/equipment";
+import { createWO, uploadWorkOrderImage } from "@/lib/api/work-order";
+
+const DISPOSITION_WO = 1;
+const DISPOSITION_QUOTE = 11;
+
+function SectionHeader({ number, title }) {
+  return (
+    <header className="flex items-center gap-3 mb-5">
+      <span
+        className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 dark:bg-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 tabular-nums"
+        aria-hidden
+      >
+        {number}
+      </span>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        {title}
+      </h2>
+    </header>
+  );
+}
+
+function SubsectionTitle({ children }) {
+  return (
+    <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+      {children}
+    </h3>
+  );
+}
 
 export default function WorkOrderCreatePage() {
+  const router = useRouter();
+  const [disposition, setDisposition] = useState(DISPOSITION_WO);
+  const [shipTo, setShipTo] = useState(null);
+  const [billTo, setBillTo] = useState(null);
+  const [branch, setBranch] = useState("");
+  const [dept, setDept] = useState("");
+  const [branches, setBranches] = useState([]);
+  const [depts, setDepts] = useState([]);
+  const [salesCode, setSalesCode] = useState("");
+  const [salesCodes, setSalesCodes] = useState([]);
+  const [expBranch, setExpBranch] = useState("");
+  const [expDept, setExpDept] = useState("");
+  const [expBranches, setExpBranches] = useState([]);
+  const [expDepts, setExpDepts] = useState([]);
+  const [expCode, setExpCode] = useState("");
+  const [expenseCodes, setExpenseCodes] = useState([]);
+  const [equipments, setEquipments] = useState([]);
+  const [sequenceMode, setSequenceMode] = useState(false);
+  const [woMain, setWoMain] = useState("CUSTOMER");
+  const [openOrders, setOpenOrders] = useState([]);
+  const [poNo, setPoNo] = useState("");
+  const [comments, setComments] = useState("");
+  const [privateComments, setPrivateComments] = useState("");
+  const [requiresHourMeter, setRequiresHourMeter] = useState(false);
+  const [createCounter, setCreateCounter] = useState(1);
+  const [forceEquipment, setForceEquipment] = useState(false);
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [loadingBranches, setLoadingBranches] = useState(true);
+
+  const token = typeof window !== "undefined" ? getAuthToken() : null;
+  const customersSelected = !!shipTo && !!billTo;
+  const equipmentEnabled = customersSelected || forceEquipment;
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/sign-in");
+      return;
+    }
+    getBranches(token)
+      .then(setBranches)
+      .catch(() => setBranches([]))
+      .finally(() => setLoadingBranches(false));
+  }, [token, router]);
+
+  useEffect(() => {
+    if (!token || !branch) {
+      setDepts([]);
+      setDept("");
+      setSalesCodes([]);
+      setSalesCode("");
+      return;
+    }
+    getBranchDepts(branch, token)
+      .then((list) => {
+        setDepts(list);
+        setDept("");
+      })
+      .catch(() => setDepts([]));
+  }, [token, branch]);
+
+  useEffect(() => {
+    if (!token || !branch || !dept) {
+      setSalesCodes([]);
+      setSalesCode("");
+      return;
+    }
+    getSalesCodes(branch, dept, token)
+      .then(setSalesCodes)
+      .catch(() => setSalesCodes([]));
+  }, [token, branch, dept]);
+
+  useEffect(() => {
+    if (!token || !expBranch) {
+      setExpDepts([]);
+      setExpDept("");
+      setExpenseCodes([]);
+      setExpCode("");
+      return;
+    }
+    getBranchDepts(expBranch, token)
+      .then((list) => {
+        setExpDepts(list);
+        setExpDept("");
+      })
+      .catch(() => setExpDepts([]));
+  }, [token, expBranch]);
+
+  useEffect(() => {
+    if (!token || !expBranch || !expDept) {
+      setExpenseCodes([]);
+      setExpCode("");
+      return;
+    }
+    getExpenseCodes(expBranch, expDept, token)
+      .then(setExpenseCodes)
+      .catch(() => setExpenseCodes([]));
+  }, [token, expBranch, expDept]);
+
+  useEffect(() => {
+    setExpBranches(branches);
+  }, [branches]);
+
+  useEffect(() => {
+    if (!shipTo || !token) {
+      setBillTo(null);
+      return;
+    }
+    const billToNum = shipTo.BillTo ?? shipTo.billTo;
+    if (!billToNum) {
+      setBillTo(null);
+      return;
+    }
+    getCustomerByNum(billToNum, token)
+      .then((c) => setBillTo(c || null))
+      .catch(() => setBillTo(null));
+  }, [shipTo, token]);
+
+  const primaryEquipment = equipments[0];
+  useEffect(() => {
+    if (!token || !primaryEquipment) {
+      setOpenOrders([]);
+      return;
+    }
+    const serial = primaryEquipment?.SerialNo ?? primaryEquipment?.serialNo;
+    if (!serial) {
+      setOpenOrders([]);
+      return;
+    }
+    getOpenOrdersForEquipment(serial, token)
+      .then(setOpenOrders)
+      .catch(() => setOpenOrders([]));
+  }, [token, equipments[0]?.SerialNo ?? equipments[0]?.serialNo]);
+
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError(null);
+    if (!shipTo || !billTo || !branch || !dept) {
+      setError("Ship To, Bill To, Branch, and Dept are required.");
+      return;
+    }
+    if (!salesCode) {
+      setError("Type of Sale is required.");
+      return;
+    }
+    if (!token) return;
+    setLoading(true);
+    try {
+      const wo = await createWO(
+        {
+          disposition,
+          Disposition: disposition,
+          ShipTo: shipTo.Number,
+          BillTo: billTo.Number,
+          Branch: parseInt(branch, 10),
+          Dept: parseInt(dept, 10),
+          SalesCode: salesCode,
+          ExpBranch: expBranch ? parseInt(expBranch, 10) : undefined,
+          ExpDept: expDept ? parseInt(expDept, 10) : undefined,
+          ExpCode: expCode || undefined,
+          SerialNo: primaryEquipment?.SerialNo ?? primaryEquipment?.serialNo ?? "",
+          Make: primaryEquipment?.Make ?? primaryEquipment?.make ?? "",
+          Model: primaryEquipment?.Model ?? primaryEquipment?.model ?? "",
+          UnitNo: primaryEquipment?.UnitNo ?? primaryEquipment?.unitNo ?? "",
+          PONo: poNo || "",
+          Comments: comments || "",
+          PrivateComments: privateComments || "",
+          createCounter: Math.max(1, parseInt(String(createCounter), 10) || 1),
+          woType: disposition === DISPOSITION_QUOTE ? "11" : "1",
+          forceOrder: forceEquipment ? 1 : 0,
+        },
+        token
+      );
+      const createdItems = Array.isArray(wo) ? wo : [wo];
+      const primary = createdItems[0];
+      if (!primary?.WONo) {
+        setError("Work order created but no WO number returned.");
+        return;
+      }
+      if (photos.length > 0) {
+        const context = {
+          ShipTo: String(shipTo.Number ?? shipTo.number ?? ""),
+          BillTo: String(billTo.Number ?? billTo.number ?? ""),
+        };
+        for (const file of photos) {
+          await uploadWorkOrderImage(primary.WONo, file, context, token);
+        }
+      }
+      router.push(`/work-orders/${primary.WONo}`);
+    } catch (err) {
+      setError(err?.message || "Failed to create work order.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const branchOptions = branches.map((b) => ({
+    value: String(b.Number ?? b.number ?? b),
+    label: `${b.Number ?? b.number ?? b}: ${b.Name ?? b.name ?? ""}`.trim() || String(b.Number ?? b.number ?? b),
+  }));
+  const deptOptions = depts.map((d) => ({
+    value: String(d.Dept ?? d.dept ?? d),
+    label: `${d.Dept ?? d.dept ?? d}: ${d.Title ?? d.title ?? ""}`.trim() || String(d.Dept ?? d.dept ?? d),
+  }));
+  const expBranchOptions = expBranches.map((b) => ({
+    value: String(b.Number ?? b.number ?? b),
+    label: `${b.Number ?? b.number ?? b}: ${b.Name ?? b.name ?? ""}`.trim() || String(b.Number ?? b.number ?? b),
+  }));
+  const expDeptOptions = expDepts.map((d) => ({
+    value: String(d.Dept ?? d.dept ?? d),
+    label: `${d.Dept ?? d.dept ?? d}: ${d.Title ?? d.title ?? ""}`.trim() || String(d.Dept ?? d.dept ?? d),
+  }));
+  const saleCodeOptions = salesCodes.map((s) => ({
+    value: String(s.Code ?? s.code ?? s),
+    label: `${s.Code ?? s.code ?? s}: ${s.GeneralDescription ?? s.generalDescription ?? s.Description ?? s.description ?? ""}`.trim() || String(s.Code ?? s.code ?? s),
+  }));
+  const expenseCodeOptions = expenseCodes.map((e) => ({
+    value: String(e.Code ?? e.code ?? e),
+    label: `${e.Code ?? e.code ?? e}: ${e.GeneralDescription ?? e.generalDescription ?? e.Description ?? e.description ?? ""}`.trim() || String(e.Code ?? e.code ?? e),
+  }));
+
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <motion.div
+      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      initial={fadeInUp.initial}
+      animate={fadeInUp.animate}
+      transition={fadeInUp.transition}
+    >
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/work-orders">
@@ -16,12 +292,485 @@ export default function WorkOrderCreatePage() {
             Create Work Order
           </h1>
         </div>
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-          <p className="text-slate-500 dark:text-slate-400">
-            Create work order form coming soon. This will mirror the legacy create WO flow.
-          </p>
-        </div>
+
+        <motion.form
+          onSubmit={handleSubmit}
+          className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          {error && (
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
+              {error}
+            </div>
+          )}
+
+          {/* Document type - compact top bar */}
+          <div className="flex gap-6 rounded-lg bg-slate-50 dark:bg-slate-800/50 px-4 py-3 mb-8">
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400 self-center">
+              Document type
+            </span>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="disposition"
+                checked={disposition === DISPOSITION_WO}
+                onChange={() => setDisposition(DISPOSITION_WO)}
+                className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
+              />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Work Order
+              </span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="disposition"
+                checked={disposition === DISPOSITION_QUOTE}
+                onChange={() => setDisposition(DISPOSITION_QUOTE)}
+                className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
+              />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Quote
+              </span>
+            </label>
+          </div>
+
+          <div className="space-y-12">
+            {/* 1. Financial Information */}
+            <section className="space-y-5">
+              <SectionHeader number={1} title="Financial Information" />
+              <div className="space-y-6">
+                <div>
+                  <SubsectionTitle>Sale Information</SubsectionTitle>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Branch
+                      </label>
+                      <Select
+                        value={branch}
+                        onValueChange={setBranch}
+                        disabled={loadingBranches}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose branch" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {branchOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Department
+                      </label>
+                      <Select
+                        value={dept}
+                        onValueChange={setDept}
+                        disabled={!branch}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {deptOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Type of Sale
+                      </label>
+                      <Select
+                        value={salesCode}
+                        onValueChange={setSalesCode}
+                        disabled={!branch || !dept}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select type of sale" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {saleCodeOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <SubsectionTitle>Expense Information</SubsectionTitle>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Branch
+                      </label>
+                      <Select
+                        value={expBranch}
+                        onValueChange={setExpBranch}
+                        disabled={loadingBranches}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose branch" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {expBranchOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Department
+                      </label>
+                      <Select
+                        value={expDept}
+                        onValueChange={setExpDept}
+                        disabled={!expBranch}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Choose department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {expDeptOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                        Type of Expense
+                      </label>
+                      <Select
+                        value={expCode}
+                        onValueChange={setExpCode}
+                        disabled={!expBranch || !expDept}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select expense type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {expenseCodeOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 2. Customer Information */}
+            <section className="pt-2">
+              <SectionHeader number={2} title="Customer Information" />
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Ship To Customer <span className="text-red-500">*</span>
+                  </label>
+                  <CustomerCombobox
+                    value={shipTo}
+                    onValueChange={setShipTo}
+                    placeholder="Search customers..."
+                    token={token}
+                    minChars={2}
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Bill To Customer <span className="text-red-500">*</span>
+                  </label>
+                  <CustomerCombobox
+                    value={billTo}
+                    onValueChange={setBillTo}
+                    placeholder={shipTo ? "Search customers..." : "Select a Ship To customer first"}
+                    token={token}
+                    minChars={2}
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Purchase Order (PO) Number
+                  </label>
+                  <Input
+                    value={poNo}
+                    onChange={(e) => setPoNo(e.target.value)}
+                    placeholder="Enter PO number (optional)"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* 3. Equipment Information */}
+            <section className="pt-2">
+              <SectionHeader number={3} title="Equipment Information" />
+              <div className="space-y-4">
+                {!equipmentEnabled && (
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Select Ship To and Bill To customers first
+                  </p>
+                )}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={forceEquipment}
+                    onChange={(e) => setForceEquipment(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+                  />
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                    Or force enable
+                  </span>
+                </label>
+                <div className={!equipmentEnabled ? "opacity-50 pointer-events-none" : ""}>
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                      Equipment <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setSequenceMode(!sequenceMode)}
+                      className={`text-sm underline decoration-dotted underline-offset-2 hover:no-underline ${sequenceMode ? "font-medium text-primary" : "text-slate-500 dark:text-slate-400"}`}
+                    >
+                      {sequenceMode ? "✓ " : ""}Sequence Mode
+                    </button>
+                  </div>
+                  {sequenceMode && (
+                    <div className="mb-3 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800 dark:border-sky-800 dark:bg-sky-950/50 dark:text-sky-200">
+                      <strong>Sequence Mode:</strong> Select exactly 2 equipment items (start and end unit numbers)
+                    </div>
+                  )}
+                  <EquipmentCombobox
+                    value={equipments}
+                    onValueChange={setEquipments}
+                    placeholder="Search equipment (type at least 3 characters)..."
+                    token={token}
+                    minChars={3}
+                    shipTo={shipTo}
+                    billTo={billTo}
+                    forceEnabled={forceEquipment}
+                    sequenceMode={sequenceMode}
+                    disabled={!equipmentEnabled}
+                  />
+                </div>
+                {primaryEquipment && (primaryEquipment.Location || primaryEquipment.Comments) && (
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/50">
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      Equipment Notes
+                    </div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      {[primaryEquipment.Location, primaryEquipment.Comments].filter(Boolean).join(" ")}
+                    </div>
+                  </div>
+                )}
+                <div className="grid gap-6 sm:grid-cols-3 mt-6">
+                  <div className="sm:col-span-2">
+                    {primaryEquipment && (
+                      <div className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <div className="bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Open Orders for This Equipment
+                        </div>
+                        <div className="max-h-40 overflow-auto">
+                          {openOrders.length > 0 ? (
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                  <th className="px-4 py-2 text-left font-medium">Order #</th>
+                                  <th className="px-4 py-2 text-left font-medium">Date</th>
+                                  <th className="px-4 py-2 text-left font-medium">Comments</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {openOrders.map((wo) => (
+                                  <tr key={wo.WONo} className="border-b border-slate-100 dark:border-slate-800">
+                                    <td className="px-4 py-2 font-medium">{wo.WONo}</td>
+                                    <td className="px-4 py-2">{wo.OpenDate ? new Date(wo.OpenDate).toLocaleDateString() : ""}</td>
+                                    <td className="px-4 py-2 truncate max-w-[200px]">{wo.Comments ?? ""}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          ) : (
+                            <div className="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                              No open orders found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                      Billing Type
+                    </label>
+                    <div className="space-y-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="woMain"
+                          value="CUSTOMER"
+                          checked={woMain === "CUSTOMER"}
+                          onChange={() => setWoMain("CUSTOMER")}
+                          className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
+                        />
+                        <User className="h-4 w-4 text-slate-500" />
+                        <span className="text-sm">Customer Billing</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="woMain"
+                          value="MAINTENANCE"
+                          checked={woMain === "MAINTENANCE"}
+                          onChange={() => setWoMain("MAINTENANCE")}
+                          className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
+                        />
+                        <Wrench className="h-4 w-4 text-slate-500" />
+                        <span className="text-sm">Full Maintenance</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 4. Comments */}
+            <section className="pt-2">
+              <SectionHeader number={4} title="Comments" />
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Private Comments
+                  </label>
+                  <textarea
+                    value={privateComments}
+                    onChange={(e) => setPrivateComments(e.target.value)}
+                    placeholder="Enter private comments..."
+                    rows={2}
+                    className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-input/30"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Comments
+                  </label>
+                  <textarea
+                    value={comments}
+                    onChange={(e) => setComments(e.target.value)}
+                    placeholder="Enter comments..."
+                    rows={3}
+                    className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-input/30"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* 5. Additional Options */}
+            <section className="pt-2">
+              <SectionHeader number={5} title="Additional Options" />
+              <div className="space-y-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={requiresHourMeter}
+                    onChange={(e) => setRequiresHourMeter(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+                  />
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                    Requires Hour Meter
+                  </span>
+                </label>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Photos
+                  </label>
+                  <label className="flex flex-col cursor-pointer">
+                    <div className="rounded-md border border-dashed border-slate-300 dark:border-slate-600 px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400 hover:border-slate-400 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800/50 transition-colors">
+                      <span className="block mb-1">
+                        {photos.length > 0
+                          ? `${photos.length} photo${photos.length === 1 ? "" : "s"} selected`
+                          : "Choose photos to upload"}
+                      </span>
+                      <span className="text-xs">Click or drag files here</span>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="sr-only"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setPhotos((prev) => [...prev, ...files]);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                  {photos.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {photos.map((f, i) => (
+                        <span
+                          key={`${f.name}-${i}`}
+                          className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs"
+                        >
+                          {f.name}
+                          <button
+                            type="button"
+                            onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
+                            className="ml-1 rounded-full p-0.5 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400"
+                            aria-label={`Remove ${f.name}`}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Number of Work Orders to Create
+                  </label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={createCounter}
+                    onChange={(e) => setCreateCounter(e.target.value)}
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div className="mt-8 flex gap-3">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Creating…" : "Create Work Order"}
+            </Button>
+            <Button type="button" variant="outline" asChild>
+              <Link href="/work-orders">Cancel</Link>
+            </Button>
+          </div>
+        </motion.form>
       </div>
-    </div>
+    </motion.div>
   );
 }

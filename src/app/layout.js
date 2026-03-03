@@ -15,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ESM NOVA - Equipment Service Manager",
+  title: {
+    default: "NOVA - Equipment Service Manager",
+    template: "%s | NOVA",
+  },
   description: "Manager app for Equipment Service Manager",
 };
 

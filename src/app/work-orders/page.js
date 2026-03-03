@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Plus,
   RefreshCw,
@@ -18,6 +19,7 @@ import {
 import { getAuthToken } from "@/lib/auth";
 import { getViewedWOs, getDispositionText } from "@/lib/api/work-order";
 import { WorkOrderSearchCombobox } from "@/components/WorkOrderSearchCombobox";
+import { fadeIn, fadeInUp, staggerContainer, staggerItem } from "@/lib/motion";
 
 const ACTION_CARDS = [
   {
@@ -107,19 +109,34 @@ export default function WorkOrdersPage() {
   }, [router]);
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <motion.div
+      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      initial={fadeIn.initial}
+      animate={fadeIn.animate}
+      transition={fadeIn.transition}
+    >
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-10">
+        <motion.div
+          className="mb-10"
+          initial={fadeInUp.initial}
+          animate={fadeInUp.animate}
+          transition={fadeInUp.transition}
+        >
           <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
             Work Orders
           </h1>
           <p className="mt-1 text-slate-500 dark:text-slate-400">
             Search, create, and view work orders, quotes and rentals.
           </p>
-        </div>
+        </motion.div>
 
         {/* Action Cards */}
-        <div className="mb-12">
+        <motion.div
+          className="mb-12"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {ACTION_CARDS.map((card) => {
               const Icon = card.icon;
@@ -140,28 +157,38 @@ export default function WorkOrdersPage() {
                   <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 dark:text-slate-500" />
                 </div>
               );
-              return isSearchAnchor ? (
-                <a key={card.title} href="#search" className="block">
-                  {content}
-                </a>
-              ) : (
-                <Link key={card.title} href={card.href}>
-                  {content}
-                </Link>
+              return (
+                <motion.div key={card.title} variants={staggerItem}>
+                  {isSearchAnchor ? (
+                    <a href="#search" className="block">
+                      {content}
+                    </a>
+                  ) : (
+                    <Link href={card.href}>
+                      {content}
+                    </Link>
+                  )}
+                </motion.div>
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Search Section */}
-        <section id="search" className="mb-12">
+        <motion.section
+          id="search"
+          className="mb-12"
+          initial={fadeInUp.initial}
+          animate={fadeInUp.animate}
+          transition={{ ...fadeInUp.transition, delay: 0.15 }}
+        >
           <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
               Search Work Orders
             </h2>
             <WorkOrderSearchCombobox />
           </div>
-        </section>
+        </motion.section>
 
         {/* Recent Viewed */}
         <section>
@@ -169,20 +196,36 @@ export default function WorkOrdersPage() {
             Recently Viewed
           </h2>
           {recentLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
               {[1, 2, 3].map((i) => (
-                <div
+                <motion.div
                   key={i}
+                  variants={staggerItem}
                   className="h-32 rounded-xl border border-slate-200/80 bg-white dark:border-slate-700/50 dark:bg-slate-800/50 animate-pulse"
                 />
               ))}
-            </div>
+            </motion.div>
           ) : recentOrders.length === 0 ? (
-            <p className="text-slate-500 dark:text-slate-400">
+            <motion.p
+              className="text-slate-500 dark:text-slate-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
               No recently viewed work orders.
-            </p>
+            </motion.p>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <motion.div
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.25 }}
+            >
               {recentOrders.map((wo) => (
                 <WOCard
                   key={wo.WONo}
@@ -190,11 +233,11 @@ export default function WorkOrdersPage() {
                   onClick={() => router.push(`/work-orders/${wo.WONo}`)}
                 />
               ))}
-            </div>
+            </motion.div>
           )}
         </section>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

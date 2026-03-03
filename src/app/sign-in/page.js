@@ -43,7 +43,7 @@ export default function SignIn() {
       <div className="relative w-full max-w-sm">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            ESM <span className="bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">NOVA</span>
+            <span className="bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">NOVA</span>
           </h1>
           <p className="mt-1 text-sm font-medium uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400/80">
             Manager
