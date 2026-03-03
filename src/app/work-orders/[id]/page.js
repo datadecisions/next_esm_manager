@@ -43,6 +43,12 @@ import OrderTab from "@/components/work-order/OrderTab";
 import DispatchTab from "@/components/work-order/DispatchTab";
 import StatusDatesTab from "@/components/work-order/StatusDatesTab";
 import PricesTab from "@/components/work-order/PricesTab";
+import EquipmentTab from "@/components/work-order/EquipmentTab";
+import ChartsTab from "@/components/work-order/ChartsTab";
+import FinancialsTab from "@/components/work-order/FinancialsTab";
+import WoHistoryDialog from "@/components/work-order/WoHistoryDialog";
+import PartsPopupDialog from "@/components/work-order/PartsPopupDialog";
+import LaborPopupDialog from "@/components/work-order/LaborPopupDialog";
 import { getCustomerByNum } from "@/lib/api/customer";
 import { fadeInUp } from "@/lib/motion";
 
@@ -78,6 +84,10 @@ export default function WorkOrderDetailPage() {
   const [processingComment, setProcessingComment] = useState(false);
   const [documentsDragOver, setDocumentsDragOver] = useState(false);
   const [documentsUploading, setDocumentsUploading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showPartsPopup, setShowPartsPopup] = useState(false);
+  const [showLaborPopup, setShowLaborPopup] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   const token = typeof window !== "undefined" ? getAuthToken() : null;
 
@@ -399,11 +409,21 @@ export default function WorkOrderDetailPage() {
                 </div>
               </div>
               <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+                  onClick={() => setShowHistory(true)}
+                >
                   <History className="h-4 w-4 mr-2" />
                   History
                 </Button>
-                <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+                  onClick={() => setActiveTab("equipment")}
+                >
                   <Construction className="h-4 w-4 mr-2" />
                   Build
                 </Button>
@@ -416,14 +436,37 @@ export default function WorkOrderDetailPage() {
                 Quick totals
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <SummaryCard icon={Package} label="Parts" value={formatCurrency(sales.parts)} compact />
-                <SummaryCard
-                  icon={Wrench}
-                  label="Labor"
-                  value={formatCurrency(sales.labor)}
-                  sub={sales.laborHours ? `${sales.laborHours} hrs` : null}
-                  compact
-                />
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowPartsPopup(true)}
+                  onKeyDown={(e) => e.key === "Enter" && setShowPartsPopup(true)}
+                  className="cursor-pointer hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 rounded-lg"
+                >
+                  <SummaryCard
+                    icon={Package}
+                    label="Parts"
+                    value={formatCurrency(sales.parts)}
+                    compact
+                    highlight={billing?.partsToApprove || (billing?.lineItems ?? []).some((i) => (i.EntryType || i.Type) === "P" && i.BOStatus === 1)}
+                  />
+                </div>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowLaborPopup(true)}
+                  onKeyDown={(e) => e.key === "Enter" && setShowLaborPopup(true)}
+                  className="cursor-pointer hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 rounded-lg"
+                >
+                  <SummaryCard
+                    icon={Wrench}
+                    label="Labor"
+                    value={formatCurrency(sales.labor)}
+                    sub={sales.laborHours ? `${sales.laborHours} hrs` : null}
+                    compact
+                    highlight={!!billing?.postedLabor?.length}
+                  />
+                </div>
                 <SummaryCard icon={Cog} label="Misc" value={formatCurrency(sales.misc)} compact />
                 <SummaryCard icon={DollarSign} label="Rental" value={formatCurrency(sales.rental)} compact />
                 <SummaryCard icon={Tractor} label="Equipment" value={formatCurrency(sales.equipment)} compact />
@@ -584,7 +627,7 @@ export default function WorkOrderDetailPage() {
         </div>
 
         {/* Tabbed section: Line Items, Order, Dispatch, etc. */}
-        <Tabs defaultValue="details" className="mt-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
           <TabsList className="flex flex-wrap h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
             <TabsTrigger value="details" className="gap-1.5">
               <ClipboardList className="h-4 w-4" />
@@ -614,10 +657,12 @@ export default function WorkOrderDetailPage() {
               <BarChart2 className="h-4 w-4" />
               Charts
             </TabsTrigger>
+            {/* Time Map — not ready to port yet
             <TabsTrigger value="timemap" className="gap-1.5">
               <MapPin className="h-4 w-4" />
               Time Map
             </TabsTrigger>
+            */}
             <TabsTrigger value="financials" className="gap-1.5">
               <Calculator className="h-4 w-4" />
               Financials
@@ -658,41 +703,51 @@ export default function WorkOrderDetailPage() {
             />
           </TabsContent>
           <TabsContent value="equipment" className="mt-4">
-            <EquipmentTab wo={wo} />
+            <EquipmentTab
+              wo={wo}
+              token={token}
+              onEquipmentUpdate={(fields) => setWo((p) => (p ? { ...p, ...fields } : null))}
+              onHistoryClick={() => setShowHistory(true)}
+            />
           </TabsContent>
           <TabsContent value="charts" className="mt-4">
-            <ChartsTab wo={wo} />
+            <ChartsTab wo={wo} token={token} />
           </TabsContent>
+          {/* Time Map — not ready to port yet
           <TabsContent value="timemap" className="mt-4">
             <TimeMapTab wo={wo} />
           </TabsContent>
+          */}
           <TabsContent value="financials" className="mt-4">
-            <FinancialsTab wo={wo} />
+            <FinancialsTab wo={wo} token={token} />
           </TabsContent>
         </Tabs>
       </div>
+
+      <WoHistoryDialog
+        open={showHistory}
+        onOpenChange={setShowHistory}
+        wo={wo}
+        token={token}
+      />
+      <PartsPopupDialog
+        open={showPartsPopup}
+        onOpenChange={setShowPartsPopup}
+        billing={billing}
+      />
+      <LaborPopupDialog
+        open={showLaborPopup}
+        onOpenChange={setShowLaborPopup}
+        wo={wo}
+        billing={billing}
+        token={token}
+        onLaborUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
+      />
     </motion.div>
   );
 }
 
-function EquipmentTab({ wo }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-      <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Equipment</h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400">Equipment details form — coming soon.</p>
-    </div>
-  );
-}
-
-function ChartsTab({ wo }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-      <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Charts</h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400">AR and Invoice charts — coming soon.</p>
-    </div>
-  );
-}
-
+{/* Time Map — not ready to port yet
 function TimeMapTab({ wo }) {
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
@@ -701,15 +756,7 @@ function TimeMapTab({ wo }) {
     </div>
   );
 }
-
-function FinancialsTab({ wo }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-      <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Financials</h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400">Accounting breakdown — coming soon.</p>
-    </div>
-  );
-}
+*/}
 
 function SummaryCard({ icon: Icon, label, value, sub, highlight, compact }) {
   return (

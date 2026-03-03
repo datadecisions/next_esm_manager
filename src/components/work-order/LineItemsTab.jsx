@@ -296,7 +296,7 @@ function AccountingView({ breakdown, formatCurrency, loading }) {
                     </td>
                     <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{item.AccountNo ?? "—"}</td>
                     <td className="py-2 px-4 text-slate-800 dark:text-slate-200">
-                      {item.CombinedDescription || item.Description || item.ControlNo || item.CheckNo || "—"}
+                      {(item.CombinedDescription || item.Description || item.ControlNo || item.CheckNo) || "—"}
                     </td>
                     <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
                       {formatCurrency(item.Amount)}
