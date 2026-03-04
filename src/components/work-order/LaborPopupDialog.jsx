@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -155,8 +156,9 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
       await fetchPosted();
       await fetchImported();
       onLaborUpdate?.();
+      toast.success("Labor imported");
     } catch (err) {
-      alert(err?.message || "Failed to import labor");
+      toast.error(err?.message || "Failed to import labor");
     } finally {
       setImporting(false);
     }
@@ -170,8 +172,9 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
       await deleteLaborImport(entry.ID, token);
       setImportedLabor((prev) => prev.filter((e) => e.ID !== entry.ID));
       onLaborUpdate?.();
+      toast.success("Labor entry deleted");
     } catch (err) {
-      alert(err?.message || "Failed to delete");
+      toast.error(err?.message || "Failed to delete");
     } finally {
       setDeletingId(null);
     }

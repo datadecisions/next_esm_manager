@@ -19,14 +19,24 @@ export default function SignIn() {
     const username = form.username.value.trim();
     const password = form.password.value;
 
-    const result = await authenticate({ username, password });
+    try {
+      const result = await Promise.race([
+        authenticate({ username, password }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Request timed out. Check the server is running and NEXT_PUBLIC_API_URL is set.")), 15000)
+        ),
+      ]);
 
-    if (result.success) {
-      setAuthToken(result.token, { name: result.name });
-      router.push("/home");
-      router.refresh();
-    } else {
-      setError(result.message);
+      if (result.success) {
+        setAuthToken(result.token, { name: result.name });
+        router.push("/home");
+        router.refresh();
+      } else {
+        setError(result.message ?? "Sign in failed");
+      }
+    } catch (err) {
+      setError(err?.message ?? "Network error. Is the ESM server running?");
+    } finally {
       setLoading(false);
     }
   }

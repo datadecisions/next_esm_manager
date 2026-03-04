@@ -50,6 +50,7 @@ const dialogSizeClasses = {
   default: "",
   wide: "sm:max-w-4xl",
   xl: "sm:max-w-5xl",
+  pdf: "sm:max-w-7xl",
   full: "sm:max-w-[calc(100vw-2rem)]",
 };
 

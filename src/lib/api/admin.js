@@ -51,3 +51,15 @@ export async function getAllTaxCodes(token) {
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
+
+/**
+ * Get Autoprint client download URL.
+ * @param {string} token
+ * @returns {Promise<string|null>}
+ */
+export async function getAutoprintUrl(token) {
+  const res = await fetchWithAuth("/api/v1/admin/downloads/autoprint", {}, token);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data?.url ?? data ?? null;
+}

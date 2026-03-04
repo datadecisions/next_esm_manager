@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -132,8 +133,10 @@ export default function AddLaborDialog({ open, onOpenChange, wo, token, onSucces
       );
       onSuccess?.();
       onOpenChange(false);
+      toast.success("Labor entry added");
     } catch (err) {
       setError(err?.message || "Failed to create labor entry");
+      toast.error(err?.message || "Failed to create labor entry");
     } finally {
       setSaving(false);
     }

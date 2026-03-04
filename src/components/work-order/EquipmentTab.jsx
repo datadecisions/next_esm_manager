@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,9 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
         ServicePriority: woPayload.ServicePriority,
       });
       setDirty(false);
+      toast.success("Equipment updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update equipment");
     } finally {
       setSaving(false);
     }

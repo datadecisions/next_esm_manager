@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -32,12 +32,16 @@ import {
   Calendar,
   BarChart2,
   Settings,
+  ChevronRight,
+  Check,
+  Loader2,
+  Save,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAuthToken } from "@/lib/auth";
-import { getWO, getBillingOverview, getDispositionText, updateWOComments, updateWOCommentFields, processComment as processCommentApi, uploadWorkOrderImage } from "@/lib/api/work-order";
+import { getWO, getBillingOverview, getDisplayStatus, updateWOComments, updateWOCommentFields, processComment as processCommentApi, uploadWorkOrderImage } from "@/lib/api/work-order";
 import LineItemsTab from "@/components/work-order/LineItemsTab";
 import OrderTab from "@/components/work-order/OrderTab";
 import DispatchTab from "@/components/work-order/DispatchTab";
@@ -49,8 +53,16 @@ import FinancialsTab from "@/components/work-order/FinancialsTab";
 import WoHistoryDialog from "@/components/work-order/WoHistoryDialog";
 import PartsPopupDialog from "@/components/work-order/PartsPopupDialog";
 import LaborPopupDialog from "@/components/work-order/LaborPopupDialog";
+import MiscPopupDialog from "@/components/work-order/MiscPopupDialog";
+import EquipmentPopupDialog from "@/components/work-order/EquipmentPopupDialog";
+import FixedPricePopupDialog from "@/components/work-order/FixedPricePopupDialog";
+import WorkOrderDocumentsDialog from "@/components/work-order/WorkOrderDocumentsDialog";
+import { WorkOrderActionsMenu } from "@/components/work-order/WorkOrderActionsMenu";
+import { CloseWorkOrderFlow } from "@/components/work-order/CloseWorkOrderFlow";
 import { getCustomerByNum } from "@/lib/api/customer";
+import { getWorkOrderImagesMetadata, getCustomerImagesMetadata } from "@/lib/api/documents";
 import { fadeInUp } from "@/lib/motion";
+import { toast } from "sonner";
 
 function formatCurrency(val) {
   if (val == null || val === "" || isNaN(Number(val))) return "$0.00";
@@ -87,6 +99,16 @@ export default function WorkOrderDetailPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [showPartsPopup, setShowPartsPopup] = useState(false);
   const [showLaborPopup, setShowLaborPopup] = useState(false);
+  const [showMiscPopup, setShowMiscPopup] = useState(false);
+  const [showEquipmentPopup, setShowEquipmentPopup] = useState(false);
+  const [showFixedPopup, setShowFixedPopup] = useState(false);
+  const [showDocumentsPopup, setShowDocumentsPopup] = useState(false);
+  const [docCount, setDocCount] = useState(null);
+  const [commentsCopied, setCommentsCopied] = useState(false);
+  const [savingEnhancedComment, setSavingEnhancedComment] = useState(false);
+  const [savingComments, setSavingComments] = useState(false);
+  const [savingToQuote, setSavingToQuote] = useState(false);
+  const [savingPrivateComments, setSavingPrivateComments] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
 
   const token = typeof window !== "undefined" ? getAuthToken() : null;
@@ -102,8 +124,11 @@ export default function WorkOrderDetailPage() {
       for (const file of files) {
         await uploadWorkOrderImage(wo.WONo, file, context, token);
       }
+      fetchDocCount();
+      toast.success(files.length === 1 ? "Document uploaded" : `${files.length} documents uploaded`);
     } catch (err) {
       setError(err?.message || "Failed to upload");
+      toast.error("Failed to upload documents");
     } finally {
       setDocumentsUploading(false);
     }
@@ -119,8 +144,11 @@ export default function WorkOrderDetailPage() {
       for (const file of files) {
         await uploadWorkOrderImage(wo.WONo, file, context, token);
       }
+      fetchDocCount();
+      toast.success(files.length === 1 ? "Document uploaded" : `${files.length} documents uploaded`);
     } catch (err) {
       setError(err?.message || "Failed to upload");
+      toast.error("Failed to upload documents");
     } finally {
       setDocumentsUploading(false);
     }
@@ -128,7 +156,11 @@ export default function WorkOrderDetailPage() {
 
   const copyToClipboard = (text) => {
     if (text && navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
+      navigator.clipboard.writeText(text).then(() => {
+        setCommentsCopied(true);
+        setTimeout(() => setCommentsCopied(false), 2000);
+        toast.success("Copied to clipboard");
+      }).catch(() => toast.error("Failed to copy"));
     }
   };
 
@@ -147,38 +179,91 @@ export default function WorkOrderDetailPage() {
         token
       );
       setWo((prev) => (prev ? { ...prev, Comments: processed } : null));
-      await updateWOComments({ WONo: wo.WONo, Comments: processed }, token);
+      toast.success("Comments enhanced");
     } catch {
       setOriginalComments(null);
+      toast.error("Failed to enhance comments");
     } finally {
       setProcessingComment(false);
     }
   };
 
-  const handleCommentsBlur = async () => {
+  const saveComments = async () => {
     if (!wo || !token) return;
     try {
       await updateWOComments({ WONo: wo.WONo, Comments: wo.Comments }, token);
+      toast.success("Comments saved");
     } catch (err) {
       setError(err?.message || "Failed to save comments");
+      toast.error("Failed to save comments");
     }
   };
 
-  const handleToQuoteBlur = async () => {
+  const handleSaveComments = async () => {
+    setSavingComments(true);
+    try {
+      await saveComments();
+    } finally {
+      setSavingComments(false);
+    }
+  };
+
+  const saveToQuote = async () => {
     if (!wo || !token) return;
     try {
       await updateWOCommentFields({ WONo: wo.WONo, MobileRecommended: wo.MobileRecommended ?? "" }, token);
+      toast.success("To Quote saved");
     } catch (err) {
       setError(err?.message || "Failed to save To Quote");
+      toast.error("Failed to save To Quote");
     }
   };
 
-  const handlePrivateCommentsBlur = async () => {
+  const handleToQuoteBlur = () => void saveToQuote();
+
+  const handleSaveToQuote = async () => {
+    setSavingToQuote(true);
+    try {
+      await saveToQuote();
+    } finally {
+      setSavingToQuote(false);
+    }
+  };
+
+  const savePrivateComments = async () => {
     if (!wo || !token) return;
     try {
       await updateWOCommentFields({ WONo: wo.WONo, PrivateComments: wo.PrivateComments ?? "" }, token);
+      toast.success("Private comments saved");
     } catch (err) {
       setError(err?.message || "Failed to save private comments");
+      toast.error("Failed to save private comments");
+    }
+  };
+
+  const handlePrivateCommentsBlur = () => void savePrivateComments();
+
+  const handleSavePrivateComments = async () => {
+    setSavingPrivateComments(true);
+    try {
+      await savePrivateComments();
+    } finally {
+      setSavingPrivateComments(false);
+    }
+  };
+
+  const handleSaveEnhancedComment = async () => {
+    if (!wo || !token) return;
+    setSavingEnhancedComment(true);
+    try {
+      await updateWOComments({ WONo: wo.WONo, Comments: wo.Comments }, token);
+      setOriginalComments(null);
+      toast.success("Comments saved");
+    } catch (err) {
+      setError(err?.message || "Failed to save comments");
+      toast.error("Failed to save comments");
+    } finally {
+      setSavingEnhancedComment(false);
     }
   };
 
@@ -188,19 +273,16 @@ export default function WorkOrderDetailPage() {
     setOriginalComments(null);
     try {
       await updateWOComments({ WONo: wo.WONo, Comments: originalComments }, token);
+      toast.success("Changes reverted");
     } catch (err) {
       setError(err?.message || "Failed to restore comments");
+      toast.error("Failed to restore comments");
     }
   };
 
-  useEffect(() => {
-    if (!token || !id) {
-      if (!token) router.push("/sign-in");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    getWO(id, token)
+  const fetchOrderDetails = useCallback(() => {
+    if (!token || !id) return Promise.resolve();
+    return getWO(id, token)
       .then((woData) => {
         setWo(woData);
         return Promise.all([
@@ -214,13 +296,45 @@ export default function WorkOrderDetailPage() {
       })
       .catch((err) => {
         setError(err?.message || "Failed to load work order");
-      })
-      .finally(() => setLoading(false));
-  }, [token, id, router]);
+      });
+  }, [token, id]);
 
-  const dispositionText = wo ? getDispositionText(wo.Disposition) : "";
+  useEffect(() => {
+    if (!token || !id) {
+      if (!token) router.push("/sign-in");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    fetchOrderDetails().finally(() => setLoading(false));
+  }, [token, id, router, fetchOrderDetails]);
+
+  const fetchDocCount = useCallback(async () => {
+    if (!wo?.WONo || !token) return;
+    try {
+      const [woDocs, custDocs] = await Promise.all([
+        getWorkOrderImagesMetadata(wo.WONo, token),
+        getCustomerImagesMetadata(wo.ShipTo || wo.BillTo, token),
+      ]);
+      setDocCount((woDocs?.length ?? 0) + (custDocs?.length ?? 0));
+    } catch {
+      setDocCount(0);
+    }
+  }, [wo?.WONo, wo?.ShipTo, wo?.BillTo, token]);
+
+  useEffect(() => {
+    if (wo?.WONo && token) fetchDocCount();
+  }, [wo?.WONo, token, fetchDocCount]);
+
+
+  const dispositionText = wo ? getDisplayStatus(wo) : "";
   const calc = billing?.calculations ?? {};
   const sales = calc.sales ?? {};
+  const lineItems = billing?.lineItems ?? billing?.printableLineItems ?? [];
+  const fixedLineItems = lineItems.filter(
+    (i) => (i.EntryType || "").toString().toUpperCase() === "F"
+  );
+  const fixedDisplayValue = fixedLineItems.length > 0 ? "Flat Rate" : "None";
   const statusColor =
     dispositionText === "Open" || dispositionText === "Accepted" || dispositionText === "Quote"
       ? "bg-cyan-50 border-cyan-200 text-cyan-800 dark:bg-cyan-950/50 dark:border-cyan-800 dark:text-cyan-300"
@@ -228,7 +342,9 @@ export default function WorkOrderDetailPage() {
         ? "bg-slate-100 border-slate-300 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
         : dispositionText === "Rejected"
           ? "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:text-red-300"
-          : "bg-slate-100 border-slate-300 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+          : dispositionText === "Voided"
+            ? "bg-slate-100 border-slate-400 text-slate-500 dark:bg-slate-800 dark:border-slate-500 dark:text-slate-500"
+            : "bg-slate-100 border-slate-300 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
 
   if (loading) {
     return (
@@ -269,6 +385,7 @@ export default function WorkOrderDetailPage() {
   }
 
   const openDate = wo.OpenDate ? new Date(wo.OpenDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+  const closedDate = wo.ClosedDate ? new Date(wo.ClosedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
 
   return (
     <motion.div
@@ -297,10 +414,16 @@ export default function WorkOrderDetailPage() {
             <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-sm sm:text-base text-slate-500 dark:text-slate-400">
               {wo.PONo && <span>PO: {wo.PONo}</span>}
               {wo.AuthorizedBy && <span>Auth: {wo.AuthorizedBy}</span>}
-              {(openDate || wo.OpenBy) && (
+              {(dispositionText === "Closed" || dispositionText === "Voided") && (closedDate || wo.ClosedBy) ? (
+                <span>{[closedDate, wo.ClosedBy && `By ${wo.ClosedBy}`].filter(Boolean).join(" · ")}</span>
+              ) : (openDate || wo.OpenBy) ? (
                 <span>{[openDate, wo.OpenBy && `By ${wo.OpenBy}`].filter(Boolean).join(" · ")}</span>
-              )}
+              ) : null}
             </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <CloseWorkOrderFlow wo={wo} billing={billing} token={token} onRefresh={fetchOrderDetails} />
+            <WorkOrderActionsMenu wo={wo} token={token} onRefresh={fetchOrderDetails} />
           </div>
         </div>
 
@@ -432,23 +555,28 @@ export default function WorkOrderDetailPage() {
 
             {/* Quick totals - row under equipment */}
             <div className="space-y-2">
-              <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200">
-                Quick totals
-              </h3>
+              <div>
+                <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200">
+                  Quick totals
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Click Parts, Labor, Misc, Equipment, or Fixed Price to view details
+                </p>
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div
                   role="button"
                   tabIndex={0}
                   onClick={() => setShowPartsPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowPartsPopup(true)}
-                  className="cursor-pointer hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 rounded-lg"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                 >
                   <SummaryCard
                     icon={Package}
                     label="Parts"
                     value={formatCurrency(sales.parts)}
                     compact
-                    highlight={billing?.partsToApprove || (billing?.lineItems ?? []).some((i) => (i.EntryType || i.Type) === "P" && i.BOStatus === 1)}
+                    interactive
                   />
                 </div>
                 <div
@@ -456,7 +584,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowLaborPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowLaborPopup(true)}
-                  className="cursor-pointer hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 rounded-lg"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                 >
                   <SummaryCard
                     icon={Wrench}
@@ -464,14 +592,39 @@ export default function WorkOrderDetailPage() {
                     value={formatCurrency(sales.labor)}
                     sub={sales.laborHours ? `${sales.laborHours} hrs` : null}
                     compact
-                    highlight={!!billing?.postedLabor?.length}
+                    interactive
                   />
                 </div>
-                <SummaryCard icon={Cog} label="Misc" value={formatCurrency(sales.misc)} compact />
-                <SummaryCard icon={DollarSign} label="Rental" value={formatCurrency(sales.rental)} compact />
-                <SummaryCard icon={Tractor} label="Equipment" value={formatCurrency(sales.equipment)} compact />
-                <SummaryCard icon={Calculator} label="Subtotal" value={formatCurrency(calc.subTotal)} compact />
-                <SummaryCard icon={Receipt} label="Tax" value={formatCurrency(calc.tax)} compact />
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowMiscPopup(true)}
+                  onKeyDown={(e) => e.key === "Enter" && setShowMiscPopup(true)}
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                >
+                  <SummaryCard icon={Cog} label="Misc" value={formatCurrency(sales.misc)} compact interactive />
+                </div>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowEquipmentPopup(true)}
+                  onKeyDown={(e) => e.key === "Enter" && setShowEquipmentPopup(true)}
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                >
+                  <SummaryCard icon={Tractor} label="Equipment" value={formatCurrency(sales.equipment)} compact interactive />
+                </div>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowFixedPopup(true)}
+                  onKeyDown={(e) => e.key === "Enter" && setShowFixedPopup(true)}
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                >
+                  <SummaryCard icon={Quote} label="Fixed Price" value={fixedDisplayValue} compact interactive />
+                </div>
+                <SummaryCard icon={DollarSign} label="Rental" value={formatCurrency(sales.rental)} compact muted />
+                <SummaryCard icon={Calculator} label="Subtotal" value={formatCurrency(calc.subTotal)} compact muted />
+                <SummaryCard icon={Receipt} label="Tax" value={formatCurrency(calc.tax)} compact muted />
                 {calc.paymentTotal != null && Number(calc.paymentTotal) !== 0 && (
                   <SummaryCard
                     icon={CreditCard}
@@ -479,6 +632,7 @@ export default function WorkOrderDetailPage() {
                     value={formatCurrency(calc.paymentTotal)}
                     highlight
                     compact
+                    muted
                   />
                 )}
                 <SummaryCard
@@ -487,6 +641,7 @@ export default function WorkOrderDetailPage() {
                   value={formatCurrency(calc.balance)}
                   highlight
                   compact
+                  muted
                 />
               </div>
             </div>
@@ -502,9 +657,10 @@ export default function WorkOrderDetailPage() {
                   variant="ghost"
                   size="sm"
                   className="text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950/50"
+                  onClick={() => setShowDocumentsPopup(true)}
                 >
-                  <Printer className="h-4 w-4 mr-1.5" />
-                  View (0)
+                  <FileText className="h-4 w-4 mr-1.5" />
+                  View Documents ({docCount != null ? docCount : "…"})
                 </Button>
               </div>
               <div
@@ -534,9 +690,9 @@ export default function WorkOrderDetailPage() {
             </div>
           </div>
 
-          {/* Right column: Comments - stretches to match left column height */}
+          {/* Right column: Comments - fixed max height so card does not grow; content scrolls */}
           <div className="lg:col-span-1 flex flex-col min-h-0">
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 flex-1 min-h-0 flex flex-col overflow-auto">
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 flex-1 min-h-0 max-h-[min(80vh,950px)] flex flex-col overflow-y-auto">
                 {/* General Comments */}
                 <div className="flex flex-col min-h-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -552,27 +708,47 @@ export default function WorkOrderDetailPage() {
                           </span>
                         )}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50"
-                        onClick={() => copyToClipboard(wo.Comments)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          onClick={originalComments != null ? handleSaveEnhancedComment : handleSaveComments}
+                          disabled={originalComments != null ? savingEnhancedComment : savingComments}
+                          className="h-8 gap-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 px-3 text-xs font-semibold text-white shrink-0"
+                        >
+                          {(originalComments != null ? savingEnhancedComment : savingComments) ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <>
+                              <Save className="h-3.5 w-3.5" />
+                              Save
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50"
+                          onClick={() => copyToClipboard(wo.Comments)}
+                          title={commentsCopied ? "Copied!" : "Copy to clipboard"}
+                        >
+                          {commentsCopied ? (
+                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                     <Textarea
                       value={wo.Comments ?? ""}
                       onChange={(e) => setWo((prev) => (prev ? { ...prev, Comments: e.target.value } : null))}
-                      onBlur={handleCommentsBlur}
                       className={`text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700 ${originalComments != null ? "border-violet-200/60 bg-violet-50/30 dark:border-violet-500/20 dark:bg-violet-950/20" : ""}`}
                     />
-                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2 min-w-0">
                       <Button
                         onClick={handleProcessComment}
                         disabled={processingComment || !!originalComments}
                         title="Transform rough notes into professional, formatted service descriptions using AI"
-                        className="h-8 gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 text-xs font-semibold text-white shadow-md shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-fuchsia-500 hover:shadow-lg hover:shadow-violet-500/30 disabled:opacity-50 disabled:hover:shadow-md"
+                        className="h-8 gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 text-xs font-semibold text-white shadow-md shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-fuchsia-500 hover:shadow-lg hover:shadow-violet-500/30 disabled:opacity-50 disabled:hover:shadow-md shrink-0"
                       >
                         <Sparkles className={`h-3.5 w-3.5 shrink-0 ${processingComment ? "animate-spin" : ""}`} />
                         {processingComment ? "Enhancing…" : "AI Enhance"}
@@ -581,8 +757,9 @@ export default function WorkOrderDetailPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50"
+                          className="h-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50 shrink-0"
                           onClick={handleUndoComment}
+                          disabled={savingEnhancedComment}
                         >
                           <Undo2 className="h-3.5 w-3.5 mr-1" />
                           Undo
@@ -605,6 +782,22 @@ export default function WorkOrderDetailPage() {
                       onBlur={handleToQuoteBlur}
                       className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700"
                     />
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <Button
+                        onClick={handleSaveToQuote}
+                        disabled={savingToQuote}
+                        className="h-8 gap-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 px-3 text-xs font-semibold text-white shrink-0"
+                      >
+                        {savingToQuote ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="h-3.5 w-3.5" />
+                            Save
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
 
                 {/* Private Comments */}
@@ -621,6 +814,22 @@ export default function WorkOrderDetailPage() {
                       onBlur={handlePrivateCommentsBlur}
                       className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700"
                     />
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <Button
+                        onClick={handleSavePrivateComments}
+                        disabled={savingPrivateComments}
+                        className="h-8 gap-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 px-3 text-xs font-semibold text-white shrink-0"
+                      >
+                        {savingPrivateComments ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="h-3.5 w-3.5" />
+                            Save
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
             </div>
           </div>
@@ -733,7 +942,10 @@ export default function WorkOrderDetailPage() {
       <PartsPopupDialog
         open={showPartsPopup}
         onOpenChange={setShowPartsPopup}
+        wo={wo}
         billing={billing}
+        token={token}
+        onPartsUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
       />
       <LaborPopupDialog
         open={showLaborPopup}
@@ -742,6 +954,37 @@ export default function WorkOrderDetailPage() {
         billing={billing}
         token={token}
         onLaborUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
+      />
+      <MiscPopupDialog
+        open={showMiscPopup}
+        onOpenChange={setShowMiscPopup}
+        wo={wo}
+        billing={billing}
+        token={token}
+        onMiscUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
+      />
+      <EquipmentPopupDialog
+        open={showEquipmentPopup}
+        onOpenChange={setShowEquipmentPopup}
+        wo={wo}
+        billing={billing}
+        token={token}
+        onEquipmentUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
+      />
+      <FixedPricePopupDialog
+        open={showFixedPopup}
+        onOpenChange={setShowFixedPopup}
+        wo={wo}
+        billing={billing}
+        token={token}
+        onFixedUpdate={() => getBillingOverview(id, token).then(setBilling).catch(() => {})}
+      />
+      <WorkOrderDocumentsDialog
+        open={showDocumentsPopup}
+        onOpenChange={setShowDocumentsPopup}
+        wo={wo}
+        token={token}
+        onDocumentsUpdate={fetchDocCount}
       />
     </motion.div>
   );
@@ -758,7 +1001,7 @@ function TimeMapTab({ wo }) {
 }
 */}
 
-function SummaryCard({ icon: Icon, label, value, sub, highlight, compact }) {
+function SummaryCard({ icon: Icon, label, value, sub, highlight, compact, muted, interactive }) {
   return (
     <div
       className={`rounded-lg border shadow-sm flex flex-col justify-center ${
@@ -767,14 +1010,21 @@ function SummaryCard({ icon: Icon, label, value, sub, highlight, compact }) {
           : "px-3 py-2 sm:px-4 sm:py-3 w-full min-w-0"
       } ${
         highlight
-          ? "border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/30"
-          : "border-slate-200/80 bg-white dark:border-slate-700/50 dark:bg-slate-800/50"
+          ? muted
+            ? "border-cyan-200/70 bg-cyan-50/80 dark:border-cyan-800/70 dark:bg-cyan-950/20"
+            : "border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/30"
+          : muted
+            ? "border-slate-200/60 bg-slate-50/90 dark:border-slate-700/40 dark:bg-slate-800/40"
+            : "border-slate-200/80 bg-white dark:border-slate-700/50 dark:bg-slate-800/50"
       }`}
     >
       <div className={`font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5 ${compact ? "text-xs" : "text-xs sm:text-sm"}`}>
         <Icon className={`shrink-0 ${compact ? "h-3 w-3" : "h-3 w-3 sm:h-4 sm:w-4"}`} />
         <span>{label}</span>
         {sub && <span className="text-slate-400 dark:text-slate-500">· {sub}</span>}
+        {interactive && (
+          <ChevronRight className="ml-auto h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+        )}
       </div>
       <p
         className={`font-semibold tabular-nums mt-0.5 ${

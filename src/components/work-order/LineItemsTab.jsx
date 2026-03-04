@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   CreditCard,
   List,
@@ -558,6 +559,9 @@ export default function LineItemsTab({ wo, billing, token }) {
         token
       );
       setSectionWorkflowMap((prev) => ({ ...prev, [group]: workflowId }));
+      toast.success("Section workflow updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update section workflow");
     } finally {
       setWorkflowUpdating(false);
     }
@@ -571,7 +575,7 @@ export default function LineItemsTab({ wo, billing, token }) {
         <>
           <CostBreakdown calculations={calc} />
           <div className="space-y-4">
-            {sectionList.map((group) => {
+            {sectionList.map((group, index) => {
               const grouping = groupings[group];
               const sectionLineItems = grouping?.lineItems ?? lineItems.filter((i) => (i.Section || "") === (group || ""));
               const sectionSubTotal = grouping?.subTotal ?? sectionLineItems.reduce((s, i) => s + (Number(i.Extended) || 0), 0);
@@ -586,7 +590,7 @@ export default function LineItemsTab({ wo, billing, token }) {
               const sectionInfo = sectionInfoMap[group] ?? { Branch: wo?.SaleBranch, Dept: wo?.SaleDept };
               return (
                 <SectionCard
-                  key={group || "ungrouped"}
+                  key={`${String(group || "ungrouped")}-${index}`}
                   group={group}
                   grouping={effectiveGrouping}
                   wo={wo}

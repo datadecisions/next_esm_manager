@@ -2,6 +2,8 @@
  * ESM API client – uses NEXT_PUBLIC_API_URL for the legacy server base URL.
  */
 
+import { getAuthToken } from "@/lib/auth";
+
 const getApiBase = () => process.env.NEXT_PUBLIC_API_URL || "";
 
 /**
@@ -64,18 +66,20 @@ export async function authenticate(credentials) {
 
 /**
  * Fetch with JWT in x-access-token header (client-side only).
- * Pass getAuthToken() from a component/hook; cookie is not available in server components.
+ * Token is optional: when omitted, it is read from the auth cookie via getAuthToken().
+ * Callers can pass token explicitly when they already have it (e.g. from useAuth).
  *
  * @param {string} path - API path, e.g. "/api/v1/check"
  * @param {RequestInit} [options]
- * @param {string|null} token - Auth token from getAuthToken()
+ * @param {string|null} [token] - Optional; when omitted, uses getAuthToken()
  */
 export async function fetchWithAuth(path, options = {}, token) {
+  const t = token ?? getAuthToken();
   const base = getApiBase();
   const url = `${base.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
   const headers = {
     ...options.headers,
-    ...(token && { "x-access-token": token }),
+    ...(t && { "x-access-token": t }),
   };
   return fetch(url, { ...options, headers });
 }

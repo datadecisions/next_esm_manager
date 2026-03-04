@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,6 +84,9 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
     try {
       await updateWorkOrder({ WONo: wo.WONo, ...payload }, actionName, token);
       onOrderUpdate?.(payload);
+      toast.success("Order updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update order");
     } finally {
       setSaving(false);
     }
@@ -245,11 +249,14 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
                   <SelectValue placeholder="Choose one" />
                 </SelectTrigger>
                 <SelectContent>
-                  {salesmen.map((p, i) => (
-                    <SelectItem key={p.Number || p.Name || i} value={String(p.Name || "")}>
-                      {p.Name || ""}
-                    </SelectItem>
-                  ))}
+                  {salesmen.map((p, i) => {
+                    const val = p.Name && String(p.Name).trim() ? String(p.Name) : `__empty_${i}`;
+                    return (
+                      <SelectItem key={p.Number || p.Name || i} value={val}>
+                        {p.Name || "—"}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>

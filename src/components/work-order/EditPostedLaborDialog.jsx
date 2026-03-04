@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -86,8 +87,10 @@ export default function EditPostedLaborDialog({ open, onOpenChange, entry, wo, t
       );
       onSuccess?.();
       onOpenChange(false);
+      toast.success("Labor entry updated");
     } catch (err) {
       setError(err?.message || "Failed to update labor entry");
+      toast.error(err?.message || "Failed to update labor entry");
     } finally {
       setSaving(false);
     }

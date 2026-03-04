@@ -42,3 +42,56 @@ export async function getMechanics(branch, token) {
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
+
+/**
+ * Get quotes for workflow approval (Disposition=11, PaperWorkComplete=1).
+ * @param {{ branch?: string|number; dept?: string|number }} params - Use "null" for all
+ * @param {string} token
+ * @returns {Promise<Array>} Quotes with quoteWorkflows
+ */
+export async function getQuotesForWorkflow(params, token) {
+  const branch = params?.branch ?? "null";
+  const dept = params?.dept ?? "null";
+  const res = await fetchWithAuth(
+    `/api/v1/dispatch/quotes/${dept}/${branch}`,
+    {},
+    token
+  );
+  if (!res.ok) throw new Error("Failed to fetch quotes");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Set workflow active/approved state.
+ * @param {{ woNo: string|number; typeId: number; active: boolean; employee?: string|object }} data
+ * @param {string} token
+ */
+export async function setQuoteWorkflowActive(data, token) {
+  const res = await fetchWithAuth("/api/v1/dispatch/quotes/workflow/active", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to update workflow");
+  }
+}
+
+/**
+ * Approve workflow (set status date and approver).
+ * @param {{ id: number; name: string }} data
+ * @param {string} token
+ */
+export async function approveQuoteWorkflow(data, token) {
+  const res = await fetchWithAuth("/api/v1/dispatch/quotes/workflow/approve", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to approve");
+  }
+}

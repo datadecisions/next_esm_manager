@@ -4,6 +4,45 @@
 
 import { fetchWithAuth } from "../api";
 
+function toYMD(d) {
+  if (!d) return "";
+  const date = d instanceof Date ? d : new Date(d);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Get work orders closed by month (past 6 months).
+ * @param {string|Date} startDate - YYYY-MM-DD or Date
+ * @param {string|Date} endDate - YYYY-MM-DD or Date
+ * @returns {Promise<Array<{ Year: number; Month: number; TotalClosed: number; DistinctBillTo: number }>>}
+ */
+export async function getLaborClosedReport(startDate, endDate) {
+  const s = toYMD(startDate);
+  const e = toYMD(endDate);
+  if (!s || !e) return [];
+  const res = await fetchWithAuth(`/api/v1/labor/reports/closed/${s}/${e}`, {});
+  if (!res.ok) throw new Error("Failed to fetch closed report");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Get labor hours billed by month and sale code.
+ * @param {string|Date} startDate - YYYY-MM-DD or Date
+ * @param {string|Date} endDate - YYYY-MM-DD or Date
+ * @returns {Promise<Array<{ Year: number; Month: number; Billed: number; Code: string }>>}
+ */
+export async function getLaborTotalReport(startDate, endDate) {
+  const s = toYMD(startDate);
+  const e = toYMD(endDate);
+  if (!s || !e) return [];
+  const res = await fetchWithAuth(`/api/v1/labor/reports/total/${s}/${e}`, {});
+  if (!res.ok) throw new Error("Failed to fetch labor report");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
 /**
  * Get posted labor (arrivals) for a work order – technician time entries not yet imported.
  * @param {number|string} woNo

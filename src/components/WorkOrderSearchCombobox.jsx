@@ -12,8 +12,7 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
-import { getAuthToken } from "@/lib/auth";
-import { searchWOs, getDispositionText } from "@/lib/api/work-order";
+import { searchWOs, getDisplayStatus } from "@/lib/api/work-order";
 
 function useDebounce(fn, delay) {
   const timeoutRef = useRef(null);
@@ -35,18 +34,17 @@ export function WorkOrderSearchCombobox() {
   const [showAllResults, setShowAllResults] = useState(null);
 
   const performSearch = useCallback(async (query) => {
-    const token = getAuthToken();
     const trimmed = query.trim();
-    if (!token || trimmed.length < 3) {
+    if (trimmed.length < 3) {
       setItems([]);
       return;
     }
     setLoading(true);
     try {
-      const data = await searchWOs(trimmed, false, token);
+      const data = await searchWOs(trimmed, false);
       const withText = data.map((item) => ({
         ...item,
-        DispositionText: getDispositionText(item.Disposition),
+        DispositionText: getDisplayStatus(item),
       }));
       setItems(withText);
     } catch {
@@ -80,14 +78,12 @@ export function WorkOrderSearchCombobox() {
     e.preventDefault();
     const q = inputValue.trim();
     if (q.length < 3) return;
-    const token = getAuthToken();
-    if (!token) return;
     setLoading(true);
     try {
-      const data = await searchWOs(q, false, token);
+      const data = await searchWOs(q, false);
       const withText = data.map((item) => ({
         ...item,
-        DispositionText: getDispositionText(item.Disposition),
+        DispositionText: getDisplayStatus(item),
       }));
       setShowAllResults(withText);
       setItems(withText);
@@ -184,6 +180,8 @@ function WOCard({ wo, onClick }) {
       "bg-slate-100 border-slate-300 text-slate-600 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-400",
     Rejected:
       "bg-red-50 border-red-200 text-red-700 dark:bg-red-950/50 dark:border-red-800 dark:text-red-300",
+    Voided:
+      "bg-slate-100 border-slate-400 text-slate-500 dark:bg-slate-800 dark:border-slate-500 dark:text-slate-500",
   };
   const statusStyle = statusStyles[wo.DispositionText] ?? statusStyles.Closed;
   const equipmentText =

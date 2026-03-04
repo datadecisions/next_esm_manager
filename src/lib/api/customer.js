@@ -66,3 +66,40 @@ export async function getExpenseCodes(branch, dept, token) {
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
+
+/**
+ * Get customer contacts for ShipTo/BillTo (organization contacts).
+ * @param {string} shipTo
+ * @param {string} billTo
+ * @param {string} token
+ * @returns {Promise<Array<{ Contact?: string; EMail?: string; ID?: number }>>}
+ */
+export async function getCustomerContacts(shipTo, billTo, token) {
+  if (!shipTo || !billTo) return [];
+  const res = await fetchWithAuth(
+    `/api/v1/customer/organization/contacts/${encodeURIComponent(shipTo)}/${encodeURIComponent(billTo)}`,
+    {},
+    token
+  );
+  if (!res.ok) return [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Get all contacts for a customer number (optionally filtered by BillTo).
+ * @param {string} customerNo
+ * @param {string} [billTo]
+ * @param {string} token
+ * @returns {Promise<Array<{ Contact?: string; EMail?: string; ID?: number }>>}
+ */
+export async function getCustomerContactsByNumber(customerNo, billTo, token) {
+  if (!customerNo) return [];
+  const path = billTo
+    ? `/api/v1/customer/organization/all/${encodeURIComponent(customerNo)}/${encodeURIComponent(billTo)}`
+    : `/api/v1/customer/organization/all/${encodeURIComponent(customerNo)}`;
+  const res = await fetchWithAuth(path, {}, token);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}

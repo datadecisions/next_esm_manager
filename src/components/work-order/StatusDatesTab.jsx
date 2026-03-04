@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,6 +32,9 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
       await updateWorkOrder({ WONo: wo.WONo, ...payload }, "Update", token);
       onStatusUpdate?.(payload);
       setDirty(false);
+      toast.success("Status updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update status");
     } finally {
       setSaving(false);
     }

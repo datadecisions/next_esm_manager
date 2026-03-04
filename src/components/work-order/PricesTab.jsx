@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -81,6 +82,9 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
       await updateWorkOrder({ WONo: wo.WONo, ...payload }, "Update", token);
       onPricesUpdate?.(payload);
       setDirty(false);
+      toast.success("Prices updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update prices");
     } finally {
       setSaving(false);
     }
