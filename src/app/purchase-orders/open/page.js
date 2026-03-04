@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Loader2,
   FileText,
   Filter,
+  ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { getOpenPurchaseOrders } from "@/lib/api/purchase-order";
@@ -155,17 +157,24 @@ export default function OpenPurchaseOrdersPage() {
     >
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <motion.div
-          className="mb-8"
+          className="mb-8 flex items-center gap-4"
           initial={fadeInUp.initial}
           animate={fadeInUp.animate}
           transition={fadeInUp.transition}
         >
-          <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
-            Open Purchase Orders
-          </h1>
-          <p className="mt-1 text-slate-500 dark:text-slate-400">
-            View and manage open purchase orders by branch and department.
-          </p>
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/purchase-orders">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              Open Purchase Orders
+            </h1>
+            <p className="mt-1 text-slate-500 dark:text-slate-400">
+              View and manage open purchase orders by branch and department.
+            </p>
+          </div>
         </motion.div>
 
         {/* Filters */}

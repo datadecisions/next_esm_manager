@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Package } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { BackOrderedPartsTable } from "@/components/purchase-order/BackOrderedPartsTable";
+import { Button } from "@/components/ui/button";
 import { fadeIn, fadeInUp } from "@/lib/motion";
 
 export default function BackOrderedPartsPage() {
@@ -26,17 +28,24 @@ export default function BackOrderedPartsPage() {
     >
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <motion.div
-          className="mb-8"
+          className="mb-8 flex items-center gap-4"
           initial={fadeInUp.initial}
           animate={fadeInUp.animate}
           transition={fadeInUp.transition}
         >
-          <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
-            Back Ordered Part Requests
-          </h1>
-          <p className="mt-1 text-slate-500 dark:text-slate-400">
-            Select any number of requested parts to add to a new purchase order.
-          </p>
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/purchase-orders">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              Back Ordered Part Requests
+            </h1>
+            <p className="mt-1 text-slate-500 dark:text-slate-400">
+              Select any number of requested parts to add to a new purchase order.
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
