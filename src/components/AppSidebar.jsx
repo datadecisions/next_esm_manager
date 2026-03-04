@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { clearAuthToken } from "@/lib/auth";
 import {
   Calculator,
   Pencil,
@@ -33,6 +34,13 @@ const navMain = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  function handleSignOut() {
+    clearAuthToken();
+    router.push("/sign-in");
+    router.refresh();
+  }
 
   return (
     <Sidebar>
@@ -74,11 +82,9 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/sign-in">
-                <LogOut className="h-4 w-4" />
-                <span>Sign out</span>
-              </Link>
+            <SidebarMenuButton onClick={handleSignOut}>
+              <LogOut className="h-4 w-4" />
+              <span>Sign out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

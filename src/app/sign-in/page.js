@@ -1,14 +1,44 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../../components/ThemeToggle";
+import { authenticate } from "@/lib/api";
+import { setAuthToken } from "@/lib/auth";
 
 export default function SignIn() {
   const router = useRouter();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push("/home");
+    setError(null);
+    setLoading(true);
+    const form = e.target;
+    const username = form.username.value.trim();
+    const password = form.password.value;
+
+    try {
+      const result = await Promise.race([
+        authenticate({ username, password }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Request timed out. Check the server is running and NEXT_PUBLIC_API_URL is set.")), 15000)
+        ),
+      ]);
+
+      if (result.success) {
+        setAuthToken(result.token, { name: result.name });
+        router.push("/home");
+        router.refresh();
+      } else {
+        setError(result.message ?? "Sign in failed");
+      }
+    } catch (err) {
+      setError(err?.message ?? "Network error. Is the ESM server running?");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -23,7 +53,7 @@ export default function SignIn() {
       <div className="relative w-full max-w-sm">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            ESM <span className="bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">NOVA</span>
+            <span className="bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">NOVA</span>
           </h1>
           <p className="mt-1 text-sm font-medium uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400/80">
             Manager
@@ -32,6 +62,11 @@ export default function SignIn() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
+              {error}
+            </div>
+          )}
           <div>
             <label htmlFor="username" className="sr-only">Username</label>
             <input
@@ -56,9 +91,10 @@ export default function SignIn() {
           </div>
           <button
             type="submit"
-            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-400 hover:to-sky-400 hover:shadow-cyan-400/30 active:scale-[0.98]"
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-400 hover:to-sky-400 hover:shadow-cyan-400/30 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Sign in
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
 

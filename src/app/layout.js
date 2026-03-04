@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SidebarLayout } from "../components/SidebarLayout";
@@ -15,7 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ESM NOVA - Equipment Service Manager",
+  title: {
+    default: "NOVA - Equipment Service Manager",
+    template: "%s | NOVA",
+  },
   description: "Manager app for Equipment Service Manager",
 };
 
@@ -42,6 +46,7 @@ export default function RootLayout({ children }) {
           <TooltipProvider>
             <SidebarLayout>{children}</SidebarLayout>
           </TooltipProvider>
+          <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>

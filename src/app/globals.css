@@ -5,7 +5,7 @@
 /* Class-based dark mode for manual toggle */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ESM NOVA - Cosmic, energetic design system */
+/* NOVA - Cosmic, energetic design system */
 :root {
   --nova-accent: #06b6d4;
   --nova-accent-hover: #22d3ee;

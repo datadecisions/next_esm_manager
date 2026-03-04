@@ -1,0 +1,42 @@
+---
+description: Desktop app UI/UX standards for the manager app
+alwaysApply: true
+---
+
+# Desktop App UI Standards
+
+Follow these practices when building or updating the NOVA manager app.
+
+## Typography
+
+- **Body text**: 14–16px ( Tailwind: `text-sm`–`text-base`)
+- **Labels / secondary**: 12–14px (`text-xs`–`text-sm`)
+- **Section headings**: 16–18px (`text-base`–`text-lg`)
+- **Page titles**: 20–24px (`text-xl`–`text-2xl`)
+- **Currency / key data**: 14–16px; use `text-base` for important totals
+- **Minimum size**: Avoid below 12px (`text-xs`)
+
+## Spacing & Density
+
+- **Card padding**: 16–24px (`p-4`–`p-6`)
+- **Gaps**: 8–16px (`gap-2`–`gap-4`) between related items; 24–32px between sections
+- **Line height**: Use default 1.5 or `leading-relaxed` for body text
+- **Touch targets**: Min 44px height for interactive elements
+
+## Layout
+
+- **Max content width**: ~1440px (`max-w-7xl` or similar)
+- **Grid alignment**: Use 8px base unit; Tailwind spacing handles this
+- **Columns**: Prefer 2–3 columns on desktop for scannable data
+
+## Responsive
+
+- Use `sm:` and `lg:` breakpoints for desktop enhancements (e.g. larger fonts, more padding)
+- Keep mobile-first; add desktop styles from `sm:` up
+- Quick totals / data cards: compact on mobile; `sm:text-base`, `sm:text-sm` for labels on desktop
+
+## Interaction
+
+- **Hover states**: On buttons and links
+- **Focus**: Visible focus rings (`focus-visible:ring-2`)
+- **Click targets**: Min ~32px; prefer 40–44px for buttons/icons
