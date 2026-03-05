@@ -1,8 +1,47 @@
 /**
- * Accounting API – pending invoices, distribute, print.
+ * Accounting API – pending invoices, distribute, print, summary charts.
  */
 
 import { fetchWithAuth } from "../api";
+
+/**
+ * Get sales by month/year (for Summary Charts).
+ * Returns [{ SaleBranch, SaleDept, SalesYear, SalesMonth, Net }].
+ * @param {string} token
+ * @returns {Promise<Array>}
+ */
+export async function getSales(token) {
+  const res = await fetchWithAuth("/api/v1/accounting/sales", {}, token);
+  if (!res.ok) throw new Error("Failed to fetch sales");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Get expenses by month/year (for Summary Charts).
+ * Returns [{ SaleBranch, SaleDept, SalesYear, SalesMonth, Net }].
+ * @param {string} token
+ * @returns {Promise<Array>}
+ */
+export async function getExpenses(token) {
+  const res = await fetchWithAuth("/api/v1/accounting/expenses", {}, token);
+  if (!res.ok) throw new Error("Failed to fetch expenses");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Get overdue AR items (invoices 30+ days past due).
+ * Returns [{ CustomerName, Balance, InvoiceDate, InvoiceNo }].
+ * @param {string} token
+ * @returns {Promise<Array>}
+ */
+export async function getOverdue(token) {
+  const res = await fetchWithAuth("/api/v1/accounting/overdue", {}, token);
+  if (!res.ok) throw new Error("Failed to fetch overdue AR");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
 
 function toYMD(d) {
   if (!d) return "";

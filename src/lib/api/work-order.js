@@ -282,6 +282,25 @@ export async function uploadWorkOrderImage(woNo, file, context, token) {
 }
 
 /**
+ * Post assembly parts to an existing work order.
+ * @param {{ woNo: string|number; assemblyId: string|number }} data
+ * @param {string} token
+ * @returns {Promise<object>}
+ */
+export async function postAssemblyToWorkOrder(data, token) {
+  const res = await fetchWithAuth("/api/v1/work_order/add/assembly", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ woNo: data.woNo, assemblyId: data.assemblyId }),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to add assembly to work order");
+  }
+  return res.json();
+}
+
+/**
  * Update work order comments (General Comments).
  * @param {{ WONo: string|number; Comments: string }} data
  * @param {string} token
