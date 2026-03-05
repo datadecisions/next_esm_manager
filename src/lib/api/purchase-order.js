@@ -172,7 +172,7 @@ export async function addEquipmentToPO(data, token) {
 
 /**
  * Receive items on a purchase order line.
- * @param {object} data - ID, RecvQty
+ * @param {object} data - ID, RecvQty, Warehouse, PartNo (Warehouse/PartNo needed for Parts/WOParts update)
  * @param {string} token
  * @returns {Promise<object>}
  */
