@@ -1,9 +1,26 @@
 /**
  * Documents API – work order and customer images (metadata + blob fetch).
  * Also supports document search (WO, PO, Vendor, AP, Customer, Equipment, Mechanic).
+ * Images go through /api/proxy/image to avoid CORS and ensure auth is forwarded.
  */
 
-import { fetchWithAuth, getApiBase } from "../api";
+import { fetchWithAuth, fetchWithAuthRaw } from "../api";
+
+/** Convert /api/v1/... path to proxy URL for image fetch */
+function imagePathToProxyUrl(path) {
+  const m = path.match(/^\/api\/v1\/(.+)$/);
+  if (!m) return path;
+  const sub = m[1];
+  const workOrderMatch = sub.match(/^work_order\/image\/(\d+)$/);
+  if (workOrderMatch) return `/api/proxy/image?source=work_order&id=${workOrderMatch[1]}`;
+  const customerMatch = sub.match(/^customer\/image\/(\d+)$/);
+  if (customerMatch) return `/api/proxy/image?source=customer&id=${customerMatch[1]}`;
+  const sigMatch = sub.match(/^work_order\/signature\/(\d+)$/);
+  if (sigMatch) return `/api/proxy/image?source=wo_signature&id=${sigMatch[1]}`;
+  const docMatch = sub.match(/^documents\/([^/]+)\/image\/(\d+)$/);
+  if (docMatch) return `/api/proxy/image?source=documents&table=${encodeURIComponent(docMatch[1])}&id=${docMatch[2]}`;
+  return `/api/proxy/image?path=${encodeURIComponent(sub)}`;
+}
 
 // ─── Document Search (for Search tab) ─────────────────────────────────────
 
@@ -76,18 +93,19 @@ export async function getCustomerImagesMetadata(customerNo, token) {
 
 /**
  * Fetch image/blob and return an object URL for display (iframe/img).
+ * Uses /api/proxy/image for same-origin auth.
  * Caller should revoke the URL when done: URL.revokeObjectURL(url)
- * @param {string} path - e.g. /api/v1/work_order/image/123
- * @param {string} token
+ * @param {string} path - e.g. /api/v1/work_order/image/123 or /api/v1/documents/wo/image/123
+ * @param {string} token - Ignored (auth via httpOnly cookie)
  * @returns {Promise<string>} Object URL
  */
 export async function getImageAsObjectUrl(path, token) {
-  const base = getApiBase();
-  const url = `${base.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
-  const res = await fetch(url, {
-    headers: token ? { "x-access-token": token } : {},
-  });
-  if (!res.ok) throw new Error("Failed to load document");
+  const proxyUrl = imagePathToProxyUrl(path);
+  const res = await fetchWithAuthRaw(proxyUrl);
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data?.error || "Failed to load document");
+  }
   const blob = await res.blob();
   return URL.createObjectURL(blob);
 }

@@ -1,87 +1,124 @@
 /**
- * ESM API client – uses NEXT_PUBLIC_API_URL for the legacy server base URL.
+ * ESM API client – all calls go same-origin. Auth via httpOnly cookies (XSS-safe).
  */
 
-import { getAuthToken } from "@/lib/auth";
+import { getBaseUrl } from "./base";
+import { refreshAccessToken, signOut } from "./auth";
 
-const getApiBase = () => process.env.NEXT_PUBLIC_API_URL || "";
+let refreshPromise = null;
+
+async function doFetch(path, options = {}, skipRetry = false) {
+  const base = getBaseUrl();
+  const url = `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  const res = await fetch(url, {
+    ...options,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+  if (res.status === 401 && !skipRetry) {
+    try {
+      if (!refreshPromise) refreshPromise = refreshAccessToken();
+      await refreshPromise;
+      refreshPromise = null;
+      return doFetch(path, options, true);
+    } catch {
+      refreshPromise = null;
+      signOut();
+      if (typeof window !== "undefined") window.location.href = "/sign-in";
+      throw new Error("Session expired. Please sign in again.");
+    }
+  }
+
+  return res;
+}
 
 /**
- * Authenticate with username/password. Calls POST /api/v1/authenticate.
+ * Authenticate with username/password via our proxy.
  * @param {{ username: string; password: string }} credentials
- * @returns {Promise<{ success: true; token: string; name?: string } | { success: false; message: string }>}
  */
 export async function authenticate(credentials) {
-  const base = getApiBase();
-  if (!base) {
-    return { success: false, message: "API URL not configured. Set NEXT_PUBLIC_API_URL." };
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      username: credentials.username?.trim(),
+      password: credentials.password,
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (res.status === 429) {
+    const err = new Error(data?.message || "Too many sign-in attempts.");
+    err.attemptsRemaining = 0;
+    err.retryAfter = data?.retryAfter;
+    throw err;
   }
 
-  const url = `${base.replace(/\/$/, "")}/api/v1/authenticate`;
-  const body = new URLSearchParams({
-    username: credentials.username,
-    password: credentials.password,
-  }).toString();
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body,
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      return {
-        success: false,
-        message: data?.message || "Authentication failed.",
-      };
-    }
-
-    if (!data.success || !data.token) {
-      return {
-        success: false,
-        message: data?.message || "Authentication failed.",
-      };
-    }
-
-    return {
-      success: true,
-      token: data.token,
-      name: data.name,
-      longName: data.longName,
-      branch: data.branch,
-      dept: data.dept,
-    };
-  } catch (err) {
-    return {
-      success: false,
-      message: err?.message || "Network error. Is the ESM server running?",
-    };
+  if (!res.ok) {
+    const err = new Error(data?.message || `Sign in failed (${res.status})`);
+    if (data?.attemptsRemaining !== undefined) err.attemptsRemaining = data.attemptsRemaining;
+    if (data?.retryAfter) err.retryAfter = data.retryAfter;
+    throw err;
   }
+
+  if (!data?.success) {
+    const err = new Error(data?.message || "Invalid response");
+    if (data?.attemptsRemaining !== undefined) err.attemptsRemaining = data.attemptsRemaining;
+    throw err;
+  }
+
+  return {
+    success: true,
+    name: data.name,
+    longName: data.longName,
+    branch: data.branch,
+    dept: data.dept,
+  };
 }
 
 /**
- * Fetch with JWT in x-access-token header (client-side only).
- * Token is optional: when omitted, it is read from the auth cookie via getAuthToken().
- * Callers can pass token explicitly when they already have it (e.g. from useAuth).
- *
- * @param {string} path - API path, e.g. "/api/v1/check"
+ * Fetch with auth (credentials: include). On 401, attempts refresh and retries once.
+ * @param {string} path - e.g. "/api/v1/check"
  * @param {RequestInit} [options]
- * @param {string|null} [token] - Optional; when omitted, uses getAuthToken()
+ * @param {string|null} [token] - Ignored (httpOnly cookie used)
  */
 export async function fetchWithAuth(path, options = {}, token) {
-  const t = token ?? getAuthToken();
-  const base = getApiBase();
-  const url = `${base.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
-  const headers = {
-    ...options.headers,
-    ...(t && { "x-access-token": t }),
-  };
-  return fetch(url, { ...options, headers });
+  return doFetch(path, options);
 }
 
-export { getApiBase };
+/**
+ * Raw fetch with auth retry - for blob/binary responses.
+ */
+export async function fetchWithAuthRaw(path, options = {}, skipRetry = false) {
+  const base = getBaseUrl();
+  const url = `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  const res = await fetch(url, {
+    ...options,
+    credentials: "include",
+    headers: options.headers,
+  });
+
+  if (res.status === 401 && !skipRetry) {
+    try {
+      if (!refreshPromise) refreshPromise = refreshAccessToken();
+      await refreshPromise;
+      refreshPromise = null;
+      return fetchWithAuthRaw(path, options, true);
+    } catch {
+      refreshPromise = null;
+      signOut();
+      if (typeof window !== "undefined") window.location.href = "/sign-in";
+      throw new Error("Session expired. Please sign in again.");
+    }
+  }
+
+  return res;
+}
+
+export const getApiBase = () => getBaseUrl();

@@ -1,19 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../../components/ThemeToggle";
 import { authenticate } from "@/lib/api";
-import { setAuthToken } from "@/lib/auth";
 
 export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [attemptsRemaining, setAttemptsRemaining] = useState(null);
+  const [retryAfter, setRetryAfter] = useState(null);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/auth/me", { credentials: "include" })
+      .then((r) => r.json())
+      .then((user) => {
+        if (user?.username || user?.name) {
+          const from = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("from");
+          router.replace(from && from.startsWith("/") && from !== "/sign-in" ? from : "/home");
+        } else {
+          setChecking(false);
+        }
+      })
+      .catch(() => setChecking(false));
+  }, [router]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setAttemptsRemaining(null);
+    setRetryAfter(null);
     setLoading(true);
     const form = e.target;
     const username = form.username.value.trim();
@@ -28,17 +46,26 @@ export default function SignIn() {
       ]);
 
       if (result.success) {
-        setAuthToken(result.token, { name: result.name });
         router.push("/home");
         router.refresh();
       } else {
         setError(result.message ?? "Sign in failed");
       }
     } catch (err) {
-      setError(err?.message ?? "Network error. Is the ESM server running?");
+      setError(err?.message ?? "Sign in failed");
+      setAttemptsRemaining(err?.attemptsRemaining);
+      setRetryAfter(err?.retryAfter);
     } finally {
       setLoading(false);
     }
+  }
+
+  if (checking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" aria-hidden />
+      </div>
+    );
   }
 
   return (
@@ -63,8 +90,26 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
-              {error}
+            <div className="space-y-2">
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/50 dark:text-red-300">
+                {error}
+              </div>
+              {attemptsRemaining !== null && attemptsRemaining <= 3 && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/30 dark:text-amber-200">
+                  {attemptsRemaining === 0 && retryAfter ? (
+                    <>
+                      <strong>Locked out.</strong> Please try again in {retryAfter} seconds.
+                    </>
+                  ) : (
+                    <>
+                      <strong>Attempts remaining:</strong> {attemptsRemaining}
+                      {attemptsRemaining === 1
+                        ? " — After one more failed attempt, you will be locked out for 15 minutes."
+                        : " — Please check your credentials before trying again."}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <div>
@@ -75,6 +120,7 @@ export default function SignIn() {
               type="text"
               placeholder="Username"
               required
+              disabled={loading}
               className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 dark:border-slate-700/50 dark:bg-slate-900/50 dark:text-white dark:placeholder-slate-500"
             />
           </div>
@@ -86,6 +132,7 @@ export default function SignIn() {
               type="password"
               placeholder="Password"
               required
+              disabled={loading}
               className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 dark:border-slate-700/50 dark:bg-slate-900/50 dark:text-white dark:placeholder-slate-500"
             />
           </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { clearAuthToken } from "@/lib/auth";
+import { signOut } from "@/lib/auth";
 import {
   Calculator,
   Pencil,
@@ -36,8 +36,8 @@ export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  function handleSignOut() {
-    clearAuthToken();
+  async function handleSignOut() {
+    await signOut();
     router.push("/sign-in");
     router.refresh();
   }

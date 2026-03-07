@@ -1,83 +1,95 @@
 "use client";
 
 /**
- * Auth helpers – token storage and retrieval via cookies.
- * Cookie name matches middleware: auth_token
+ * Auth helpers – httpOnly cookies set by server. Client never sees tokens (XSS-safe).
  */
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const TOKEN_COOKIE = "auth_token";
-const USER_NAME_COOKIE = "auth_user_name";
-const TOKEN_MAX_AGE = 36000; // 10 hours, matching ESM server default
+const USER_COOKIE = "auth_user";
 
-/**
- * Set the auth token and optionally user display name.
- * @param {string} token - JWT from /api/v1/authenticate
- * @param {{ name?: string }} [user] - User data from auth response
- */
-export function setAuthToken(token, user) {
-  const value = encodeURIComponent(token);
-  document.cookie = `${TOKEN_COOKIE}=${value}; path=/; max-age=${TOKEN_MAX_AGE}; SameSite=Lax`;
-  if (user?.name) {
-    document.cookie = `${USER_NAME_COOKIE}=${encodeURIComponent(user.name)}; path=/; max-age=${TOKEN_MAX_AGE}; SameSite=Lax`;
+function getCookie(name) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** Returns truthy when authenticated (for guards). Token is in httpOnly cookie. */
+export function getAuthToken() {
+  return getAuthUserName() ? "authenticated" : null;
+}
+
+export function getAuthUserName() {
+  const raw = getCookie(USER_COOKIE);
+  if (!raw) return null;
+  try {
+    const user = JSON.parse(raw);
+    return user?.name || user?.fullName || user?.username || null;
+  } catch {
+    return null;
   }
 }
 
-/**
- * Get the auth token from cookies (client-side only).
- * @returns {string|null}
- */
-export function getAuthToken() {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${TOKEN_COOKIE}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
+/** Sign out - clears cookies via our proxy */
+export async function signOut() {
+  await fetch("/api/auth/signout", {
+    method: "POST",
+    credentials: "include",
+  });
 }
 
-/**
- * Get the user display name from cookies (client-side only).
- * @returns {string|null}
- */
-export function getAuthUserName() {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${USER_NAME_COOKIE}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-/**
- * Clear the auth token and user data (sign out).
- */
+/** @deprecated Use signOut() */
 export function clearAuthToken() {
-  document.cookie = `${TOKEN_COOKIE}=; path=/; max-age=0`;
-  document.cookie = `${USER_NAME_COOKIE}=; path=/; max-age=0`;
+  signOut();
 }
 
 /**
- * Hook for auth state. Use in client components that need token or redirect.
- * Token is optional for API calls – fetchWithAuth auto-injects it from the cookie.
- *
- * @param {{ redirectToSignIn?: boolean }} [options]
- * @returns {{ token: string|null; isLoading: boolean; isAuthenticated: boolean }}
+ * Refresh access token - calls our proxy.
+ */
+export async function refreshAccessToken() {
+  const res = await fetch("/api/auth/refresh", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (res.status === 429) {
+    throw new Error(data?.message || "Too many requests. Please wait a moment.");
+  }
+
+  if (!res.ok || !data?.success) {
+    throw new Error(data?.message || "Session expired. Please sign in again.");
+  }
+
+  return true;
+}
+
+/**
+ * Hook for auth state.
  */
 export function useAuth(options = {}) {
   const router = useRouter();
-  const [token, setToken] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [mounted, setMounted] = useState(false);
   const redirectToSignIn = options.redirectToSignIn ?? false;
 
   useEffect(() => {
     setMounted(true);
-    const t = getAuthToken();
-    setToken(t);
-    if (redirectToSignIn && !t) {
+    const name = getAuthUserName();
+    setUserName(name);
+    if (redirectToSignIn && !name) {
       router.push("/sign-in");
     }
   }, [router, redirectToSignIn]);
 
+  const isAuthenticated = !!getAuthUserName();
   return {
-    token,
+    /** Truthy when authenticated (for !token guards). Token is in httpOnly cookie. */
+    token: isAuthenticated ? "authenticated" : null,
+    userName,
     isLoading: !mounted,
-    isAuthenticated: !!token,
+    isAuthenticated,
   };
 }
