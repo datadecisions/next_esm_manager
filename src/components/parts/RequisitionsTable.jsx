@@ -13,14 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-
-function formatDate(d) {
-  if (!d) return "—";
-  const date = new Date(d);
-  return isNaN(date.getTime())
-    ? "—"
-    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+import { formatDate } from "@/lib/format";
 
 export function RequisitionsTable({ token }) {
   const [data, setData] = useState([]);

@@ -39,7 +39,8 @@ export async function getExpenses(token) {
 export async function getNet(token) {
   const res = await fetchWithAuth("/api/v1/accounting/net", {}, token);
   if (!res.ok) throw new Error("Failed to fetch net");
-  const data = await res.json();
+  const text = await res.text();
+  const data = text?.trim() ? JSON.parse(text) : [];
   return Array.isArray(data) ? data : [];
 }
 
@@ -229,7 +230,8 @@ export async function getBudget(branch, dept, year, month, token) {
     token
   );
   if (!res.ok) throw new Error("Failed to fetch budget");
-  const data = await res.json();
+  const text = await res.text();
+  const data = text?.trim() ? JSON.parse(text) : null;
   return data ?? null;
 }
 
@@ -246,10 +248,12 @@ export async function setBudget(data, token) {
     body: JSON.stringify(data),
   }, token);
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
+    const errText = await res.text();
+    const err = errText?.trim() ? JSON.parse(errText) : {};
     throw new Error(err?.message || "Failed to save budget");
   }
-  const result = await res.json();
+  const text = await res.text();
+  const result = text?.trim() ? JSON.parse(text) : null;
   return result ?? data;
 }
 

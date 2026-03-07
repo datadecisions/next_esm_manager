@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { buildInventoryId } from "@/lib/format";
 import {
   Dialog,
   DialogContent,
@@ -26,13 +27,7 @@ export function NewInventoryCountDialog({ open, onOpenChange, warehouses, token,
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(false);
 
-  const inventoryId = useMemo(() => {
-    if (!warehouse) return "";
-    const now = new Date();
-    const month = (now.getMonth() + 1).toString();
-    const year = now.getFullYear().toString();
-    return `${warehouse}${month}${year}`;
-  }, [warehouse]);
+  const inventoryId = useMemo(() => buildInventoryId(warehouse), [warehouse]);
 
   const handleCreate = async () => {
     if (!token || !warehouse) return;

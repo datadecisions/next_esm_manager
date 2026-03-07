@@ -13,22 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-
-function formatCurrency(n) {
-  if (n == null || n === "") return "—";
-  const num = parseFloat(n);
-  return isNaN(num)
-    ? "—"
-    : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(num);
-}
-
-function formatDate(d) {
-  if (!d) return "—";
-  const date = new Date(d);
-  return isNaN(date.getTime())
-    ? "—"
-    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+import { formatCurrency, formatDate } from "@/lib/format";
 
 export function ConsignmentsTable({ token }) {
   const [data, setData] = useState([]);

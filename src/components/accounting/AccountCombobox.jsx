@@ -9,6 +9,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { getAccounts } from "@/lib/api/accounting";
+import { formatAccountDisplay } from "@/lib/format";
 
 function useDebounce(fn, delay) {
   const timeoutRef = useRef(null);
@@ -21,11 +22,6 @@ function useDebounce(fn, delay) {
   );
 }
 
-function itemDisplay(acc) {
-  if (!acc) return "";
-  return `${acc.AccountNo ?? ""}: ${acc.Description ?? ""}`.trim();
-}
-
 export function AccountCombobox({
   value,
   onValueChange,
@@ -35,13 +31,13 @@ export function AccountCombobox({
   minChars = 0,
 }) {
   const [open, setOpen] = useState(false);
-  const [inputText, setInputText] = useState(itemDisplay(value));
+  const [inputText, setInputText] = useState(formatAccountDisplay(value));
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setInputText(itemDisplay(value));
+    setInputText(formatAccountDisplay(value));
   }, [value]);
 
   const performSearch = useCallback(
@@ -80,7 +76,7 @@ export function AccountCombobox({
 
   function handleSelect(account) {
     onValueChange?.(account);
-    setInputText(itemDisplay(account));
+    setInputText(formatAccountDisplay(account));
     setOpen(false);
   }
 

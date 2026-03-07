@@ -20,13 +20,10 @@ import {
 } from "@/components/ui/select";
 import { PartsSearchCombobox } from "@/components/PartsSearchCombobox";
 import { addAssemblyPart, getWarehouses } from "@/lib/api/parts";
+import { getWarehouseValue } from "@/lib/format";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
-
-function getWarehouseValue(w) {
-  return String(w?.WebWarehouse ?? w?.Warehouse ?? w ?? "");
-}
 
 export function AddAssemblyPartDialog({ open, onOpenChange, assemblyId, token, onSuccess }) {
   const [warehouses, setWarehouses] = useState([]);
