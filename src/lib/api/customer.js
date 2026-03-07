@@ -32,6 +32,38 @@ export async function getCustomerByNum(number, token) {
 }
 
 /**
+ * Get full customer info (CreditLimit, ARComments, CreditHoldDays, etc.).
+ * @param {string} number - Customer number
+ * @param {string} token
+ * @returns {Promise<object|null>}
+ */
+export async function getCustomerFullInfo(number, token) {
+  const res = await fetchWithAuth(`/api/v1/customer/${number}/all`, {}, token);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data;
+}
+
+/**
+ * Update customer (e.g. ARComments).
+ * @param {{ Number: string; ARComments?: string; [key: string]: unknown }} data
+ * @param {string} token
+ * @returns {Promise<object>}
+ */
+export async function updateCustomer(data, token) {
+  const res = await fetchWithAuth("/api/v1/customer/update", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to update customer");
+  }
+  return res.json();
+}
+
+/**
  * Get sale codes for a branch/dept (Type of Sale).
  * @param {string} branch
  * @param {string} dept
