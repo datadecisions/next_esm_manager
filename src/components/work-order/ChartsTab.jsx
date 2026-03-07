@@ -137,11 +137,13 @@ export default function ChartsTab({ wo, token }) {
 
   useEffect(() => {
     if (!hasSerial || !token) {
-      setFinancials(null);
+      queueMicrotask(() => setFinancials(null));
       return;
     }
-    setLoading(true);
-    setError(null);
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(null);
+    });
     getEquipmentFinancials(
       {
         serialNo: wo.SerialNo,

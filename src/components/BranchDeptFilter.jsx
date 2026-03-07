@@ -37,7 +37,7 @@ export function BranchDeptFilter({ value, onChange, token, className }) {
 
   useEffect(() => {
     if (!token) return;
-    setLoadingBranches(true);
+    queueMicrotask(() => setLoadingBranches(true));
     getBranches(token)
       .then(setBranches)
       .catch(() => setBranches([]))
@@ -46,11 +46,11 @@ export function BranchDeptFilter({ value, onChange, token, className }) {
 
   useEffect(() => {
     if (!token || selectedBranches.length === 0) {
-      setDepts([]);
+      queueMicrotask(() => setDepts([]));
       return;
     }
     const branchNum = selectedBranches[0]?.Number ?? selectedBranches[0];
-    setLoadingDepts(true);
+    queueMicrotask(() => setLoadingDepts(true));
     getBranchDepts(branchNum, token)
       .then(setDepts)
       .catch(() => setDepts([]))

@@ -366,7 +366,7 @@ export default function AssemblyDetailPage() {
                   </div>
                   {docs.length > 0 && (
                     <p className="text-sm text-muted-foreground">
-                      {docs.length} document{docs.length !== 1 ? "s" : ""} — click "View All" to open the document viewer.
+                      {docs.length} document{docs.length !== 1 ? "s" : ""} — click &quot;View All&quot; to open the document viewer.
                     </p>
                   )}
                 </CardContent>

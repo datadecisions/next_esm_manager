@@ -58,16 +58,20 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
 
   useEffect(() => {
     if (!open || !wo?.SerialNo || !token) return;
-    setStartDate(defaultStart);
-    setEndDate(defaultEnd);
-    setHistory([]);
-    setError(null);
-  }, [open, wo?.SerialNo, token]);
+    queueMicrotask(() => {
+      setStartDate(defaultStart);
+      setEndDate(defaultEnd);
+      setHistory([]);
+      setError(null);
+    });
+  }, [open, wo?.SerialNo, token, defaultStart, defaultEnd]);
 
   useEffect(() => {
     if (!open || !wo?.SerialNo || !token) return;
-    setLoading(true);
-    setError(null);
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(null);
+    });
     getEquipmentHistory(wo.SerialNo, token)
       .then((data) => setHistory(Array.isArray(data) ? data : []))
       .catch((err) => setError(err?.message || "Failed to load history"))

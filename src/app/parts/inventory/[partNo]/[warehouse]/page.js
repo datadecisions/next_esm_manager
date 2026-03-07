@@ -31,7 +31,7 @@ export default function PartDetailPage() {
 
   useEffect(() => {
     if (!token || !partNo || !warehouse) {
-      setLoading(false);
+      queueMicrotask(() => setLoading(false));
       return;
     }
     getPart(partNo, warehouse, token)

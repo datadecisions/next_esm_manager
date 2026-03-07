@@ -102,7 +102,7 @@ export default function RecurringOrdersPage() {
       router.push("/sign-in");
       return;
     }
-    setToken(t);
+    queueMicrotask(() => setToken(t));
   }, [router]);
 
   if (!token) {

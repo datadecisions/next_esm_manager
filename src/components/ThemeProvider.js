@@ -11,7 +11,7 @@ export function ThemeProvider({ children }) {
     const stored = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initial = stored || (prefersDark ? "dark" : "light");
-    setTheme(initial);
+    queueMicrotask(() => setTheme(initial));
     document.documentElement.classList.toggle("dark", initial === "dark");
   }, []);
 

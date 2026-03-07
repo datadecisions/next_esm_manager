@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -35,18 +35,18 @@ export default function PartsAssemblyPage() {
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const fetchAssemblies = () => {
+  const fetchAssemblies = useCallback(() => {
     if (!token) return;
-    setLoading(true);
+    queueMicrotask(() => setLoading(true));
     getAssemblies(token)
       .then(setAssemblies)
       .catch(() => setAssemblies([]))
       .finally(() => setLoading(false));
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchAssemblies();
-  }, [token]);
+  }, [fetchAssemblies]);
 
   if (authLoading || !token) {
     return (

@@ -62,7 +62,7 @@ export default function OpenPurchaseOrdersPage() {
 
   useEffect(() => {
     if (!token || !branch) return;
-    setLoading(true);
+    queueMicrotask(() => setLoading(true));
     const branchNum = branch?.Number ?? branch;
     const deptNum = useAllDepts ? null : (dept?.Dept ?? dept);
 
@@ -110,17 +110,16 @@ export default function OpenPurchaseOrdersPage() {
   const hasMore = displayedCount < filtered.length;
 
   useEffect(() => {
-    setDisplayedCount(BATCH_SIZE);
+    queueMicrotask(() => setDisplayedCount(BATCH_SIZE));
   }, [filterText, orders]);
-
-  const loadMore = useCallback(() => {
-    setDisplayedCount((prev) => Math.min(prev + BATCH_SIZE, filtered.length));
-  }, [filtered.length]);
 
   useEffect(() => {
     const sentinel = loadMoreRef.current;
     const scrollRoot = scrollContainerRef.current;
     if (!sentinel || !hasMore) return;
+    const loadMore = () => {
+      setDisplayedCount((prev) => Math.min(prev + BATCH_SIZE, filtered.length));
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) loadMore();
@@ -129,7 +128,7 @@ export default function OpenPurchaseOrdersPage() {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, loadMore]);
+  }, [hasMore, filterText, orders, filtered.length]);
 
   const handleSelectPo = (po) => {
     if (po?.PONo) router.push(`/purchase-orders/${po.PONo}`);

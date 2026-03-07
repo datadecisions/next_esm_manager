@@ -116,7 +116,7 @@ export default function ReportsPage() {
   }, [token, dates.start, dates.end]);
 
   useEffect(() => {
-    fetchData();
+    queueMicrotask(() => fetchData());
   }, [fetchData]);
 
   const revenueByMonth = useMemo(() => {

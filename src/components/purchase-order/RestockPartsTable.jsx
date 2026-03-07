@@ -39,11 +39,13 @@ export function RestockPartsTable({ token, className }) {
 
   useEffect(() => {
     if (!token || !selectedBranch) {
-      setParts([]);
-      setSelectedPartGroups({});
+      queueMicrotask(() => {
+        setParts([]);
+        setSelectedPartGroups({});
+      });
       return;
     }
-    setLoading(true);
+    queueMicrotask(() => setLoading(true));
     const branchNum = selectedBranch?.Number ?? selectedBranch;
     const recent = recentOnly ? "1" : null;
     getPartsToOrder(branchNum, recent, token)

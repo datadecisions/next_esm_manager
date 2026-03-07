@@ -46,7 +46,7 @@ export function useBranchDeptFilter() {
 
   // Hydrate from localStorage on mount (client-only)
   useEffect(() => {
-    setValueState(loadFromStorage());
+    queueMicrotask(() => setValueState(loadFromStorage()));
   }, []);
 
   const setValue = useCallback((next) => {

@@ -28,8 +28,10 @@ export default function FinancialsTab({ wo, token }) {
 
   useEffect(() => {
     if (!wo?.WONo || !token) return;
-    setLoading(true);
-    setError(null);
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(null);
+    });
     getAccountingBreakdown(wo.WONo, token)
       .then(setBreakdown)
       .catch((err) => setError(err?.message || "Failed to load accounting breakdown"))

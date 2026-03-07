@@ -76,12 +76,14 @@ export function useAuth(options = {}) {
   const redirectToSignIn = options.redirectToSignIn ?? false;
 
   useEffect(() => {
-    setMounted(true);
-    const name = getAuthUserName();
-    setUserName(name);
-    if (redirectToSignIn && !name) {
-      router.push("/sign-in");
-    }
+    queueMicrotask(() => {
+      setMounted(true);
+      const name = getAuthUserName();
+      setUserName(name);
+      if (redirectToSignIn && !name) {
+        router.push("/sign-in");
+      }
+    });
   }, [router, redirectToSignIn]);
 
   const isAuthenticated = !!getAuthUserName();
