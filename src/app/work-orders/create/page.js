@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, User, Wrench } from "lucide-react";
+import { ArrowLeft, Loader2, User, Wrench } from "lucide-react";
 import { fadeInUp } from "@/lib/motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -763,7 +763,14 @@ export default function WorkOrderCreatePage() {
 
           <div className="mt-8 flex gap-3">
             <Button type="submit" disabled={loading}>
-              {loading ? "Creating…" : "Create Work Order"}
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Creating…
+                </>
+              ) : (
+                "Create Work Order"
+              )}
             </Button>
             <Button type="button" variant="outline" asChild>
               <Link href="/work-orders">Cancel</Link>
