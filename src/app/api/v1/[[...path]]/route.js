@@ -3,6 +3,7 @@
  */
 import { NextResponse } from "next/server";
 import { getTokenFromRequest } from "@/lib/apiRouteAuth";
+import { isBinaryContentType } from "@/lib/proxyHelpers";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
 
@@ -46,9 +47,16 @@ async function proxyRequest(request, pathSegments) {
   });
 
   const resContentType = res.headers.get("Content-Type") || "";
-  const resBody = await res.text();
+  const isBinary = isBinaryContentType(resContentType);
+  const resBody = isBinary ? await res.arrayBuffer() : await res.text();
 
   if (!res.ok) {
+    if (isBinary) {
+      return new NextResponse(resBody, {
+        status: res.status,
+        headers: { "Content-Type": resContentType },
+      });
+    }
     try {
       const json = JSON.parse(resBody);
       return NextResponse.json(json, { status: res.status });
@@ -58,6 +66,13 @@ async function proxyRequest(request, pathSegments) {
         headers: { "Content-Type": resContentType },
       });
     }
+  }
+
+  if (isBinary) {
+    return new NextResponse(resBody, {
+      status: 200,
+      headers: { "Content-Type": resContentType },
+    });
   }
 
   if (resContentType.includes("application/json")) {

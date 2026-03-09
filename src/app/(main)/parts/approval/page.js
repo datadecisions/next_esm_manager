@@ -12,6 +12,7 @@ import {
   X,
   Plus,
   Package,
+  Trash2,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import {
@@ -20,6 +21,7 @@ import {
   getApprovedParts,
   approvePart,
   deleteRequestedPart,
+  deletePart,
 } from "@/lib/api/parts";
 import { updateWOCommentFields } from "@/lib/api/work-order";
 import { BranchDeptFilter } from "@/components/BranchDeptFilter";
@@ -54,6 +56,15 @@ function formatCurrency(val) {
   }).format(Number(val));
 }
 
+function formatMarkup(cost, sell) {
+  const c = Number(cost);
+  const s = Number(sell);
+  if (!c || isNaN(c) || isNaN(s)) return "—";
+  if (c === 0) return "—";
+  const pct = ((s - c) / c) * 100;
+  return `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%`;
+}
+
 function formatDate(val) {
   if (!val) return "-";
   const d = new Date(val);
@@ -72,6 +83,8 @@ export default function PartsApprovalPage() {
   const [submitting, setSubmitting] = useState(false);
   const [addPartOpen, setAddPartOpen] = useState(false);
   const [denyCommentsOpen, setDenyCommentsOpen] = useState(false);
+  const [deletingPartId, setDeletingPartId] = useState(null);
+  const [approveAllProcessing, setApproveAllProcessing] = useState(false);
 
   const branches = branchDeptFilter?.branches ?? [];
 
@@ -136,14 +149,21 @@ export default function PartsApprovalPage() {
   }, [selectedWO, loadPanelData]);
 
   const filteredRequests = useMemo(() => {
-    if (!searchQuery.trim()) return requests;
-    const q = searchQuery.toLowerCase();
-    return requests.filter(
-      (r) =>
-        String(r.WONo ?? "").toLowerCase().includes(q) ||
-        (r.SerialNo ?? "").toLowerCase().includes(q) ||
-        (r.ShipName ?? "").toLowerCase().includes(q)
-    );
+    let list = requests;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (r) =>
+          String(r.WONo ?? "").toLowerCase().includes(q) ||
+          (r.SerialNo ?? "").toLowerCase().includes(q) ||
+          (r.ShipName ?? "").toLowerCase().includes(q)
+      );
+    }
+    return [...list].sort((a, b) => {
+      const da = new Date(a.DispatchedDate || 0).getTime();
+      const db = new Date(b.DispatchedDate || 0).getTime();
+      return db - da;
+    });
   }, [requests, searchQuery]);
 
   const handleApproveSubmit = async () => {
@@ -163,8 +183,8 @@ export default function PartsApprovalPage() {
           {
             ...part,
             WONo: selectedWO.WONo,
-            Section: part.Section,
-            RepairCode: part.Section,
+            Section: part.Section ?? "",
+            RepairCode: part.RepairCode ?? part.Section ?? "",
           },
           token
         );
@@ -204,6 +224,53 @@ export default function PartsApprovalPage() {
   };
 
   const hasChanges = selectedWO?.Parts?.some((p) => p.approve === "DENY" || p.approve === "APPROVE");
+
+  const handleApproveAll = async () => {
+    if (!token || requests.length === 0) return;
+    setApproveAllProcessing(true);
+    let approved = 0;
+    try {
+      for (const wo of requests) {
+        const parts = wo.Parts ?? [];
+        for (const part of parts) {
+          await approvePart(
+            {
+              ...part,
+              WONo: wo.WONo,
+              Section: part.Section ?? "",
+              RepairCode: part.RepairCode ?? part.Section ?? "",
+            },
+            token
+          );
+          approved += 1;
+        }
+      }
+      toast.success(`Approved ${approved} part${approved !== 1 ? "s" : ""}.`);
+      setSelectedWO(null);
+      loadRequests();
+    } catch (err) {
+      toast.error(err?.message || "Failed to approve some parts");
+    } finally {
+      setApproveAllProcessing(false);
+    }
+  };
+
+  const totalRequestedParts = requests.reduce((sum, r) => sum + (r.Parts?.length ?? 0), 0);
+
+  const handleDeleteApprovedPart = async (part) => {
+    if (!token || !selectedWO?.WONo || !part?.ID) return;
+    setDeletingPartId(part.ID);
+    try {
+      await deletePart(part.ID, selectedWO.WONo, token);
+      toast.success(`${part.PartNo ?? "Part"} removed.`);
+      loadPanelData();
+      loadRequests();
+    } catch (err) {
+      toast.error(err?.message || "Failed to delete part");
+    } finally {
+      setDeletingPartId(null);
+    }
+  };
 
   if (authLoading || !token) {
     return (
@@ -250,7 +317,7 @@ export default function PartsApprovalPage() {
         >
           <Card className="dark:border-slate-700 dark:bg-slate-800/50">
             <CardContent className="pt-6 space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4 sm:items-end">
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
                 <div>
                   <label className="text-sm font-medium mb-2 block">Branch</label>
                   <BranchDeptFilter
@@ -272,6 +339,20 @@ export default function PartsApprovalPage() {
                     />
                   </div>
                 </div>
+                {filteredRequests.length > 0 && totalRequestedParts > 0 && (
+                  <Button
+                    onClick={handleApproveAll}
+                    disabled={approveAllProcessing}
+                    className="gap-2"
+                  >
+                    {approveAllProcessing ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Check className="h-4 w-4" />
+                    )}
+                    Approve All ({totalRequestedParts} parts)
+                  </Button>
+                )}
               </div>
 
               {loading && (
@@ -371,7 +452,7 @@ export default function PartsApprovalPage() {
                   <h4 className="font-semibold mb-2">Requested Parts</h4>
                   <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
                     <Table>
-                      <TableHeader>
+                        <TableHeader>
                         <TableRow className="bg-slate-50 dark:bg-slate-800/80">
                           <TableHead className="w-24">Action</TableHead>
                           <TableHead>Part #</TableHead>
@@ -379,6 +460,7 @@ export default function PartsApprovalPage() {
                           <TableHead>Wh</TableHead>
                           <TableHead className="w-14">Qty</TableHead>
                           <TableHead>Price</TableHead>
+                          <TableHead className="w-16">Markup</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -414,6 +496,9 @@ export default function PartsApprovalPage() {
                             <TableCell>
                               Cost: {formatCurrency(part.Cost)}<br />
                               Sell: {formatCurrency(part.Sell)}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-sm">
+                              {formatMarkup(part.Cost, part.Sell)}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -463,6 +548,7 @@ export default function PartsApprovalPage() {
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                            <TableHead className="w-12"></TableHead>
                             <TableHead>Part #</TableHead>
                             <TableHead>Description</TableHead>
                             <TableHead>Wh</TableHead>
@@ -473,6 +559,22 @@ export default function PartsApprovalPage() {
                         <TableBody>
                           {approvedParts.map((p) => (
                             <TableRow key={p.ID}>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                                  onClick={() => handleDeleteApprovedPart(p)}
+                                  disabled={deletingPartId === p.ID}
+                                  title="Remove part from work order"
+                                >
+                                  {deletingPartId === p.ID ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </TableCell>
                               <TableCell>{p.PartNo}</TableCell>
                               <TableCell className="max-w-[180px] truncate">{p.Description}</TableCell>
                               <TableCell>{p.Warehouse}</TableCell>

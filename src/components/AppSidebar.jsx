@@ -8,6 +8,7 @@ import {
   Pencil,
   Paperclip,
   Wrench,
+  Clock,
   LayoutDashboard,
   LogOut,
 } from "lucide-react";
@@ -30,6 +31,7 @@ const navMain = [
   { title: "Work Orders", url: "/work-orders", icon: Pencil },
   { title: "Purchase Orders", url: "/purchase-orders", icon: Paperclip },
   { title: "Parts", url: "/parts", icon: Wrench },
+  { title: "Labor", url: "/labor", icon: Clock },
 ];
 
 export function AppSidebar() {

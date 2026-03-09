@@ -1,19 +1,14 @@
 // @ts-check
 /**
  * Authenticated tests – use storageState from auth.setup.js (no sign-in per test).
- * Mocks work-order API so pages that fetch on load don't 401 and redirect to sign-in.
+ * Mocks auth and work-order APIs so pages don't hit the backend.
  */
 const { test, expect } = require("@playwright/test");
+const { mockAuthEndpoints, mockWorkOrderViewed } = require("./helpers/mocks");
 
 test.beforeEach(async ({ page }) => {
-  await page.route("**/api/v1/work_order/**", async (route) => {
-    const url = route.request().url();
-    if (url.includes("/viewed/")) {
-      await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
-    } else {
-      await route.continue();
-    }
-  });
+  await mockAuthEndpoints(page);
+  await mockWorkOrderViewed(page);
 });
 
 test.describe("home (authenticated)", () => {
@@ -22,7 +17,7 @@ test.describe("home (authenticated)", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(page).toHaveURL(/\/home/);
-    await expect(page.getByRole("link", { name: /nova/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /welcome back/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /accounting/i }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /parts/i }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /purchase orders/i }).first()).toBeVisible();
@@ -59,5 +54,13 @@ test.describe("home (authenticated)", () => {
 
     await page.getByRole("link", { name: /work orders/i }).first().click();
     await expect(page).toHaveURL(/\/work-orders/);
+  });
+
+  test("can navigate to labor from home", async ({ page }) => {
+    await page.goto("/home");
+    await page.waitForLoadState("networkidle");
+
+    await page.getByRole("link", { name: /labor/i }).first().click();
+    await expect(page).toHaveURL(/\/labor/);
   });
 });

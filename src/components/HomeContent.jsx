@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Calculator, Pencil, Paperclip, Wrench } from "lucide-react";
+import { Calculator, Pencil, Paperclip, Wrench, Clock } from "lucide-react";
 import { fadeInUp, staggerContainer, staggerItem } from "@/lib/motion";
 
 const primaryCards = [
@@ -29,6 +29,12 @@ const primaryCards = [
     text: "View, edit, and create individual work orders.",
     href: "/work-orders",
     icon: Pencil,
+  },
+  {
+    title: "Labor",
+    text: "Approve labor entries and manage timecards.",
+    href: "/labor",
+    icon: Clock,
   },
 ];
 

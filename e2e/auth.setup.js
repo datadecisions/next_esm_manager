@@ -33,6 +33,12 @@ test.describe("auth setup", () => {
             path: "/",
           },
           {
+            name: "auth_refresh_token",
+            value: "test-refresh-token",
+            domain: "localhost",
+            path: "/",
+          },
+          {
             name: "auth_user",
             value: encodeURIComponent(JSON.stringify(userPayload)),
             domain: "localhost",
