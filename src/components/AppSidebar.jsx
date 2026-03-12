@@ -11,6 +11,7 @@ import {
   Clock,
   LayoutDashboard,
   LogOut,
+  BookOpen,
 } from "lucide-react";
 import {
   Sidebar,
@@ -83,6 +84,14 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={pathname?.startsWith("/docs")}>
+              <Link href="/docs">
+                <BookOpen className="h-4 w-4" />
+                <span>Docs</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut}>
               <LogOut className="h-4 w-4" />

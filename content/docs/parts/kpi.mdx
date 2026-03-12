@@ -1,0 +1,185 @@
+---
+title: Parts KPI Dashboard
+description: Fill rate, inventory turns, stock-to-critical, obsolete inventory, and daily backorders
+---
+
+## Overview
+
+The Parts KPI Dashboard provides **high-level metrics** and charts for inventory performance:
+
+- Parts ordered in the last 24 hours
+- Current parts requests (from work orders)
+- Daily fill rate
+- Inventory turns and months on hand
+- Stock-to-critical by branch
+- Inventory value and obsolescence
+- Daily backorder report
+- Obsolete inventory by part and warehouse
+
+Use this page to monitor service levels, risk in stock positions, and where inventory may be over- or under-utilized.
+
+---
+
+## Filters
+
+### Branch / Department
+
+- **BranchDeptFilter** — Select one or more branches (and optional departments).
+- Branch selection affects:
+  - **Current requests** (parts requested across selected branches).
+
+### Date Range
+
+- **Start / End date** — Default is 1 year ago (first of month) through today.
+- Dates are debounced; KPI APIs only run when the range forms a valid window.
+- The date range drives:
+  - Fill rate
+  - Inventory turns
+  - Stock-to-critical
+  - Inventory value metrics
+  - Daily backorders
+
+---
+
+## Top KPIs (Stat Cards)
+
+Four cards summarize the current state:
+
+| Card | Description | Source |
+|------|-------------|--------|
+| **Parts ordered (24h)** | Total quantity ordered over the last ~24 hours. | `getPartsOrders()` |
+| **Current requests** | Count of currently requested parts across selected branches. | `getRequestedPartsByBranch()` per branch |
+| **Daily fill rate** | Ratio of lines filled vs requested for the period. | `getFillRate()` (aggregated) |
+| **Inventory turns** | Average turns across parts, plus **Months on hand**. | `getInventoryTurns()`, `getMonthsOnHand()` |
+
+### How they are computed
+
+- **Parts ordered (24h)** — Sums `Qty` from `getPartsOrders(todayMinus1, tomorrowPlus1)`.
+- **Current requests** — For each selected branch, `getRequestedPartsByBranch` is called, and the number of requested parts per work order is summed.
+- **Daily fill rate** — `getFillRate()` returns detail per parts group and `-- Total`; daily fill rate is computed as `Initial / Total` across parts groups (excluding `-- Total`), shown as a percentage.
+- **Inventory turns / Months on hand** — From `getInventoryTurns()` and `getMonthsOnHand()`, the averages across non-null rows are displayed.
+
+---
+
+## Charts
+
+### Fill Rate (by Parts Group)
+
+Displays a **line chart** of fill rate per parts group for the selected date range.
+
+- X-axis — Parts groups (excluding `-- Total`).
+- Y-axis — Fill Rate % (0–105%).
+- Tooltip — Shows exact percentage for each parts group.
+
+Use this to see which parts groups are consistently filled and which struggle.
+
+### Stock-to-Critical (by Branch)
+
+Displays a **bar chart** of stock-to-critical percentage for each branch:
+
+- X-axis — PO (parts) branches.
+- Y-axis — Stock-to-critical %.
+- Tooltip — Shows branch and exact percentage.
+
+Use this to understand **how close branches are to running critical on stock** relative to sales.
+
+### Inventory Turns (per Part)
+
+Displays a **line chart** of parts with above-average inventory turns (by default):
+
+- X-axis — Part numbers.
+- Y-axis — Inventory turns.
+- Toggle — “Show only outliers”:
+  - When ON — Only parts with turns above the average are shown.
+  - When OFF — All parts with `InventoryTurns` are shown.
+
+Use this to identify **fast-moving vs slower-moving** items and focus on outliers when needed.
+
+---
+
+## Reports Tabs
+
+At the bottom, a **Reports** card has three tabs:
+
+1. **Inventory Value & Obsolescence**
+2. **Daily Backorder Report**
+3. **Obsolete Inventory**
+
+### 1. Inventory Value & Obsolescence
+
+A table based on `getMonthsOnHand()` plus summary numbers from `getPartsOverview()` and derived obsolescence.
+
+| Column | Description |
+|--------|-------------|
+| **Part No** | Part number. |
+| **Cost** | Cost per unit. |
+| **Months On Hand** | Months of stock on hand, based on usage. |
+
+Footer summary:
+
+- **Total Inventory Value** — From `overview.TotalInventoryCost`.
+- **Obsolete Inventory** — Computed from `ObsoleteValue * OnHand` for parts with positive obsolescence.
+
+Use this to quickly gauge **how much inventory is carried**, and how much of it is likely obsolete.
+
+### 2. Daily Backorder Report
+
+A scrollable table listing backorders from `getBackorders()`:
+
+| Column | Description |
+|--------|-------------|
+| **Entry Date** | Date the backorder was created. |
+| **Part Count** | Number of parts on the backorder line. |
+| **Sale Branch / Dept** | Branch and department for the sale. |
+| **Ship Name** | Customer or ship name. |
+| **WO No** | Work order number associated with the backorder. |
+
+If there are no backorders, the tab displays: *“No backorders”*.
+
+Use this for a **daily backorder view** without leaving the KPI dashboard.
+
+### 3. Obsolete Inventory
+
+A table listing parts with obsolete inventory from `getObsoleteInventory()`:
+
+| Column | Description |
+|--------|-------------|
+| **Part No** | Part number. |
+| **Warehouse** | Warehouse where inventory is held. |
+| **Description** | Part description. |
+| **On Hand** | Quantity on hand. |
+| **Cost** | Unit cost. |
+| **Obsolescence Rate** | Rate applied to the value for obsolescence (percentage). |
+| **Obsolete Value** | Value considered obsolete. |
+
+Summary text shows:
+
+- **Obsolete Inventory** — Total obsolete value across all rows with `OnHand != 0` and positive `ObsoleteValue`.
+
+Use this to identify **stock that should be liquidated, written down, or monitored**.
+
+---
+
+## Data Sources
+
+| API | Purpose |
+|-----|---------|
+| `getFillRate(start, end, branch, token)` | Fill rate per parts group. |
+| `getInventoryTurns(start, end, branch, token)` | Inventory turns per part. |
+| `getPartsOrders(start, end, branch, token)` | Orders created in the last 24 hours. |
+| `getStockToCritical(start, end, token)` | Stock-to-critical metrics per branch. |
+| `getMonthsOnHand(branch, token)` | Months on hand per part plus cost. |
+| `getPartsOverview(branch, token)` | Summary values like `TotalInventoryCost`. |
+| `getObsoleteInventory(branch, token)` | Per-part obsolete inventory detail. |
+| `getBackorders(branch, dept, token)` | Daily backorder report. |
+| `getRequestedPartsByBranch(branch, token)` | Parts requested on open work orders. |
+
+---
+
+## Use Cases
+
+- **Service level monitoring** — Track fill rate and backorders to see if customers are being served quickly.
+- **Inventory health** — Use turns, months on hand, and obsolete inventory to adjust stocking strategies.
+- **Branch performance** — Compare stock-to-critical and backorders across branches.
+- **Demand vs stock alignment** — Combine daily orders, requests count, and obsolescence to tune what you stock. 
+

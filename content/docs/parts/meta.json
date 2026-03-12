@@ -1,0 +1,17 @@
+{
+  "title": "Parts Manager",
+  "pages": [
+    "approval",
+    "kpi",
+    "inventory-tables",
+    "warehouse",
+    "part-detail",
+    "receive",
+    "transfer",
+    "scan",
+    "count",
+    "assembly",
+    "upload"
+  ]
+}
+

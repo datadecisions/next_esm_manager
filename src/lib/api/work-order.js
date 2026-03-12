@@ -908,6 +908,117 @@ export async function updatePONo(data, token) {
   return text ? JSON.parse(text) : {};
 }
 
+/**
+ * Create a custom section for a work order (also creates a ProjectTask for Gantt planning).
+ * @param {{ woNo: number|string; title: string; description?: string; Branch?: number|string; Dept?: string }} data
+ * @param {string} token
+ * @returns {Promise<object>}
+ */
+export async function createSection(data, token) {
+  const res = await fetchWithAuth("/api/v1/work_order/section/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      woNo: data.woNo,
+      title: data.title,
+      description: data.description ?? "",
+      Branch: data.Branch,
+      Dept: data.Dept,
+    }),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to create section");
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
+}
+
+/**
+ * Get project tasks for a work order (Gantt planning).
+ * @param {number|string} woNo
+ * @param {string} token
+ * @returns {Promise<Array>} Array of tasks { id, name, start_date, end_date, resource_type, percentage_complete, ... }
+ */
+export async function getProjectTasks(woNo, token) {
+  const res = await fetchWithAuth(`/api/v1/project/tasks/${encodeURIComponent(woNo)}`, {}, token);
+  if (!res.ok) throw new Error("Failed to fetch project tasks");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Get project task dependencies for a work order (Gantt links).
+ * @param {number|string} woNo
+ * @param {string} token
+ * @returns {Promise<Array>} Array of { id, previous_task_id, next_task_id, project_type_id }
+ */
+export async function getProjectDependencies(woNo, token) {
+  const res = await fetchWithAuth(`/api/v1/project/dependencies/${encodeURIComponent(woNo)}`, {}, token);
+  if (!res.ok) throw new Error("Failed to fetch project dependencies");
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * Create a project task for Gantt planning.
+ * @param {{ projectId: number|string; name: string; description?: string; start_date: string|Date; end_date: string|Date; resource_type?: string; resource_id?: number; parent_task_id?: number|null }} data
+ * @param {string} token
+ * @returns {Promise<object>}
+ */
+export async function createProjectTask(data, token) {
+  const res = await fetchWithAuth("/api/v1/project/task/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to create task");
+  }
+  const text = await res.text();
+  const out = text ? JSON.parse(text) : {};
+  return Array.isArray(out) ? out[0] : out;
+}
+
+/**
+ * Update a project task.
+ * @param {{ id: number; projectId?: number|string; name?: string; description?: string; start_date?: string|Date; end_date?: string|Date; parent_task_id?: number|null; percentage_complete?: number }} data
+ * @param {string} token
+ * @returns {Promise<object>}
+ */
+export async function updateProjectTask(data, token) {
+  const res = await fetchWithAuth("/api/v1/project/task/update", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to update task");
+  }
+  const text = await res.text();
+  const out = text ? JSON.parse(text) : {};
+  return Array.isArray(out) ? out[0] : out;
+}
+
+/**
+ * Delete a project task.
+ * @param {number} id - Task ID
+ * @param {string} token
+ */
+export async function deleteProjectTask(id, token) {
+  const res = await fetchWithAuth("/api/v1/project/task/", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to delete task");
+  }
+}
+
 function formatDateForApi(d) {
   if (typeof d === "string") return d;
   const date = d instanceof Date ? d : new Date(d);

@@ -1,0 +1,88 @@
+---
+title: Equipment Ledger
+description: View GL entries for equipment by serial, unit, make, or model
+---
+
+## Overview
+
+Equipment Ledger shows general ledger entries tied to a specific piece of equipment. Search for equipment by serial number, unit number, make, or model, then view all invoices, payments, and other GL activity for that equipment within the selected date range. Use it to trace revenue history, audit equipment-related transactions, or verify billing for a unit under warranty or maintenance.
+
+You must **select equipment** before the ledger loads. The page shows a prompt until you search and select.
+
+---
+
+## Workflow
+
+1. **Select equipment** — Use the Equipment combobox. Type at least 2 characters to search by serial, unit, make, or model. Select the equipment from the results.
+2. **Set date range** — Use **From** and **To** to narrow the period. Default is first day of the month 12 months ago through today.
+3. **Review entries** — The ledger table loads automatically. Click **Refresh** to reload after changing filters.
+
+---
+
+## Filter Bar
+
+| Control | Description |
+|---------|-------------|
+| **Equipment** | Search combobox. Type serial, unit, make, or model (min 2 characters). Select one equipment. Clear the selection to return to the prompt. |
+| **From / To** | Start and end dates for the ledger. Only entries within this range are shown. |
+| **Refresh** | Reload the ledger. Disabled when no equipment is selected. |
+
+---
+
+## Equipment Summary Card
+
+When equipment is selected, a summary card appears above the ledger:
+
+- **Equipment** — Serial · Unit · Make · Model
+- **Date range** — From – To for the current filter
+- **Net total** — Sum of all Amount values in the ledger. Positive = black; negative = red.
+
+---
+
+## Ledger Table
+
+The table lists GL entries for the selected equipment and date range. Each row is one ledger line.
+
+| Column | Description |
+|--------|-------------|
+| **Date** | Effective date of the transaction. |
+| **Journal** | Journal identifier (e.g., "INVOICE 3046847", "CC20250301" for payments). |
+| **Account** | GL account number. |
+| **Description** | Transaction description (e.g., customer name, "Payment received", "Payment applied"). Uses CombinedDescription if Description is empty. |
+| **Invoice** | Invoice number when applicable. |
+| **Amount** | Debit (positive) or credit (negative). Positive amounts in black; negative in red. Parentheses indicate credits. |
+
+Entries typically appear in pairs (e.g., invoice debit and AR credit, or payment debit and AR credit) for double-entry bookkeeping.
+
+---
+
+## Empty States
+
+### No Equipment Selected
+
+- **Message** — "Select equipment to view ledger"
+- **Subtext** — "Search for equipment by serial number, unit number, make, or model. The ledger will show all GL entries linked to that equipment for the selected date range."
+
+### No Ledger Entries
+
+When equipment is selected but no entries exist for the date range:
+
+- **Message** — "No ledger entries found"
+- **Subtext** — "No GL entries for this equipment in the selected date range."
+- **Action** — Widen the date range or verify the equipment has GL activity.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload the ledger from the server. Use after changing the date range or if you expect new entries. Refresh is disabled when no equipment is selected.
+
+---
+
+## Use Cases
+
+- **Revenue history** — View all invoices and payments for a specific unit to see total revenue over time.
+- **Warranty / maintenance** — Trace GL activity for equipment under warranty or a maintenance contract.
+- **Audit** — Verify that equipment-related transactions are posted correctly and trace amounts to source documents.
+- **Customer billing** — Confirm which customers were billed for work on a given unit.
+- **Payment tracking** — See payment applications (credits) against invoices for the equipment.

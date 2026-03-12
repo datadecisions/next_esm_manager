@@ -1,0 +1,111 @@
+---
+title: WIP & Daily Reports
+description: WIP summary by aging bucket and daily sales report by department
+---
+
+## Overview
+
+WIP & Daily Reports provides two tabs: **WIP Summary** (work in progress by aging bucket) and **Daily Sales** (sales by department for a selected date). Use them for operations tracking, unbilled work visibility, and daily/month-to-date sales performance.
+
+---
+
+## Tabs
+
+| Tab | Description |
+|-----|-------------|
+| **WIP Summary** | Work in progress grouped by Customer vs Internal, then by Name (branch/department). Shows value in aging buckets (0–14, 15–30, 31+ days). Loads automatically when the tab is active. |
+| **Daily Sales** | Sales for a selected date by department. Shows daily and MTD goals, actual sales, and variance. Select a date to load; data loads when the date is valid. |
+
+---
+
+## WIP Summary Tab
+
+The WIP Summary shows unbilled work (work in progress) grouped by **Customer** and **Internal** sales, then by branch or department (Name). Each group is broken down by aging buckets based on how long the work has been open.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **Name** | Branch, department, or group name. Header rows show the group; detail rows show **Title** (e.g., subcategory or type) indented. |
+| **0-14** | Value of work in progress 0–14 days old. |
+| **15-30** | Value of work in progress 15–30 days old. |
+| **31+** | Value of work in progress 31+ days old. |
+| **Grand Total** | Total WIP value for the row. |
+
+### Structure
+
+1. **Customer** — Total row for all customer WIP. Sum of Overdue_0_14, Overdue_15_30, Overdue_31_Plus, GrandTotal.
+2. **Customer groups** — grouped by Name. Each group has a header row with the group total and detail rows (Title) for each line item.
+3. **Internal** — Total row for all internal WIP.
+4. **Internal groups** — Same structure as Customer groups.
+
+### Data Source
+
+WIP data comes from `getAgingSummary`. Rows are split by `CustomerSale`: -1 = Customer, 0 = Internal. Groups are built from the `Name` field; detail rows use `Title`.
+
+### Export
+
+Click **Export** to download the WIP summary as CSV. File name: `wip-summary-YYYY-MM-DD.csv`. Export is disabled when there is no WIP data.
+
+---
+
+## Daily Sales Tab
+
+The Daily Sales tab shows sales for a specific date by department. Select a date to load the report. Data loads automatically when the date is valid (debounced).
+
+### Date Filter
+
+- **Date** — Select the date for the report. Default is today.
+- **Load behavior** — The report loads when you switch to the tab and the date is valid. Changing the date triggers a reload after a short debounce.
+
+### Summary Card (Above Table)
+
+| Field | Description |
+|-------|-------------|
+| **Month/Year** | Month and year of the report (e.g., Mar-2025). |
+| **Billing Day** | Current billing day in the month (weekdays elapsed). |
+| **Billing Days Month** | Total weekdays in the month. |
+| **Reporting As Of** | The selected date (M/D/YY format). |
+
+### Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Daily Goal** | Target sales for the selected date. |
+| **Monthly Goal** | Target sales for the month. |
+| **Department** | Department name and branch (e.g., "Service (1)"). |
+| **Daily Sales** | Actual sales for the selected date. |
+| **MTD Sales** | Month-to-date sales through the selected date. |
+| **MTD Goal** | Month-to-date goal. |
+| **MTD Difference** | MTD Sales minus MTD Goal. Positive = ahead; negative = behind. |
+
+### Totals Row
+
+A **Total All** row at the bottom sums Daily Goal, Monthly Goal, Daily Sales, MTD Sales, MTD Goal, and MTD Difference across all departments.
+
+### Empty State
+
+When no data exists for the selected date: "No data for this date."
+
+### Export
+
+Click **Export** to download the daily sales report as CSV. File name: `daily-sales-YYYY-MM-DD.csv` (using the selected date). Export is disabled when there is no sales data.
+
+---
+
+## Export
+
+The **Export** button in the header exports the **active tab's** data:
+
+- **WIP Summary** — Exports CSV with columns: Name, Title, 0-14, 15-30, 31+, Grand Total. Includes Customer and Internal sections with group and detail rows.
+- **Daily Sales** — Exports CSV with columns: Daily Goal, Monthly Goal, Department, Daily Sales, MTD Sales, MTD Goal, MTD Difference. Includes a Total All row.
+
+---
+
+## Use Cases
+
+- **Unbilled work** — Use WIP Summary to see how much work is open and how it ages. Focus on 31+ buckets for collections or prioritization.
+- **Customer vs internal** — Compare customer WIP to internal WIP to balance workload and billing focus.
+- **Daily performance** — Use Daily Sales to see if the department hit its daily goal and how MTD compares to goal.
+- **Month-end pacing** — Use MTD Difference to see which departments are ahead or behind for the month.
+- **Export for reporting** — Export WIP or Daily Sales to CSV for management reports or external analysis.

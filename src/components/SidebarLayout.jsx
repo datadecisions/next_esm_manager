@@ -13,7 +13,8 @@ const HIDE_SIDEBAR_PATHS = ["/sign-in", "/"];
 
 export function SidebarLayout({ children }) {
   const pathname = usePathname();
-  const hideSidebar = HIDE_SIDEBAR_PATHS.includes(pathname);
+  const hideSidebar =
+    HIDE_SIDEBAR_PATHS.includes(pathname) || pathname?.startsWith("/docs");
 
   if (hideSidebar) {
     return <>{children}</>;

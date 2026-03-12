@@ -8,9 +8,13 @@ import {
   PieChart,
   ChevronDown,
   ChevronUp,
+  Plus,
+  ChartGantt,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getSectionWorkflows, getSectionsList, updateSectionWorkflow, getAccountingBreakdown } from "@/lib/api/work-order";
+import AddSectionDialog from "./AddSectionDialog";
+import GanttPlanningView from "./GanttPlanningView";
 
 function formatCurrency(val) {
   if (val == null || val === "" || isNaN(Number(val))) return "$0.00";
@@ -478,7 +482,7 @@ function SectionCard({
   );
 }
 
-export default function LineItemsTab({ wo, billing, token }) {
+export default function LineItemsTab({ wo, billing, token, onRefresh }) {
   const [onlySections, setOnlySections] = useState([]);
   const [sectionWorkflows, setSectionWorkflows] = useState([]);
   const [sectionWorkflowMap, setSectionWorkflowMap] = useState({});
@@ -486,6 +490,8 @@ export default function LineItemsTab({ wo, billing, token }) {
   const [workflowUpdating, setWorkflowUpdating] = useState(false);
   const [breakdownMap, setBreakdownMap] = useState({});
   const [breakdownLoadingMap, setBreakdownLoadingMap] = useState({});
+  const [showGantt, setShowGantt] = useState(false);
+  const [showAddSection, setShowAddSection] = useState(false);
 
   const calc = billing?.calculations ?? {};
   const groups = calc.groups ?? [];
@@ -567,11 +573,59 @@ export default function LineItemsTab({ wo, billing, token }) {
     }
   };
 
-  const sectionList = groups.length > 0 ? groups : (lineItems.length > 0 ? [...new Set(lineItems.map((i) => i.Section).filter(Boolean))] : []);
+  const sectionsFromApi = Object.keys(sectionInfoMap);
+  const sectionsFromBilling = groups.length > 0 ? groups : (lineItems.length > 0 ? [...new Set(lineItems.map((i) => i.Section).filter(Boolean))] : []);
+  const sectionList = [...sectionsFromBilling, ...sectionsFromApi.filter((s) => !sectionsFromBilling.includes(s))];
+
+  const handleSectionAdded = () => {
+    onRefresh?.();
+    if (wo?.WONo && token) {
+      getSectionsList(wo.WONo, token)
+        .then((sections) => {
+          const map = {};
+          const infoMap = {};
+          (sections || []).forEach((s) => {
+            const title = s.title ?? s.SectionNo ?? "";
+            const id = s.SectionWorkflowID != null && s.SectionWorkflowID !== "" ? Number(s.SectionWorkflowID) : 1;
+            map[title] = id;
+            infoMap[title] = { Branch: s.Branch, Dept: s.Dept };
+          });
+          setSectionWorkflowMap(map);
+          setSectionInfoMap(infoMap);
+        })
+        .catch(() => {});
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {showSmall && sectionList.length > 0 ? (
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div />
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAddSection(true)}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Section
+          </Button>
+          <Button
+            variant={showGantt ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowGantt(!showGantt)}
+            className="gap-2"
+          >
+            <ChartGantt className="h-4 w-4" />
+            {showGantt ? "Show Line Items" : "Gantt Planning"}
+          </Button>
+        </div>
+      </div>
+
+      {showGantt ? (
+        <GanttPlanningView woNo={wo?.WONo} token={token} />
+      ) : showSmall && sectionList.length > 0 ? (
         <>
           <CostBreakdown calculations={calc} />
           <div className="space-y-4">
@@ -618,6 +672,14 @@ export default function LineItemsTab({ wo, billing, token }) {
           </div>
         </>
       )}
+
+      <AddSectionDialog
+        open={showAddSection}
+        onOpenChange={setShowAddSection}
+        wo={wo}
+        token={token}
+        onSuccess={handleSectionAdded}
+      />
     </div>
   );
 }

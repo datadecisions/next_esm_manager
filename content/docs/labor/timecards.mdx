@@ -1,0 +1,111 @@
+---
+title: Timecards
+description: View signed timecard PDFs grouped by technician; download and export ZIP
+---
+
+## Overview
+
+Timecard Document Center (Timecards) lets you view signed timecard PDFs grouped by technician. Select a date range, search for technicians, expand a technician to see their timecards, and view or download individual PDFs or export all as a ZIP file.
+
+---
+
+## Filters
+
+### Date Range
+
+- **Start Date** / **End Date** — Filter timecards by date. Default: first day of last month through today.
+- **Debounced** — Data loads after the date range is validated (short delay after typing).
+
+### Search
+
+- **Search technician** — Filter the list by technician name (Last, First or DispatchName). Type to filter; matching is case-insensitive.
+
+---
+
+## Technician List
+
+Technicians with timecard PDFs are listed. Each row is expandable.
+
+### Row (Collapsed)
+
+- **Chevron** — Right when collapsed; down when expanded.
+- **Icon** — Folder icon.
+- **Name** — Last, First or DispatchName.
+- **Dispatch Name** — Shown below the name when available.
+
+### Row (Expanded)
+
+When you expand a technician:
+
+- **Export ZIP** — Button to download all timecards for that technician in the date range as a ZIP file. Filename: `LastName_FirstName_timecards.zip`.
+- **File count** — "X files" or "..." when loading.
+
+---
+
+## Timecard Files (Expanded)
+
+When a technician is expanded, their timecard files for the date range load. Each file shows:
+
+| Column | Description |
+|--------|-------------|
+| **File** | File icon, filename, and date added. |
+| **View** | Opens the PDF in a modal overlay. |
+| **Download** | Downloads the single PDF file. |
+
+### View Modal
+
+- **Header** — Filename and **Download** / **Close** buttons.
+- **Content** — PDF displayed in an iframe.
+- **Download** — Downloads the current PDF.
+
+---
+
+## Data Source
+
+- **Employees** — `getEmployeesWithTimecards()` returns technicians who have timecard PDFs.
+- **Timecard metadata** — `getTimecardMetadata(DispatchName, startDate, endDate)` returns the list of files for a technician in the date range.
+- **PDF URL** — `getTimecardImageUrl(imageId)` returns a blob URL for viewing/downloading.
+- **ZIP URL** — `getTimecardZipUrl(DispatchName, startDate, endDate)` returns a blob URL for the ZIP export.
+
+---
+
+## Empty States
+
+### No Technicians
+
+- **Message** — "No technicians with timecard PDFs found."
+
+### No Timecards in Date Range
+
+When a technician is expanded but has no files:
+
+- **Message** — "No timecard PDFs in this date range."
+
+---
+
+## Workflow: View a Timecard
+
+1. Set **Start Date** and **End Date**.
+2. Optionally **Search** for a technician.
+3. Click a technician row to expand.
+4. Wait for files to load.
+5. Click **View** on a file to open the PDF in the modal.
+6. Use **Download** in the modal or **Close** to dismiss.
+
+---
+
+## Workflow: Export All Timecards for a Technician
+
+1. Set **Start Date** and **End Date**.
+2. Expand the technician.
+3. Click **Export ZIP**.
+4. A ZIP file downloads with all timecards for that technician in the date range.
+
+---
+
+## Use Cases
+
+- **Audit** — View signed timecards to verify hours worked.
+- **Payroll** — Export timecards for a technician for payroll processing.
+- **Dispute resolution** — View a specific timecard to resolve a discrepancy.
+- **Compliance** — Retain and access signed timecard documents.

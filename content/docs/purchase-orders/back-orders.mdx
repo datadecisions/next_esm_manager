@@ -1,0 +1,70 @@
+---
+title: Back Ordered Part Requests
+description: Select parts from work orders to add to a new purchase order
+---
+
+## Overview
+
+Back Ordered Part Requests shows parts that are back ordered on work orders — parts requested but not yet received. Select one or more parts and click **Create Parts Order** to create a new purchase order with those parts pre-filled. Use it to fulfill back orders by creating POs for the requested parts.
+
+---
+
+## Workflow
+
+1. **View parts** — The table loads automatically. Parts are from work orders with back-ordered quantities.
+2. **Search** — Optionally filter by part #, description, or warehouse using the search input.
+3. **Select parts** — Click a row to select or deselect. Selected rows are highlighted. The checkbox shows a checkmark when selected.
+4. **Create Parts Order** — Click **Create Parts Order** (with selected count). The app stores selected parts in session storage and navigates to `/purchase-orders/new` with the parts pre-filled.
+
+---
+
+## Table
+
+| Column | Description |
+|--------|-------------|
+| **Checkbox** | Indicates selection. Click the row to toggle. |
+| **Part #** | Part number. |
+| **Warehouse** | Warehouse for the part. |
+| **Description** | Part description. |
+| **Date** | Entry date (when the back order was recorded). |
+| **Qty** | Back-ordered quantity. |
+| **WO's Requesting** | Number of work orders requesting this part. Click the chevron to expand and see WO numbers. Click a WO # to open that work order. |
+| **Cost** | Cost (BackorderCost, CostRate, or Cost). |
+
+### Row Selection
+
+- Click a row to select or deselect. Selection is keyed by `PartNo|Warehouse` (same part in different warehouses is a separate row).
+- Selected rows have a cyan background and a checkmark in the checkbox.
+
+### Expand WO's Requesting
+
+When a part has work orders requesting it, a chevron appears next to the count. Click it to expand and see links to each work order (#WONo). Click a link to open the work order (link opens in same tab; use Ctrl/Cmd+click for new tab).
+
+---
+
+## Footer
+
+Shows the count of parts and selected count: "X parts · Y selected" when any are selected.
+
+---
+
+## Create Parts Order
+
+- **Button** — **Create Parts Order** or **Create Parts Order (N)** when N parts are selected.
+- **Disabled** — When no parts are selected.
+- **Action** — Stores selected parts in session storage and navigates to `/purchase-orders/new`. The new PO form loads with those parts as line items (Part #, Qty, Cost, Warehouse). You then set Vendor, Branch, Dept, and save.
+
+---
+
+## Data Source
+
+Parts come from `getBackOrderedParts(token)` — parts from work orders that have back-ordered quantities.
+
+---
+
+## Use Cases
+
+- **Fulfill back orders** — Select parts needed on work orders and create a PO to order them.
+- **Batch ordering** — Select multiple parts from different work orders to create one PO.
+- **Trace to work order** — Expand WO's Requesting to see which work orders need the part.
+- **Cost review** — Check the Cost column before creating the PO.

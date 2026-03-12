@@ -1,0 +1,86 @@
+---
+title: Restock
+description: Parts to order by branch for inventory replenishment
+---
+
+## Overview
+
+Restock shows parts that need to be ordered for inventory replenishment, grouped by part group and warehouse. Select a branch, then click part groups and warehouses to add them to the reorder. Click **Create Order** to create a new purchase order with the selected parts. Use it for routine inventory replenishment based on reorder points or usage.
+
+---
+
+## Filters
+
+### Branch
+
+- **Branch** — Select a branch to load parts to order for that branch. Required.
+- **Recent only** — When checked, only show parts used in the last 2 days. Uncheck to see all parts needing restock.
+
+**Requirement:** A branch must be selected. If none is selected, "Select a branch to view parts to order" appears.
+
+---
+
+## Two-Column Layout
+
+### Part Groups Needing Restock (Left)
+
+Lists part groups (e.g., "FILTERS", "OILS") with warehouses under each. Each warehouse is a clickable row.
+
+- **Click a warehouse** — Adds it to "Part Groups Included in Reorder" (right) or removes it if already selected.
+- **Selected** — Rows have a cyan background when selected.
+- **Empty** — "No parts to order for this branch" when no data exists.
+
+### Part Groups Included in Reorder (Right)
+
+Shows the part groups and warehouses you've selected for the reorder.
+
+- **Structure** — Same as left: part group as header, warehouses as list.
+- **Create Order** — Button to create the PO. Disabled when nothing is selected.
+- **Empty** — "Click warehouses in the left column to add them to the reorder."
+
+---
+
+## Create Order
+
+- **Button** — **Create Order**
+- **Disabled** — When no warehouses are selected (selectedCount === 0).
+- **Action** — Collects all parts from the selected part groups and warehouses, stores them in session storage, and navigates to `/purchase-orders/new`. The new PO form loads with those parts as line items (Part #, Qty to Order, Cost). You then set Vendor, Branch, Dept, and save.
+
+---
+
+## Data Source
+
+Parts come from `getPartsToOrder(branchNum, recent, token)`. The `recent` parameter is "1" when "Recent only" is checked, else null. Parts are grouped by `PartsGroup`; each group has a list of warehouses and parts.
+
+---
+
+## Selection Logic
+
+- **Selection key** — Part group + warehouse. Selecting a warehouse adds all parts in that group for that warehouse to the reorder.
+- **Add/remove** — Click a warehouse in the left column to toggle. It moves between "Needing Restock" and "Included in Reorder."
+
+---
+
+## Empty States
+
+### No Branch Selected
+
+- **Message** — "Select a branch to view parts to order."
+- **Icon** — Package icon.
+
+### No Parts for Branch
+
+- **Message** — "No parts to order for this branch" (in the left column).
+
+### No Selection Yet
+
+- **Message** — "Click warehouses in the left column to add them to the reorder." (in the right column).
+
+---
+
+## Use Cases
+
+- **Routine restock** — Select parts needing replenishment by branch and create a PO.
+- **Recent usage** — Use "Recent only" to focus on parts used in the last 2 days.
+- **Part group ordering** — Select entire part groups and warehouses in one click.
+- **Branch-specific** — Filter by branch to see restock needs per location.

@@ -1,0 +1,114 @@
+---
+title: Recurring Orders
+description: Close and open recurring work orders — GM/Rental, PM Schedule, and Created continuations
+---
+
+## Overview
+
+Recurring Orders is used to process recurring billing cycles. It has three tabs:
+
+1. **GM / Rental Recurring** — Close open recurring orders and create continuations
+2. **PM Schedule** — Open preventive maintenance work orders from the schedule
+3. **Created** — View and export invoices for work orders created from recurring closures
+
+## Date Range
+
+All tabs use a shared date range filter. Select start and end dates to scope the data. Quick presets:
+
+- **Last month** — Previous calendar month
+- **This month** — Current calendar month
+
+The Branch/Department filter applies across tabs to narrow results by branch and department.
+
+---
+
+## GM / Rental Recurring
+
+Recurring orders that are due to be closed and have new continuations opened.
+
+### Workflow
+
+1. Set the date range to include the billing period
+2. Review the list of open recurring orders
+3. Optionally edit **PO Number** or **Comments** inline (click to edit, Save/Cancel)
+4. Select orders to process via checkboxes
+5. Click **Process Selected**
+6. In the confirmation dialog, optionally check **Awaiting PO Number from Customer** for orders where the customer hasn't provided a PO yet
+7. Click **Close & Process**
+
+### What Happens
+
+- Selected orders are closed
+- New work orders (continuations) are created
+- Hour meter is updated where applicable
+- Success message lists the new WO numbers
+
+### Hide GM Monthly Billing
+
+Use the **Hide GM Monthly Billing** checkbox to exclude GM monthly billing orders from the list.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| Order No. | Work order number (click to open) |
+| PO No. | Purchase order (editable) |
+| Company | Bill To / Ship To |
+| Equipment | Unit, Serial, Make, Model (or rental equipment with sell price) |
+| Open Date | When the order was opened |
+| Parts / Misc / Grand Total | Cost summary |
+| Comments | Editable notes |
+
+---
+
+## PM Schedule
+
+Scheduled preventive maintenance items that can be opened as work orders.
+
+### Workflow
+
+1. Set the date range
+2. Review the PM schedule list
+3. Select items to open via checkboxes
+4. Click **Open Selected**
+5. New work orders are created for each selected PM
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| Order # | Existing WO if already opened, or — |
+| Company | Bill To / Ship To |
+| Due Date | Next PM date |
+| Serial # | Equipment serial |
+| Comments | PM notes |
+
+---
+
+## Created
+
+Work orders that were created from recurring closures within the selected date range.
+
+### Workflow
+
+1. Set the date range
+2. Review the list of original → created pairs
+3. Select rows to export
+4. Click **Export Invoices**
+5. In the dialog:
+   - **Download PDF** — Download combined invoice PDF
+   - **Recipients** — Add customer contacts or type email addresses
+   - **Personal message** — Optional note for the email
+   - **How to send** — One email to all, or separate email per invoice
+6. Click **Send** to email invoices
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| Original | Source work order (click to open) |
+| Company | Bill To / Ship To |
+| Open Date | When the continuation was created |
+| Created | New WO number (click to open) |
+| Invoice Start | Rental period start |
+| Comments | Notes |

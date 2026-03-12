@@ -1,0 +1,153 @@
+---
+title: Labor Approval
+description: Review and import technician labor by tech; approve pending entries and edit posted labor
+---
+
+## Overview
+
+Labor Approval lets you review technician labor (posted timecard entries) that has not yet been imported to work orders. You can select technicians, import their pending labor in bulk, or import from the tech detail dialog. You can also edit individual labor entries (transfer to another WO, change mechanic, times, section, comments) before or after import.
+
+---
+
+## Filters
+
+### Branch
+
+- **Branch** — Select one or more branches. Required. Labor is loaded for the selected branches.
+- **Department** — Optional. Select specific departments or "Select All" to include all. When "Select All" or none selected, labor from all departments is included.
+
+### Date View
+
+- **Single day** — Show labor for one date. Use the date picker.
+- **Date range** — Show labor for a start and end date. Default: 7 days ago through today.
+- **Navigation** — Use the chevron buttons (← →) to shift the period backward or forward. For range mode, the span is preserved when shifting.
+
+Preference is stored in `localStorage` and persists across sessions.
+
+### Search
+
+- **Search** — Filter technicians by name or tech ID. Type to filter the table.
+
+---
+
+## Techs with Labor on Open Orders
+
+The main table shows technicians who have **unimported** (pending) labor. These are labor entries from timecards that have not yet been imported to work orders.
+
+### Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Checkbox** | Select technician for bulk import. |
+| **Technician** | Technician name (Last, First or nickName). |
+| **Unimported** | Hours of labor not yet imported to work orders. |
+| **Imported** | Hours already imported in this period. |
+| **Total** | Unimported + Imported hours. |
+| **Overtime?** | "Yes" if any day has >8 hours. "Weekend work" shown when applicable. |
+| **Action** | Chevron to open tech detail. |
+
+### Row Click
+
+Click a row to open the **Tech Detail** dialog with pending and imported labor for that technician.
+
+### Bulk Import
+
+1. Select one or more technicians via the checkboxes.
+2. Click **Import Selected (N techs)**.
+3. The app imports all pending labor for the selected technicians to their work orders. A success toast shows the count.
+4. The list refreshes; imported labor moves from "Unimported" to "Imported."
+
+### Select All
+
+Use the header checkbox to select or deselect all technicians with pending labor.
+
+---
+
+## Tech Detail Dialog
+
+When you click a technician row, a dialog opens with:
+
+### Pending Labor
+
+- **Table** — WO # (link), Ship (customer), Hours for each entry.
+- **Edit** — Pencil icon on each row opens **Edit Posted Labor** to change times, WO, mechanic, section, or comments.
+- **Import all** — Button to import all pending labor for this tech.
+
+### Already Imported
+
+- **Table** — WO # (link), Ship, Hours for entries already imported. Read-only.
+
+### WO Links
+
+Click a WO # to open the work order in a new tab.
+
+---
+
+## Edit Posted Labor
+
+From the tech detail, click the pencil icon on a pending labor entry to open the Edit Posted Labor dialog. You can:
+
+| Field | Description |
+|-------|-------------|
+| **Arrival / Departure** | Change the arrival and departure date/time. |
+| **Section** | Assign the labor to a different section on the work order. |
+| **Transfer to WO** | Search and select a different work order to move the labor to. |
+| **New Mechanic** | Reassign the labor to a different mechanic. |
+| **Comments** | Add or edit signature/comments. |
+
+Save to apply. The labor list refreshes after a successful edit.
+
+---
+
+## Techs with Imported Labor Only
+
+A second table (dashed border) shows technicians who have **only** imported labor in the period — no pending labor. Use it as reference to see who has already been processed. Click a row to open the tech detail (imported entries only).
+
+---
+
+## Empty States
+
+### No Branch Selected
+
+- **Message** — "Select one or more branches to view labor."
+
+### No Pending Labor
+
+- **Message** — "All labor has been approved."
+
+### No Labor in Date Range
+
+- **Message** — "No labor entries in this date range."
+- **Action** — Use the chevron buttons to shift to a different period.
+
+---
+
+## Workflow: Import Labor for a Technician
+
+1. Select **Branch** and **Date** (single day or range).
+2. Find the technician in "Techs with Labor on Open Orders."
+3. Click the row to open the tech detail.
+4. Review the **Pending labor** table.
+5. Optionally click **Edit** on an entry to correct times, WO, or mechanic.
+6. Click **Import all** to import all pending labor for that tech.
+7. The dialog closes and the list refreshes.
+
+---
+
+## Workflow: Bulk Import by Technician
+
+1. Select **Branch** and **Date**.
+2. Check the boxes for technicians you want to import.
+3. Click **Import Selected (N techs)**.
+4. All pending labor for those technicians is imported. A success toast confirms.
+5. The list refreshes.
+
+---
+
+## Use Cases
+
+- **Daily approval** — Review and import labor at the end of each day or shift.
+- **Correct before import** — Edit a labor entry (wrong WO, wrong times) before importing.
+- **Transfer labor** — Move labor from one work order to another via Edit Posted Labor.
+- **Reassign mechanic** — Change the mechanic on a labor entry via Edit Posted Labor.
+- **Overtime review** — Use the Overtime? column to identify technicians with >8 hours per day.

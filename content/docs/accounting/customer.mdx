@@ -1,0 +1,121 @@
+---
+title: Customer AR
+description: View open invoices and AR activity (invoices, payments) for a customer
+---
+
+## Overview
+
+Customer AR shows accounts receivable for a specific customer. Select a customer to see open invoices (balance due) and AR activity (invoices, payments, credits) within a date range. Use it to check a customer's balance before extending credit, review payment history, or verify invoice and payment posting.
+
+You must **select a customer** before data loads. The page shows a prompt until you search and select.
+
+---
+
+## Workflow
+
+1. **Select customer** — Use the Customer combobox. Type at least 2 characters to search by name or number. Select the customer from the results.
+2. **Set date range** — Use **From** and **To** to narrow the period for AR Activity. Default is first day of the month 12 months ago through today.
+3. **Review data** — Open Invoices (if any) and AR Activity load automatically. Click **Refresh** to reload after changing filters.
+4. **Drill down** — Click a row in Open Invoices or AR Activity to open the work order detail page.
+
+---
+
+## Filter Bar
+
+| Control | Description |
+|---------|-------------|
+| **Customer** | Search combobox. Type name or number (min 2 characters). Select one customer. Clear the selection to return to the prompt. |
+| **From / To** | Start and end dates for the AR Activity table. Open Invoices are **not** filtered by this range. |
+| **Refresh** | Reload open invoices and AR activity. Disabled when no customer is selected. |
+
+---
+
+## Customer Summary Card
+
+When a customer is selected, a summary card appears above the tables:
+
+- **Customer** — Name and number (e.g., "Acme Corporation #1001")
+- **Date range** — From – To for the current filter
+- **Open balance** — Total balance due across all open invoices. Shown only when the customer has open invoices. Positive = black; negative = red.
+- **Period net** — Sum of all Amount values in the AR Activity table for the date range. Represents net activity (invoices + payments) in the period. Positive = black; negative = red.
+
+---
+
+## Open Invoices Table
+
+Shows invoices with a balance due. **Not filtered by date range** — it always shows the customer's current open invoices.
+
+### When Shown
+
+The table appears only when the customer has at least one open invoice.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **Invoice** | Work order / invoice number. Clickable — opens the work order detail page. |
+| **Ship To** | Ship-to customer name or PO number. |
+| **Closed** | Date the work order was closed. |
+| **Due** | Due date for payment. |
+| **Balance** | Outstanding balance (shown in red). |
+
+### Row Click
+
+Click a row to navigate to the work order detail page (`/work-orders/[id]`). Rows with a valid work order number are clickable and show a link style on the Invoice column.
+
+---
+
+## AR Activity Table
+
+Shows invoices, payments, and other AR entries **filtered by the date range**. Use it to see transaction history for the period.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **Date** | Entry date or effective date of the transaction. |
+| **Type** | Entry type (e.g., Invoice, Payment, Credit). |
+| **Invoice** | Invoice number. Clickable — opens the work order detail page when applicable. |
+| **Due** | Due date for the invoice. |
+| **Amount** | Transaction amount. **Positive** = payment or credit (reduces AR). **Negative** = invoice (increases AR). Positive in black; negative in red. Parentheses indicate credits. |
+
+### Row Click
+
+Click a row to navigate to the work order detail page. Rows with a valid invoice/work order are clickable.
+
+### Data Source
+
+AR Activity comes from `getCustomerInvoices` — it returns all AR entries (invoices, payments, credits) for the customer within the date range. The **Period net** in the summary card is the sum of these amounts.
+
+---
+
+## Empty States
+
+### No Customer Selected
+
+- **Message** — "Select customer to view AR"
+- **Subtext** — "Search for a customer by name or number. View open invoices and AR activity (invoices, payments) for the selected date range."
+
+### No AR Activity in Date Range
+
+When a customer is selected but no AR activity exists for the date range:
+
+- **Message** — "No AR activity in date range"
+- **Subtext** — "No invoices or payments in [From] – [To]." If the customer has open invoices: "Widen the date range to see older activity. Open invoices are shown above." Otherwise: "Widen the date range to see more history."
+- **Action** — Widen the date range or verify the customer has AR activity.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload open invoices and AR activity from the server. Use after changing the date range or if you expect new data. Refresh is disabled when no customer is selected.
+
+---
+
+## Use Cases
+
+- **Credit check** — Before extending credit, view Open balance and Open Invoices to see current exposure.
+- **Payment history** — Use AR Activity to see when payments were received and which invoices they applied to.
+- **Reconciliation** — Compare Period net to expected activity; trace amounts to individual invoices and payments.
+- **Collections** — Identify overdue invoices from the Open Invoices table (Due date) and follow up.
+- **Audit** — Verify that invoices and payments are posted correctly by reviewing AR Activity and drilling into work orders.

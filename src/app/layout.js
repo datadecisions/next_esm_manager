@@ -1,18 +1,21 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SidebarLayout } from "../components/SidebarLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RootProvider } from "fumadocs-ui/provider/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata = {
@@ -36,16 +39,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${plexSans.variable} ${plexMono.variable} flex min-h-screen flex-col antialiased`}
       >
         <script
           dangerouslySetInnerHTML={{ __html: themeScript }}
           suppressHydrationWarning
         />
         <ThemeProvider>
-          <TooltipProvider>
-            <SidebarLayout>{children}</SidebarLayout>
-          </TooltipProvider>
+          <RootProvider>
+            <TooltipProvider>
+              <SidebarLayout>{children}</SidebarLayout>
+            </TooltipProvider>
+          </RootProvider>
           <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>

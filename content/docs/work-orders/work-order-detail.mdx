@@ -1,0 +1,378 @@
+---
+title: Work Order Detail Page
+description: Overview of the work order detail page — tabs, quick totals, documents, and key actions
+---
+
+## Overview
+
+When you click a work order (from search, recently viewed, or any list), you open the work order detail page. This page shows customer info, equipment, billing totals, documents, and tabs for line items, dispatch, pricing, and more.
+
+## Table of Contents
+
+- [Page Layout](#page-layout) — Header, Customer & Equipment, Quick Totals, Documents, Comments
+- [Tabs](#tabs) — Tab overview
+- [Line Items Tab](#line-items-tab) — Sections, cost breakdown, Gantt planning
+- [Order Tab](#order-tab) — Sale/expense info, contacts, PO
+- [Dispatch Tab](#dispatch-tab) — Mechanic, schedule, location
+- [Status / Dates Tab](#status-dates-tab) — Shop status, quote dates, paperwork
+- [Prices Tab](#prices-tab) — Rates and tax settings
+- [Equipment Tab](#equipment-tab) — Serial, model, hour meter, priority
+- [Charts Tab](#charts-tab) — AR aging, invoice breakdown
+- [Financials Tab](#financials-tab) — Accounting breakdown
+- [Actions Menu](#actions-menu) — Print, duplicate, credit, void, and more
+- [Close Work Order](#close-work-order) — Preview, print, download, and close from the popup
+- [Key Actions (Outside the Menu)](#key-actions-outside-the-menu) — Close, Save, and other page-level actions
+
+## Close Work Order
+
+Click **Close** in the header (or **Generate Invoice & Close** for open/accepted orders) to open a popup where you can preview the invoice, print or download it, and close the work order — all without leaving the page.
+
+### Workflow
+
+1. Click the Close button in the header. The label varies by status:
+   - **Generate Invoice & Close** — For Open or Accepted orders
+   - **Distribute Quote** — For Quote orders
+   - **Re-Generate Invoice** — For Closed orders
+2. The popup generates and displays the invoice PDF.
+3. Use **Print** or **Download** to get a copy before closing (or to keep for your records).
+4. Complete the action:
+   - **Open / Accepted** — Click **Close this invoice** to close the work order. The popup closes and the page refreshes.
+   - **Quote** — Select a customer contact and click **Email this quote** to send the quote by email.
+   - **Closed** — Click **Re-generate paperwork** to recreate the backup paperwork. Use when the original paperwork was lost or needs to be regenerated.
+
+### When to Use
+
+- **On the work order page** — Use this popup when you want to close a single order, preview the invoice first, and optionally print or download before closing.
+- **Batch processing** — For printing or distributing many invoices at once, use [Close / Distribute](/docs/work-orders/close-distribute).
+
+## Page Layout
+
+### Header
+
+- Work order number and status
+- **Actions** menu — See [Actions Menu](#actions-menu) below
+- **Close** — Opens the Close Work Order popup. See [Close Work Order](#close-work-order) above.
+
+### Customer & Equipment
+
+- **Customer** — Ship To and Bill To with address and contact info
+- **Equipment** — Serial, Unit, Make, Model, Hour Meter
+- **History** — View equipment history
+- **Build** — Open the Equipment tab for build details
+
+### Quick Totals
+
+Click any of these to open a popup with line-item details and actions. For Open, Quote, and Accepted orders you can add, edit, and remove items. For Closed orders the popup shows read-only line items.
+
+**Parts** — View and manage parts on the work order.
+
+- **Add Part** — Add parts from inventory
+- **Approve / Deny** — For requested parts (e.g. from tech app), approve to add to the order or deny to remove
+- **Edit** — Change sell price, section, or refresh price from catalog
+- **Delete** — Remove a part from the work order
+- **Download CSV** — Export approved parts to a CSV file
+
+**Labor** — View and manage labor entries.
+
+- **Labor To Import** — Posted timecard labor that can be imported. Filter by date, then **Import All Posted Labor** to add it to the work order
+- **Edit** — Edit posted labor (technician, times, section, comments) or imported labor entries
+- **Add New Labor Entry** — Add labor manually
+- **Delete** — Remove an imported labor entry
+
+**Misc** — Miscellaneous charges (shop supplies, fees, etc.).
+
+- **Add Misc Charge** — Add a new misc charge with description and amount
+- **Edit** — Change description or amount
+- **Delete** — Remove a misc charge
+
+**Equipment** — Equipment rental charges.
+
+- **Add Equipment Charge** — Add rental equipment to the work order
+- **Delete** — Remove an equipment charge
+
+**Fixed Price** — Fixed-price line items (flat-rate labor, rental, or misc).
+
+- **Add new fixed charge** — Add a fixed-price item with description and amount
+- **Edit** — Change description or amount
+- **Delete** — Remove a fixed price item
+
+Also shown (not clickable): Rental, Subtotal, Tax, Payments, and Balance.
+
+### Documents
+
+Documents are organized in two groups: **Work Order Documents** (attached to this work order) and **Customer Documents** (attached to the customer).
+
+**Upload** — On the main page, drag files onto the Documents area or click to select. Supports images (PNG, JPG, GIF, WebP) and PDFs. You can upload multiple files at once.
+
+**View Documents** — Opens a dialog where you can:
+
+- **Browse** — Expand Work Order Documents or Customer Documents to see the list
+- **Preview** — Click a document to view it in the main panel. Images and PDFs display inline
+- **Delete** — Remove a work order document (trash icon). Customer documents cannot be deleted from here
+- **Email** — Select work order documents with the envelope icon, add recipient emails (type an address or choose from customer contacts), then click **Email Selected Documents** to send them
+
+### Comments
+
+The right column has three comment areas:
+
+**General Comments** — The main service description visible on invoices and paperwork.
+
+- **AI Enhance** — Transform rough notes into professional, formatted service descriptions. Type or paste your notes, then click AI Enhance. The AI rewrites them into clear, structured text suitable for customer-facing documents. When enhanced, the text is highlighted and an "AI Enhanced" badge appears.
+- **Save** — Save changes to the work order.
+- **Copy** — Copy the comments to your clipboard.
+- **Undo** — After AI Enhance, reverts to your original text. Use this if you prefer the original wording.
+
+**To Quote** — Notes or recommendations for the quote. Used when preparing quotes for the customer. Saves automatically when you click away (blur).
+
+**Private Comments** — Internal notes not visible to the customer. Use for internal coordination, follow-ups, or sensitive information. Saves automatically when you click away (blur).
+
+## Tabs
+
+| Tab | Description |
+|-----|-------------|
+| **Line Items** | Sections, cost breakdown, Gantt planning, and line items by section. See [Line Items Tab](#line-items-tab) below. |
+| **Order** | Sale/expense info, salesman, contacts, PO, and related orders. See [Order Tab](#order-tab) below. |
+| **Dispatch** | Mechanic assignment, schedule date/hours, and job location. See [Dispatch Tab](#dispatch-tab) below. |
+| **Status / Dates** | Shop status, quote dates, inbound/outbound, paperwork. See [Status / Dates Tab](#status-dates-tab) below. |
+| **Prices** | Labor, parts, rental rates and tax settings. See [Prices Tab](#prices-tab) below. |
+| **Equipment** | Serial, unit, make, model, hour meter, status, priority. See [Equipment Tab](#equipment-tab) below. |
+| **Charts** | AR aging and monthly invoice breakdown for the equipment. See [Charts Tab](#charts-tab) below. |
+| **Financials** | GL entries grouped by journal. See [Financials Tab](#financials-tab) below. |
+
+## Line Items Tab
+
+The Line Items tab organizes work by sections and shows cost breakdown, section workflow, and optionally a Gantt planning view.
+
+### Cost Breakdown
+
+At the top, a summary shows **Total Sales**, **Total Costs**, **Total Tax**, and **Profit Margin (GP)**. A table breaks down Sale, Cost, and Margin by category (Parts, Labor, Misc, Rental, Equipment). If there are payments, they appear below.
+
+### Sections
+
+Line items are grouped by **sections** (e.g. repair areas, job phases). Each section card shows:
+
+- **Section workflow** — Steps such as Open → Dispatch → In Progress → Final Review → Complete. Click a step to update the section's workflow status.
+- **Include** — Toggle whether the section is included (e.g. for invoicing or reporting).
+- **Line Items / Accounting** — Switch between the line-item table and the accounting ledger view for that section.
+- **Expand / Collapse** — Show or hide the section content.
+
+The line-item table lists Type, Item, Description, Date, Qty/Hours, Cost, and Billed amount. The accounting view shows journal entries grouped by Journal.
+
+### Add Section
+
+Click **Add Section** to create a new section. You provide a title, description, Branch, Department, and options for output type (standard vs output), attachment settings, and skills (Welding, Machining). Sections appear in both the line-items view and the Gantt.
+
+### Gantt Planning
+
+Click **Gantt Planning** to switch from the section cards to a Gantt chart. The Gantt shows sections as summary bars with subtasks underneath. Use it to plan and track task timelines.
+
+**Creating tasks**
+
+- **Sections** — Add sections using **Add Section** above. Sections appear as parent rows in the Gantt.
+- **Subtasks** — Click the **+** on a section row to add a subtask under it. You cannot add top-level tasks from the Gantt; sections must be created via Add Section.
+
+**Editing tasks**
+
+- **Double-click** a task to open the edit dialog. You can change the name, start date, end date, type (Task, Milestone, or Section), and progress.
+- **Drag** — Task bars can be resized or moved; changes are saved automatically.
+- **Delete** — Remove a task from the edit dialog or via the Gantt.
+
+**Navigation**
+
+- **Shift + scroll** (or trackpad) — Pan horizontally.
+- **Expand** — Click **Expand** or press **Ctrl+F** to open the Gantt in a full-screen dialog.
+
+**Task types**
+
+- **Task** — Standard task with a duration and progress bar.
+- **Milestone** — Single-day marker (no duration).
+- **Section** — Summary row that groups subtasks; created via Add Section.
+
+## Order Tab
+
+The Order tab lets you edit order-level settings, sale and expense allocation, and contact information.
+
+### Sale & Expense Information
+
+**Sale Information**
+
+- **Branch** — Where the sale is recorded. Changing it updates the department list.
+- **Department** — Department within the branch.
+- **Sale Code** — Type of sale (e.g. repair, rental, PM). Options depend on branch and department.
+- **Update & Reprocess Line Items** — Use after changing Branch, Department, or Sale Code to recalculate line items with the new settings.
+
+**Expense Information**
+
+- **Branch** — Branch for expense allocation.
+- **Department** — Department for expenses.
+- **Expense Code** — Type of expense. Options depend on branch and department.
+
+Changes save when you select a new value. Sale and expense info control how revenue and costs are allocated.
+
+### Other Information
+
+- **Salesman** — Assigned salesman.
+- **Writer** — Person who wrote the order.
+- **Ship Contact** — Contact name at the ship-to location.
+- **Ship Phone** — Phone number for the ship-to location.
+- **Associated WO/Doc #** — Related work order or document number.
+- **Shop Quote Hours** — Quoted hours for the shop.
+
+These fields save when you change them or click away (blur). The bottom shows who created the order and when, and who last changed it.
+
+### Additional Order Information
+
+- **Purchase Order (PO) #** — Customer's PO number.
+- **Equipment Open Orders** — If the equipment has other open work orders, they appear here as links. Click to open the related order.
+- **Full Maintenance / GM** — Whether this is a Full Maintenance or GM order.
+- **Terms** — Payment terms from the bill-to customer.
+- **Credit Limit** — Customer's credit limit.
+
+## Dispatch Tab
+
+The Dispatch tab is used to assign a technician and set scheduling details for the job.
+
+### Mechanic and Hours
+
+- **Primary Mechanic** — Assign the technician who will perform the work. The list of mechanics comes from the sale branch (set in the Order tab). If no branch is selected, you'll need to set one in the Order tab first.
+- **Schedule Date** — When the work is scheduled. Use the datetime picker to set date and time.
+- **Schedule Hours** — Estimated hours for the job (e.g. 1.5). Saves when you click away.
+- **Dispatched on** — If the order has been dispatched, the date and time appear at the top. This is set when the order is dispatched, not edited here.
+
+Changes save when you select a new value or click away from a field.
+
+### Location
+
+Shows the ship-to address for the job. Use **View on map** to open the address in Google Maps for directions or planning. If no address is on file, a message indicates that.
+
+## Status / Dates Tab
+
+The Status / Dates tab (Service Admin) tracks shop workflow, quote details, and key dates. Click **Update** to save changes.
+
+### Quotes
+
+- **Quote Hours** — Quoted labor hours
+- **Quoted Amount** — Original quote amount
+- **Approved Amount** — Customer-approved amount
+- **Quote Date** — When the quote was given
+- **Additional Quote Date** — Date of any follow-up quote
+- **Quote Declined Date** — When the customer declined (if applicable)
+
+### Dates
+
+- **Shop Recv Date** — When the shop received the equipment
+- **Shop In Date** — When equipment arrived at the shop
+- **Shop Sold Date** — When the job was sold
+- **Shop Work Started Date** — When work began
+- **Estimated Completion Date** — Expected completion
+
+### Other
+
+- **Shop Status** — Current shop status
+- **Authorized By** — Who authorized the work
+- **RO #** — Repair order number
+- **Rework Technician** — Technician assigned to rework (if any)
+
+### Inbound / Outbound
+
+Checkboxes for equipment movement:
+
+- **Inbound** — Dropped Off, Picked Up
+- **Outbound** — Dropped Off, Picked Up
+
+### Paperwork & Rental
+
+- **Paperwork turned in?** — Mark when paperwork is complete. Sets the paperwork date.
+- **Rental issued?** — Whether a rental was provided
+- **Shop Comments / Repairs** — Notes about repairs or shop work
+
+## Prices Tab
+
+The Prices tab sets labor, parts, rental rates, and tax configuration. Click **Update** to save.
+
+### Rates
+
+- **Labor Rate** — Labor rate code for this work order
+- **Parts Rate** — List, Cost, Internal, Warranty, Wholesale, or Discount
+- **Parts Rate Discount (%)** — Discount percentage applied to parts (e.g. 100 = no discount)
+- **Rental Rate** — Rental rate amount
+
+### Taxes
+
+- **Tax Code** — Primary tax code. Selecting one may auto-fill the tax rate.
+- **Tax Rate (%)** — Tax percentage
+- **Tax Account** — GL account for tax
+- **Taxable** — Whether the order is taxable
+
+### Tax Overrides
+
+- **Use absolute tax codes** — When checked, use State + County + City + Local codes instead of the primary tax code
+- **State Tax Code**, **County Tax Code**, **City Code**, **Local Code** — Override codes when using absolute tax codes
+
+## Equipment Tab
+
+The Equipment tab edits equipment details for the work order. Click **Save** to apply changes.
+
+### Equipment Details
+
+- **Serial Number** — Equipment serial
+- **Unit Number** — Unit identifier
+- **Make** — Manufacturer
+- **Model** — Model name
+- **Hour Meter** — Current hour meter reading (updates the equipment record)
+- **Status** — Equipment spec status (from configured options)
+- **Priority** — Service priority: High, Normal, or Low
+
+### Actions
+
+- **History** — View equipment history
+- **Build** — Open build information (if available)
+
+## Charts Tab
+
+The Charts tab shows financial charts for the equipment on this work order. **Requires a Serial Number** on the work order.
+
+### Accounts Receivable Aging
+
+Bar chart of outstanding balance by invoice month for the Bill To customer (past 12 months + Over 12 Months). Helps see aging and payment history.
+
+### Monthly Invoice Breakdown
+
+Stacked bar chart of closed work orders by month, broken down by Total, Parts, Labor, Misc, Equipment, and Rental. Shows revenue trends for this equipment/customer.
+
+If no equipment (Serial No.) is set, a message prompts you to add it.
+
+## Financials Tab
+
+The Financials tab shows the **accounting breakdown** — GL entries for this work order, grouped by journal. Each journal shows Date, Account, Description, and Amount, with subtotals per journal and a grand total. Use it to review how the work order has been posted to the general ledger.
+
+## Actions Menu
+
+The Actions menu (⋮) in the header offers these options. Some actions only appear for certain work order statuses (Quote, Open, Closed, Accepted).
+
+### Navigation
+
+- **Search Orders** — Go to the Work Orders search page
+- **Create New Order** — Start a new work order
+
+### Quote Actions
+
+- **Process to Order** — Convert a quote into an open work order. Creates a new order and navigates to it. Available for Quote and Rejected status.
+- **Force Backup Paperwork** — Regenerate backup paperwork for the order. Use when paperwork needs to be recreated. Available for Quote and Accepted orders.
+
+### Copy & Duplicate
+
+- **Duplicate Order** — Copy the work order to create a new one. Copies line items, equipment, and customer info. Available for Open, Quote, and Accepted orders.
+- **Duplicate Order to Quote** — Copy a closed invoice as a new quote. Useful when reusing a past job as a template for a new quote.
+
+### Credit & Payment
+
+- **Credit Order** — Convert the work order to a credit. Creates a credit order that offsets the original. Available for Closed and Rejected orders.
+- **Void this Invoice** — Void the work order. Use for cancelled or erroneous orders. Cannot be undone. Available for Open, Quote, and Rejected orders.
+- **Send to Paya** — Send the invoice to Paya for payment processing.
+- **Export to Crown** — Download a ZIP file for Crown customers. Used for Crown integration.
+
+## Key Actions (Outside the Menu)
+
+- **Close** — Opens the Close Work Order popup. See [Close Work Order](#close-work-order) above.
+- **History** — View work order and equipment history

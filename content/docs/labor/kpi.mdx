@@ -1,0 +1,84 @@
+---
+title: KPI Dashboard
+description: Key metrics for labor managers — pending approval, utilization, open orders aging
+---
+
+## Overview
+
+The Labor KPI Dashboard shows key metrics for labor managers: pending approval count, open labor value, hours billed, technicians active, billable %, overtime %, open orders aging, and labor revenue. Use it to monitor labor performance, identify stale labor, and track utilization.
+
+---
+
+## Filters
+
+### Branch
+
+- **Branch** — Select one or more branches. Required. KPIs are calculated for the selected branches.
+- **Date Range** — Start and End dates. Default: 6 days ago through today. Data loads when the range is valid (debounced).
+
+**Requirement:** A branch must be selected. If none is selected, "Select a branch to view KPIs" appears.
+
+---
+
+## Summary Cards (Top Row)
+
+| Card | Description | Source |
+|------|-------------|--------|
+| **Pending Approval** | Count of unimported labor entries. | `getLaborByTechByBranch` — sum of unimported entries across techs. |
+| **Open Labor Value** | Dollar value of labor on open (WIP) work orders. | `getOpenLaborSummary` — totals.openLaborSell. |
+| **Hours Billed** | Total hours from imported labor in the date range. | `getLaborOverview` — sum of Hours. |
+| **Technicians Active** | Number of technicians with open labor. | `getOpenLaborSummary` — data.length. |
+
+---
+
+## Utilization Cards (Second Row)
+
+| Card | Description | Source |
+|------|-------------|--------|
+| **Billable %** | (Regular + Overtime) / Total hours from timecards. | `getLaborTimecardsReport` — rows with Total Hours, Regular Hours, Overtime Hours. |
+| **Overtime %** | Overtime hours / Total hours. | Same timecards report. |
+
+---
+
+## Open Orders by Age
+
+Orders with unimported labor, grouped by how long since the last labor date:
+
+| Bucket | Description | Color |
+|--------|-------------|-------|
+| **0–5 days** | Recent activity. Last labor within 5 days. | Green |
+| **5–30 days** | Needs attention. Last labor 5–30 days ago. | Amber |
+| **30+ days** | Stale / overdue. Last labor 30+ days ago. | Red |
+
+Source: `getOpenLaborSummary` — totals.openFiveDays, openPastFiveDays, openPastThirtyDays.
+
+---
+
+## Labor Revenue (Period)
+
+When labor revenue > 0:
+
+- **Card** — "Labor Revenue (Period)"
+- **Value** — Sum of Sell from imported labor in the date range.
+- **Source** — `getLaborOverview` — sum of Sell, filtered by selected branches.
+
+---
+
+## Data Sources
+
+| API | Purpose |
+|-----|---------|
+| `getLaborByTechByBranch` | Pending (unimported) labor count by tech. |
+| `getOpenLaborSummary` | Open labor value, tech count, aging buckets. |
+| `getLaborOverview` | Hours and Sell (revenue) from imported labor. |
+| `getLaborTimecardsReport` | Timecard rows for billable % and overtime %. |
+
+---
+
+## Use Cases
+
+- **Daily review** — Check Pending Approval and import labor from the Approval page.
+- **Stale labor** — Use Open Orders by Age to find orders with labor 30+ days old and follow up.
+- **Utilization** — Monitor Billable % and Overtime % for workforce planning.
+- **Revenue tracking** — Use Labor Revenue and Hours Billed to track labor performance.
+- **Workload** — Use Technicians Active and Open Labor Value to gauge current workload.

@@ -1,0 +1,173 @@
+---
+title: Transfer
+description: Move parts between warehouses—select parts, quantities, and destination warehouses
+---
+
+## Overview
+
+The Transfer page lets you **move inventory between warehouses**. You can:
+
+- Select a source warehouse.
+- Search and sort parts available in that warehouse.
+- Mark which parts to transfer.
+- Enter transfer quantities.
+- Select a destination warehouse per line.
+- Submit a batch transfer using the **Create Transfer** button.
+
+Transfers are recorded via the backend `transferParts` API.
+
+---
+
+## Warehouse & Search
+
+### Transfer From
+
+- **Warehouse dropdown**:
+  - Values from `getWarehouses()`.
+  - First warehouse is pre-selected when data loads.
+  - Changing this selection:
+    - Sets the `fromWarehouse`.
+    - Clears the current parts list.
+    - Triggers a new load of parts from the selected warehouse.
+
+### Search
+
+- **Search for parts**:
+  - Filters the current warehouse parts list client-side by:
+    - Part number
+    - Description
+  - Debounced by React state; no extra API call (data is preloaded via `searchParts("%", fromWarehouse)`).
+
+---
+
+## Loading & Empty States
+
+- **Loading** — While `searchParts` is fetching, a spinner with:
+  - *“Loading parts…”* is shown.
+- **No parts in warehouse** — Bordered empty state:
+  - *“No parts in this warehouse.”*
+
+---
+
+## Parts Table
+
+When parts are loaded, a table lists all parts in the source warehouse.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **Action** | Check button to include/exclude the part in the transfer. |
+| **Part No.** | Part number; links to Part Detail for this warehouse. |
+| **Description** | Part description (truncated with tooltip). |
+| **Qty** | On-hand quantity; or an input when the part is selected. |
+| **To** | Destination warehouse selector when the part is selected. |
+
+### Action Column
+
+- **Check button**:
+  - Toggles `answer` on the part row.
+  - When enabled:
+    - The row is marked as included in the upcoming transfer.
+    - Transfer quantity and destination controls become active.
+  - When disabled:
+    - The row is excluded from the transfer.
+
+### Qty Column
+
+- When **not selected**:
+  - Shows read-only quantity (`Qty` or `OnHand`).
+- When **selected**:
+  - Shows a numeric input:
+    - Defaults to `transferQty` or full on-hand.
+    - You can adjust quantity, constrained by your business rules.
+
+### To Column
+
+- When **not selected**:
+  - Shows `-`.
+- When **selected**:
+  - Shows a **destination warehouse** dropdown:
+    - Values from `getWarehouses()`.
+    - Filters out the source warehouse so you don’t transfer to the same place.
+
+---
+
+## Sorting
+
+You can click on column headers to sort:
+
+- **Part No.** — Sorts by part number.
+- **Description** — Sorts by description.
+- **Qty** — Sorts by quantity.
+
+Clicking the same header twice toggles ascending vs descending.
+
+---
+
+## Create Transfer (Batch)
+
+At the top of the card:
+
+- **Create Transfer** button:
+  - Enabled only when **at least one part** is selected **and** has a destination warehouse.
+  - Displays the count of lines selected:
+    - e.g. `Create Transfer (3)`.
+
+### What Happens on Click
+
+1. Collects all parts where:
+   - `answer` is true (selected).
+   - `transferToWarehouse` is set.
+2. For each part, calls `transferParts` with:
+   - `Qty` — `transferQty` (or fallback to on-hand).
+   - `PartNo` — part number.
+   - `Warehouse` — source warehouse (row or `fromWarehouse`).
+   - `toWarehouse` — selected destination warehouse.
+3. Shows a success toast when complete:
+   - *“Transfer complete.”*
+4. Reloads parts from the source warehouse to show updated quantities.
+
+On error, a toast indicates failure and no bulk state is assumed.
+
+---
+
+## Data Sources
+
+| API | Purpose |
+|-----|---------|
+| `getWarehouses(token)` | Lists available warehouses. |
+| `searchParts("%", warehouse, token)` | Loads all parts for a warehouse. |
+| `transferParts(payload, token)` | Performs a transfer of a part between warehouses. |
+
+Payload for `transferParts` includes:
+
+- `Qty` — quantity to transfer.
+- `PartNo` — part number.
+- `Warehouse` — source (`fromWarehouse`).
+- `toWarehouse` — destination warehouse.
+
+---
+
+## Workflow Examples
+
+### Move a Single Part
+
+1. Go to `/parts/transfer`.
+2. Choose **Transfer from** warehouse (e.g. `MAIN`).
+3. Use **Search** to find the part.
+4. Click the **check** button in the Action column.
+5. Optionally adjust the **Qty** input.
+6. Choose a **To** warehouse.
+7. Click **Create Transfer**.
+
+### Move a Group of Parts
+
+1. Select **Transfer from** warehouse.
+2. Use **Search** or scroll to identify multiple parts.
+3. For each part:
+   - Check the Action button.
+   - Set quantity and destination warehouse.
+4. Confirm that **Create Transfer** shows the correct count.
+5. Click **Create Transfer** to process all selected lines in one go. 
+

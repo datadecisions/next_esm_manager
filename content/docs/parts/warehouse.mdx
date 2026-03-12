@@ -1,0 +1,151 @@
+---
+title: Warehouse Search
+description: Search parts within a warehouse or across all warehouses, with links to part detail
+---
+
+## Overview
+
+The Warehouse page lets you **search for parts by warehouse** or **across all warehouses**. It is designed for counter, warehouse, and inventory staff who need a fast lookup by part number, description, or bin.
+
+Features:
+
+- Per-warehouse search with debounced results.
+- Global “search all warehouses” mode for cross-location lookups.
+- Direct links into the **Part Detail** page for a specific warehouse.
+
+---
+
+## Filters & Controls
+
+### Warehouse
+
+- When **Search All Warehouses** is unchecked:
+  - A **Warehouse** dropdown is shown.
+  - Values come from `getWarehouses()`.
+  - The first warehouse is pre-selected when data loads.
+  - Changing the warehouse reloads the default result set.
+
+### Search
+
+- A shared input with a search icon, used in both modes:
+  - **Per-warehouse mode** — Searches within the selected warehouse.
+  - **Search all warehouses mode** — Searches across all warehouses via `searchAllParts`.
+
+Behavior:
+
+- Per-warehouse:
+  - When search is empty, the page loads all parts using a wildcard query (`%`) for the selected warehouse.
+  - When you type, results are filtered client-side by:
+    - Part number
+    - Description
+    - Bin
+- Search all:
+  - Uses a debounce (~300ms).
+  - Only searches when query length is **4+ characters**.
+  - Calls `searchAllParts(query, token)` and replaces the table data with all-warehouse matches.
+
+### Search All Warehouses (Checkbox)
+
+- When checked:
+  - Warehouse dropdown is hidden.
+  - Search placeholder changes to:
+    - *“Search all warehouses (min 4 characters)”*
+  - Per-warehouse table is hidden; results come from the global query.
+- When unchecked:
+  - Warehouse dropdown reappears.
+  - Search placeholder changes to:
+    - *“Search in selected warehouse”*
+  - Global results are cleared, and per-warehouse parts are loaded again.
+
+---
+
+## Results: Per-Warehouse Mode
+
+When **Search All Warehouses** is unchecked and a warehouse is selected:
+
+### Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Part No.** | Part number; links to Part Detail for the selected warehouse. |
+| **Description** | Part description (truncated with tooltip). |
+| **Qty** | Quantity on hand (or `OnHand`/`Qty`). |
+| **Bin** | Bin location (e.g., rack/shelf/bin). |
+
+### Row Links
+
+- Clicking **Part No.** opens:
+  - `/parts/inventory/{PartNo}/{Warehouse}` — the **Part Detail** page.
+
+### States
+
+- **Loading** — Spinner with “Loading…” message.
+- **No parts** — Bordered empty state:
+  - *“There are currently no parts in this warehouse.”*
+
+---
+
+## Results: Search All Warehouses Mode
+
+When **Search All Warehouses** is checked and query length ≥ 4:
+
+### Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Part No.** | Part number; links to Part Detail using matched warehouse. |
+| **Description** | Part description. |
+| **Warehouse** | Matching warehouse code. |
+| **Qty** | On-hand quantity. |
+
+### Row Links
+
+- Clicking **Part No.** opens:
+  - `/parts/inventory/{PartNo}/{Warehouse}` for that row.
+
+### States
+
+- **Prompt** (query too short) — Bordered message:
+  - *“Search for a part by part number or description (min 4 characters).”*
+- **No match** — Bordered message:
+  - *“No match found. Try another search.”*
+- **Loading** — Spinner with “Loading…” indicator while `searchAllParts` runs.
+
+---
+
+## Data Sources
+
+| API | Purpose |
+|-----|---------|
+| `getWarehouses(token)` | Returns available warehouses (names/codes). |
+| `searchParts(query, warehouse, token)` | Per-warehouse part search (supports `%` for all parts). |
+| `searchAllParts(query, token)` | Global search across all warehouses. |
+
+---
+
+## Workflow Examples
+
+### Lookup a Part in One Warehouse
+
+1. Go to `/parts/warehouse`.
+2. Confirm **Search All Warehouses** is **unchecked**.
+3. Select a **Warehouse** from the dropdown.
+4. Type part number or description in **Search**.
+5. Click the **Part No.** to open Part Detail for that warehouse.
+
+### Lookup a Part Across All Warehouses
+
+1. Check **Search All Warehouses**.
+2. Type at least **4 characters** in the search box.
+3. Wait for results to load.
+4. Click the **Part No.** in the desired warehouse row to open Part Detail.
+
+---
+
+## When to Use Warehouse vs Parts Search (Home)
+
+- **Parts Manager - Search Parts** (on `/parts`) — Best for **general part search** and quick navigation to detail.
+- **Warehouse page** — Best when you:
+  - Need to see **on hand + bin** in a specific warehouse.
+  - Need to search **all warehouses at once** and compare stock positions. 
+

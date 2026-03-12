@@ -1,0 +1,113 @@
+---
+title: Budget
+description: Track department net income, set monthly budget goals, and monitor variance
+---
+
+## Overview
+
+Budget lets you track department net income against targets and set monthly budget goals. Select a branch and department(s), choose a month and year, and view department cards with actual net income (MTD), per-day rate, budget goal, and variance. Budgets are stored per branch, department, and month.
+
+You must select a **branch** and at least one **department** before budget data appears. If none are selected, the message "Select a branch and department(s) to view budget" is shown.
+
+---
+
+## Billing Days Summary
+
+A summary card at the top shows weekday counts for the selected month:
+
+| Field | Description |
+|-------|-------------|
+| **Total weekdays** | Number of weekdays (Monday–Friday) in the month. Used to calculate per-day rates. |
+| **Remaining** | For the current month: weekdays left in the month (from today through month-end). For past months: 0. For future months: same as total weekdays. |
+
+These values help you gauge how much of the month has elapsed and how much time remains to hit budget.
+
+---
+
+## Department Cards
+
+Each selected department has its own card. Cards are displayed in a grid (1–3 columns depending on screen size).
+
+### Card Header
+
+**Branch X · Dept Title** — Identifies the branch and department (e.g., "Branch 1 · Service", "Branch 1 · Parts").
+
+### Current MTD
+
+**Current MTD** (Month-to-Date) is the actual net income for that department for the selected month. It is calculated from GL data: sales minus costs/expenses for that branch and department. This is the "actual" you compare to the goal.
+
+### Per Day
+
+**Per day** = Current MTD ÷ Total weekdays. Shows the average daily net income so far. Useful to project whether the department will hit its goal by month-end (e.g., if per day is $X and 10 days remain, projected MTD = $X × 10 + current MTD).
+
+### Goal (Budget)
+
+The **Goal** field is the target budget for the month. Enter a dollar amount and save.
+
+- **Input** — Type the budget amount. Leave empty or 0 to clear the goal.
+- **Save** — Click **Save** to persist the budget, or tab out (blur) — the budget saves automatically on blur if the value changed.
+- **Storage** — Budgets are stored per branch, department, month, and year. Changing month or year loads the budget for that period (or empty if none set).
+
+### Variance
+
+**Variance** = Current MTD − Goal. Shown only when a goal is set.
+
+- **Green (positive)** — Actual is above goal (e.g., +$5,000).
+- **Red (negative)** — Actual is below goal (e.g., −$2,000).
+
+Use variance to see which departments are on track and which need attention.
+
+---
+
+## Filters
+
+### Branch / Department
+
+- **Branch** — Select one or more branches. The page uses the primary (first) selected branch to load departments and net data.
+- **Department** — Select one or more departments, or use "Select All" to include all departments for the branch.
+- **Requirement** — At least one branch and one department must be selected. Otherwise, no department cards are shown.
+
+### Month / Year
+
+- **Month** — Dropdown (January–December). Select the month to view or edit.
+- **Year** — Dropdown showing current year ± 3 (e.g., 2022–2028). Select the year.
+- **Default** — Current month and current year.
+
+Changing month or year reloads net data and budgets for that period.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload net data and budgets from the server. Use after changing filters or if you expect data has changed elsewhere.
+
+---
+
+## Workflow: Setting a Budget
+
+1. Select a **branch** and **department(s)**.
+2. Select the **month** and **year**.
+3. Review **Current MTD** and **Per day** for each department.
+4. Enter a **Goal** amount in the input for each department.
+5. Click **Save** or tab out of the field. A success toast confirms the save.
+6. Check **Variance** to see if the department is above or below goal.
+
+---
+
+## Workflow: Reviewing Performance
+
+1. Select branch and department(s).
+2. Set month to the current month (or a past month to review).
+3. Compare **Current MTD** to **Goal**.
+4. Use **Variance** to identify departments under target.
+5. Use **Per day** and **Remaining** weekdays to estimate whether a department will reach its goal by month-end.
+
+---
+
+## Use Cases
+
+- **Monthly planning** — Set budget goals at the start of each month for each department.
+- **Mid-month check** — Review Current MTD vs. Goal and Per day to see if departments are on pace.
+- **Historical review** — Select past months to see how departments performed against their goals.
+- **Multi-department comparison** — Select multiple departments to compare performance side by side.
+- **Branch focus** — Filter to one branch to focus on that location's departments.

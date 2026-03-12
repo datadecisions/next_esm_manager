@@ -1,0 +1,166 @@
+---
+title: Part Detail
+description: Detailed view of a part in a specific warehouse — general info, bins, history, pricing, and extras
+---
+
+## Overview
+
+The Part Detail page shows **all available information about a single part in a specific warehouse**. It is typically reached from:
+
+- Parts Manager search (`Search Parts` on `/parts`)
+- Links in:
+  - Warehouse search
+  - Transfer
+  - Count
+  - Scan / Bin lookup
+
+The route pattern is:
+
+- `/parts/inventory/{partNo}/{warehouse}`
+
+Both `partNo` and `warehouse` are URL-encoded.
+
+---
+
+## Loading & Errors
+
+- If the user is not authenticated, a spinner is shown until auth is ready.
+- If `partNo` or `warehouse` is missing from the URL:
+  - The page displays *“Invalid part or warehouse.”* with a **Back to Parts** link.
+- While data is being fetched via `getPart(partNo, warehouse, token)`:
+  - A centered spinner appears.
+- If the API returns an error or no part:
+  - The page displays *“Part not found.”* with a **Back to Parts** link.
+
+---
+
+## Header
+
+At the top:
+
+- **Title** — Part number (`part.PartNo`).
+- **Subtitle** — Warehouse and Description:
+  - e.g. `MAIN · Hydraulic Hose`
+
+Tabs appear just below the header.
+
+---
+
+## Tabs
+
+The Part Detail view is organized into tabs:
+
+1. **General**
+2. **Bins**
+3. **History**
+4. **Pricing**
+5. **Extras**
+
+Only **General** and **Pricing** currently show live part data; others are placeholders you can flesh out later.
+
+---
+
+## General Tab
+
+The **General** tab surfaces the most important part metadata:
+
+### Fields
+
+Shown in a responsive grid:
+
+| Field | Description |
+|-------|-------------|
+| **Part No** | The part number (primary key). |
+| **Warehouse** | Warehouse code. |
+| **Description** | Full description of the part. |
+| **Bin** | Primary bin location. |
+| **On Hand** | On-hand quantity (or `Qty`). |
+| **Avg Cost** | Average cost per unit. |
+| **Parts Group** | Parts group or category. |
+| **Vendor** | Primary vendor. |
+
+Where values are missing, the UI shows `—`.
+
+---
+
+## Bins Tab
+
+The **Bins** tab is a placeholder for a more detailed bin breakdown:
+
+- Shows static text:
+  - *“Bin history and same-bin parts. Full implementation coming soon.”*
+
+Planned uses:
+
+- **Bin history** — Past locations for this part.
+- **Same-bin parts** — Other parts in the same bin.
+
+---
+
+## History Tab
+
+The **History** tab is a placeholder for sale / movement history:
+
+- Shows static text:
+  - *“Part sale history. Full implementation coming soon.”*
+
+Planned uses:
+
+- **Sales history** — Where and when the part was sold/used.
+- **Movement history** — Transfers between bins/warehouses.
+
+---
+
+## Pricing Tab
+
+The **Pricing** tab focuses on cost and sell figures:
+
+### Fields
+
+| Field | Description |
+|-------|-------------|
+| **Avg Cost** | Average cost or `AvgUnitCost`. |
+| **Cost** | Base cost for this part. |
+| **Sell** | Current sell price (or `AvgUnitSell`). |
+
+Each is rendered using currency formatting; missing values show as `—`.
+
+Use this tab when you need to quickly **confirm pricing and margins**.
+
+---
+
+## Extras Tab
+
+The **Extras** tab is another placeholder:
+
+- Shows static text:
+  - *“Comments, alias, and additional info. Full implementation coming soon.”*
+
+Planned uses:
+
+- **Comments** — Additional notes about the part.
+- **Aliases** — Alternate part numbers or vendor codes.
+- **Attachments** — Links to documents or images.
+
+---
+
+## Data Source
+
+| API | Purpose |
+|-----|---------|
+| `getPart(partNo, warehouse, token)` | Returns detailed information for the part in a given warehouse. |
+
+The same `getPart` data supports:
+
+- Header values.
+- General tab fields.
+- Pricing tab numbers.
+
+---
+
+## Use Cases
+
+- **Counter / CSR** — Confirm bin, on-hand, and description while answering customer calls.
+- **Inventory analyst** — Check average cost and sell before changing pricing.
+- **Warehouse staff** — Verify bin and on-hand when picking or counting. 
+

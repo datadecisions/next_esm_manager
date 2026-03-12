@@ -1,0 +1,156 @@
+---
+title: Purchase Order Detail
+description: Create and edit purchase orders — parts, equipment, misc items, vendor, and line items
+---
+
+## Overview
+
+The Purchase Order Detail page lets you create new purchase orders or edit existing ones. You can add parts, equipment, and miscellaneous items; set vendor, branch, department, and ship-to; and export the PO as a PDF. New POs can be started from the main page (**New Purchase Order**) or from Back Orders or Restock (selected parts are pre-filled).
+
+---
+
+## Table of Contents
+
+- [Header Fields](#header-fields)
+- [Line Items](#line-items)
+- [Add Item](#add-item)
+- [Footer](#footer)
+- [Actions](#actions)
+- [Creating from Back Orders or Restock](#creating-from-back-orders-or-restock)
+
+---
+
+## Header Fields
+
+### Order Info
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Order date** | No | Date of the order. Defaults to today. |
+| **Ship to** | No | Customer or location to ship to. Search by customer name. |
+| **Vendor** | Yes | Vendor to purchase from. Search by vendor name. Required to save. |
+| **PO No.** | — | Read-only. Assigned when the PO is created. |
+| **Branch** | Yes | Branch for the PO. Required to save. |
+| **Dept** | Yes | Department within the branch. Required to save. |
+| **Total** | — | Calculated sum of line items. Displays in the header. |
+
+---
+
+## Line Items
+
+Line items are displayed in a table. Each row has:
+
+| Column | Description |
+|--------|-------------|
+| **Item** | Type badge (PART, EQUIPMENT, MISC) and description or part number. |
+| **Price** | Cost per unit (CostEach). |
+| **Account** | GL account for the line. Select from the chart of accounts. |
+| **Qty** | Quantity. Editable for new parts; read-only for saved items. |
+| **Actions** | Dropdown with **Delete** to remove the line. |
+
+### Item Types
+
+- **Part** — Parts from inventory. Blue badge. Includes Part #, Description, Warehouse, Qty, Cost.
+- **Equipment** — Equipment items. Gray badge. Includes Description, Serial #, Amount, Account.
+- **Misc** — Miscellaneous charges. Green badge. Includes Description, Amount.
+
+---
+
+## Add Item
+
+Click **Add item** to expand the add item panel. Three tabs: **Parts**, **Equipment**, **Misc**.
+
+### Parts Tab
+
+- **Search** — Type to search parts. Click **Search** to load results.
+- **Filter** — **All parts** or **Backordered** (show only back-ordered parts from work orders).
+- **Results** — Table of parts with Description, Part #, Price. Click **Add** to add a part to the PO.
+- **Empty** — "Search for parts or select Backordered to add from backorder list."
+
+### Equipment Tab
+
+Form fields:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Description** | Yes | Equipment description. |
+| **Serial #** | No | Serial number. |
+| **Amount** | Yes | Cost. |
+| **Account** | Yes | GL account for the equipment. |
+
+Click **Add equipment** to add.
+
+### Misc Tab
+
+Form fields:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Description** | Yes | Item description. |
+| **Amount** | Yes | Cost. |
+
+Click **Add misc item** to add.
+
+---
+
+## Footer
+
+- **Comments** — Textarea for PO comments. Optional.
+- **Subtotal** — Sum of (Price × Qty) for all line items.
+- **Total** — Same as Subtotal (no tax in this view).
+
+---
+
+## Actions
+
+| Action | Description | When Available |
+|--------|-------------|----------------|
+| **Save** | Save the PO. Creates a new PO if none exists; otherwise saves header changes and new line items. | Always |
+| **Export PDF** | Generate and download a PDF of the PO. Opens in a dialog. | Only when PO has a PO number (saved) |
+
+---
+
+## Creating from Back Orders or Restock
+
+When you select parts in **Back Ordered Part Requests** or **Restock** and click **Create Parts Order** or **Create Order**, the app navigates to `/purchase-orders/new` with the selected parts stored in session storage. The new PO form loads with those parts pre-filled as line items.
+
+- **Back Orders** — Parts selected from the Back Ordered Parts table are added with their WO reference, quantity, and cost.
+- **Restock** — Parts from selected part groups and warehouses are added with Qty to Order and cost.
+
+You still need to set **Vendor**, **Branch**, **Dept**, and optionally **Ship to** before saving.
+
+---
+
+## Workflow: Create a New PO
+
+1. Click **New Purchase Order** or go to Back Orders / Restock and select parts, then **Create Order**.
+2. Set **Vendor** (required).
+3. Set **Branch** and **Dept** (required).
+4. Optionally set **Order date** and **Ship to**.
+5. Add line items via **Add item** (Parts, Equipment, or Misc).
+6. For each line, set **Account** and **Qty** if needed.
+7. Optionally add **Comments**.
+8. Click **Save**. The PO is created and you are redirected to the PO detail page with the new PO number.
+9. Click **Export PDF** to download the PO as a PDF.
+
+---
+
+## Workflow: Edit an Existing PO
+
+1. Open the PO from search, Open POs, or a direct link.
+2. Edit header fields (Order date, Ship to, Vendor, Branch, Dept) as needed.
+3. Add new line items via **Add item**.
+4. Edit **Qty** and **Account** on new (unsaved) line items. Saved line items have read-only Qty.
+5. Delete line items via the dropdown **Delete**.
+6. Edit **Comments**.
+7. Click **Save** to persist changes.
+
+---
+
+## Use Cases
+
+- **Parts order** — Add parts from search or back order list for a vendor.
+- **Equipment purchase** — Add equipment items with description, serial, amount, and account.
+- **Misc charges** — Add miscellaneous charges (freight, fees, etc.).
+- **Restock** — Create a PO from Restock with part groups selected for replenishment.
+- **Back order fulfillment** — Create a PO from Back Orders with parts requested on work orders.

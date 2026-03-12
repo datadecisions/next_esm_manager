@@ -1,0 +1,143 @@
+---
+title: Inventory Tables
+description: Backorders, requisitions, stale parts, and consignments in dedicated tables
+---
+
+## Overview
+
+The Inventory Tables page groups several key **parts inventory reports** into one place:
+
+- **Backorders** — Parts that are backordered.
+- **Requisitions** — Requisitioned parts from warehouses.
+- **Stale Parts** — Parts that have not moved recently.
+- **Consignments** — Consignment inventory.
+
+Use this page for **operational views** on inventory conditions, separate from the higher-level KPI dashboard.
+
+---
+
+## Navigation & Layout
+
+- Accessed from **Parts Manager → Inventory Tables** or `/parts/inventory/tables`.
+- The page requires authentication and uses your current auth token.
+- Layout:
+  - Back button to `/parts`.
+  - Page title and subtitle.
+  - A card with **Tabs** for:
+    - Backorders
+    - Requisitions
+    - Stale Parts
+    - Consignments
+
+Each tab renders a specialized table component:
+
+- `BackOrderedPartsTable`
+- `RequisitionsTable`
+- `StalePartsTable`
+- `ConsignmentsTable`
+
+---
+
+## Backorders
+
+The **Backorders** tab surfaces parts that are on backorder, typically fed by the same data behind the daily backorder report.
+
+### Typical Columns
+
+Exact columns come from `BackOrderedPartsTable`, but usually include:
+
+- Entry date
+- Work order
+- Ship/customer
+- Part number and description
+- Quantity backordered
+- Branch/department
+
+### Use Cases
+
+- **Parts manager** — Identify which WOs or customers are waiting for parts.
+- **Buyer** — Combine this view with purchase order data to clear backorders.
+
+---
+
+## Requisitions
+
+The **Requisitions** tab lists internal requisitions for parts (e.g., warehouse-to-warehouse or internal use).
+
+### Typical Columns
+
+From `RequisitionsTable`, expect:
+
+- Requisition ID
+- From/To locations
+- Part number
+- Description
+- Quantities (requested, filled, open)
+
+### Use Cases
+
+- **Inventory control** — See what internal transfers or requisitions are open.
+- **Warehouse ops** — Plan pulls and shipments for requisitions.
+
+---
+
+## Stale Parts
+
+The **Stale Parts** tab lists parts that have not moved (sold/used) in a while.
+
+### Typical Columns
+
+From `StalePartsTable`, expect:
+
+- Part number
+- Warehouse
+- Description
+- On-hand quantity
+- Last movement date or stale indicator
+
+### Use Cases
+
+- **Aging inventory** — Find parts that may be candidates for markdowns or returns.
+- **Space management** — Identify slow movers taking up storage.
+
+---
+
+## Consignments
+
+The **Consignments** tab surfaces **consignment inventory** — parts owned by a vendor but stored in your facility.
+
+### Typical Columns
+
+From `ConsignmentsTable`, expect:
+
+- Part number
+- Consignment location
+- On-hand quantity
+- Vendor
+- Possibly last movement or usage.
+
+### Use Cases
+
+- **Vendor management** — Track consignment levels and usage.
+- **Billing** — Make sure consignment usage is reconciled.
+
+---
+
+## Behavior & States
+
+### Authentication
+
+- If the user is not authenticated or the token is still loading, a centered spinner is shown until ready.
+
+### Tab Switching
+
+- Tabs are local to the page; each tab fetches and renders data via its underlying table component.
+- There is no global filter on this page; each table handles its own loading, empty states, and pagination/scrolling.
+
+---
+
+## When to Use Inventory Tables vs KPI
+
+- **Inventory Tables** — When you need **lists** of records to work from (backorders to call on, stales to mark down, etc.).
+- **KPI Dashboard** — When you need **aggregates and trends** (fill rate, turns, value, obsolescence). 
+

@@ -1,0 +1,4 @@
+{
+  "title": "Purchase Orders",
+  "pages": ["purchase-order-detail", "open", "back-orders", "restock"]
+}

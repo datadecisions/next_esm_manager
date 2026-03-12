@@ -1,0 +1,157 @@
+---
+title: Receive Orders
+description: Receive parts from purchase orders—full or partial quantities per line
+---
+
+## Overview
+
+The Receive Orders page lets you **receive parts against purchase orders** from within Parts Manager. It supports:
+
+- Selecting a purchase order.
+- Viewing all parts on the PO.
+- Quickly marking lines as fully received.
+- Partially receiving lines by entering a specific quantity.
+
+This is the primary workflow for **updating inventory when shipments arrive**.
+
+---
+
+## Selecting a Purchase Order
+
+At the top of the card:
+
+- **Purchase Order** — A `PurchaseOrderSearchCombobox` that:
+  - Searches POs by number and vendor name.
+  - Supports including closed POs (`includeClosed: true`).
+  - Requires at least 1 character to search.
+  - On selection, calls `getPurchaseOrder(PONo, token)` and loads the PO lines.
+
+When a PO is selected:
+
+- The page header shows the PO number and vendor name, for example:
+  - *Receive Orders #12345 ACME Parts Co.*.
+
+If the selection is cleared:
+
+- The PO data is cleared and an empty-state prompt is shown.
+
+---
+
+## PO Lines & States
+
+### Loading
+
+- While PO data is actually being fetched, a spinner with:
+  - *“Loading purchase order…”* is displayed.
+
+### No Parts
+
+- If the PO has no parts:
+  - Bordered empty state:
+    - *“There are no parts in this purchase order.”*
+
+### Error
+
+- If the PO fails to load or is invalid:
+  - Bordered empty state:
+    - *“Could not load purchase order. Try selecting again.”*
+
+### No PO Selected
+
+- If nothing is selected:
+  - Bordered empty state:
+    - *“Search for a purchase order by PO number or vendor name.”*
+
+---
+
+## Search within PO
+
+When a PO with parts is loaded:
+
+- A **Search** input filters parts client-side by:
+  - Part number.
+  - Description.
+
+Use this to narrow large POs to a specific part or group of parts.
+
+---
+
+## Parts Cards
+
+Each PO line is rendered as a **card**, optimized for tablet and desktop:
+
+### Header
+
+- **Title** — `PartNo (Qty) CostEach`, e.g. `123-ABC (4) $25.00`.
+- **Description** — Truncated description with tooltip for full value.
+- **Customer Order** (optional) — When the line is tied to a work order, the header shows a short “Customer Order: …” label using the related work order number.
+
+### Actions
+
+At the bottom of each card:
+
+- **Pass (full qty)** — Green button with check icon:
+  - Marks the line as fully received.
+  - Sets `RecvQty = Qty`.
+  - Calls `receivePOItems` with:
+    - `ID`, `RecvQty`, `Warehouse`, and `PartNo`.
+  - Updates UI state for that line.
+- **Partial receive** — Red/destructive button with X icon:
+  - Marks the line as a **partial**.
+  - Switches the right side of the card into **editable quantity** mode.
+
+### Partial Quantity Entry
+
+When a line is set to partial:
+
+- A numeric input appears to enter **RecvQty**.
+- Changes are applied on **blur**:
+  - Calls `receivePOItems` with the entered quantity.
+  - Updates the UI state and recomputes `answer` (true/false) based on whether `RecvQty === Qty`.
+- If not partial (pass):
+  - Displays a read-only `Recv:` label showing the received quantity (or a dash when no value is set) instead of an input.
+
+---
+
+## Data Source
+
+| API | Purpose |
+|-----|---------|
+| `getPurchaseOrder(PONo, token)` | Loads header + `parts` for a purchase order. |
+| `receivePOItems(payload, token)` | Applies receive quantity for a specific PO line. |
+
+Payload includes:
+
+- `ID` — Line ID.
+- `RecvQty` — Quantity received.
+- `Warehouse` — Target warehouse (defaulted to `Main` when missing).
+- `PartNo` — Part number for the line.
+
+---
+
+## Workflow Examples
+
+### Receive All Lines Fully
+
+1. Search and select a purchase order.
+2. Optionally search within the PO for key parts.
+3. For each line:
+   - Click the **Pass** (check) button.
+4. Verify that each card shows `Recv:` with the full ordered quantity.
+5. Inventory is updated per line as you click Pass.
+
+### Receive Some Lines Partially
+
+1. Select a purchase order.
+2. On a line that arrived short:
+   - Click the **Partial receive** (X) button.
+   - Enter the quantity that actually arrived in the numeric input.
+   - Tab out or click elsewhere to trigger save.
+3. The line updates, and the `Recv:` label reflects the newly received quantity going forward.
+
+### Revisit a PO
+
+1. Select the same PO again.
+2. Already received lines will have `RecvQty` populated.
+3. You can still adjust `RecvQty` via partial mode if corrections are needed (subject to your process). 
+

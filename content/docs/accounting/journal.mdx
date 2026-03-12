@@ -1,0 +1,148 @@
+---
+title: Manual Journal
+description: Create, view, post, duplicate, and reverse journal entries in the general ledger
+---
+
+## Overview
+
+Manual Journal lets you create and post journal entries for adjustments, corrections, and other non-routine transactions. Entries must balance (total debits = total credits) before they can be created or posted. You can view existing journals, post open journals to the GL, duplicate a journal to create a copy, or create a reversing entry.
+
+Data loads automatically for the selected date range. Click **Refresh** to reload.
+
+---
+
+## Journals List
+
+The main view shows a table of journals for the selected date range. Each row is clickable — click to open the journal in the detail panel.
+
+### Table Columns
+
+| Column | Description |
+|--------|-------------|
+| **Journal** | Journal identifier. Comments appear below the name if present. |
+| **Date** | Effective (posting) date. |
+| **Amount** | Total amount (sum of debits or credits). |
+| **Status** | **Open** (amber) — Not yet posted; can be edited or posted. **Posted** (green) — Posted to the GL; read-only. |
+| **Actions** | View, Post, Duplicate, Reverse buttons. |
+
+### Row Actions
+
+| Action | Description | When Available |
+|--------|-------------|----------------|
+| **View** | Open the journal in read-only mode. | Always |
+| **Post** | Post the journal to the general ledger. | Only for Open journals |
+| **Duplicate** | Create a copy. Opens the form prefilled with the same lines; you can edit before saving. | Always |
+| **Reverse** | Create a reversing entry. Opens the form with debits and credits swapped; saves a new journal that offsets the original. | Always |
+
+**Note:** Posted journals cannot be edited or posted again. Use **Reverse** to create an offsetting entry if you need to correct a posted journal.
+
+### Empty State
+
+If no journals exist for the date range: "No journals found" with "No journals for the selected date range." A **Create New Journal** button appears to start a new entry.
+
+---
+
+## Create / Edit Journal Panel
+
+Click **New Journal** or **Duplicate** / **Reverse** to open the panel. The panel has two modes: **View** (read-only) and **Create** (form).
+
+### View Mode
+
+When viewing a journal, the panel shows:
+
+- **Date** — Effective date
+- **Type** — Journal type (e.g., Actual, Budget)
+- **Comments** — Memo or description
+- **Lines table** — Account, Debit, Credit for each line
+- **Total** — Sum of debits (or credits)
+
+### Create Mode (Form)
+
+#### Header Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Journal Name** | Yes | Identifier for the journal (e.g., "Month-end adjustment"). |
+| **Posting Date** | Yes | Effective date of the entry. |
+| **Ref / Control #** | No | Reference number for audit or tracking. |
+| **Journal Type** | Yes | **Actual** — Real transactions. **Budget** — Budget entries. |
+| **Comments** | No | Memo or description. Defaults to "DDI ADD" if left empty. |
+
+#### Line Items
+
+Each line has:
+
+| Column | Description |
+|--------|-------------|
+| **Account** | Select from the chart of accounts. Search by account number or description. |
+| **Debit** | Debit amount (positive number). Leave blank or 0 for credit-only lines. |
+| **Credit** | Credit amount (positive number). Leave blank or 0 for debit-only lines. |
+| **Remove** | × button to delete the line. |
+
+- **Add lines** — A new blank line appears automatically when you fill the last line.
+- **Minimum** — At least one line with an account is required.
+- **Balance** — Total debits must equal total credits. The **Balance** indicator shows the difference: green when balanced ($0.00), amber when not. The Create/Reverse button is disabled until the journal balances (tolerance: $0.01).
+
+#### Submit Options
+
+A split button offers:
+
+- **Create** — Save the journal as a new entry. Journal remains Open until you Post it.
+- **Reverse** — Save as a reversing entry. The journal name gets " (Reverse)" appended, and all amounts are negated (debits become credits, credits become debits). Use when duplicating from an existing journal to create an offset.
+
+---
+
+## Workflow: Create a New Journal
+
+1. Click **New Journal**.
+2. Enter **Journal Name** and **Posting Date**.
+3. Optionally set Ref/Control #, Journal Type, and Comments.
+4. Add lines: select **Account**, enter **Debit** or **Credit** for each line.
+5. Ensure **Balance** shows $0.00 (green).
+6. Click **Create** to save. The journal appears in the list with status **Open**.
+7. Click **Post** to post it to the GL. Status changes to **Posted**.
+
+---
+
+## Workflow: Reverse a Posted Journal
+
+1. Find the journal to reverse in the list.
+2. Click **Reverse**. The panel opens with debits and credits swapped.
+3. Optionally edit the journal name, date, or lines.
+4. Ensure the journal balances.
+5. Click **Reverse** (or select Reverse from the dropdown) to save. A new journal is created with negated amounts, offsetting the original.
+
+---
+
+## Workflow: Duplicate a Journal
+
+1. Find the journal to copy.
+2. Click **Duplicate**. The panel opens with the same lines prefilled.
+3. Change the journal name (e.g., remove " (Copy)" or use a new name).
+4. Edit lines if needed.
+5. Ensure the journal balances.
+6. Click **Create** to save a copy, or **Reverse** to save a reversing copy.
+
+---
+
+## Date Range
+
+- **Start Date** and **End Date** — Filter which journals appear in the list.
+- **Default** — Last day of the month 13 months ago through last day of the current month (roughly 13 months of data).
+- Change dates and click **Refresh** to reload.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload the journals list. Use after changing the date range or after creating, posting, or reversing a journal.
+
+---
+
+## Use Cases
+
+- **Month-end adjustments** — Create adjusting entries for accruals, depreciation, or reclassifications.
+- **Corrections** — Fix posting errors by creating a reversing entry and then a correct entry.
+- **Recurring entries** — Duplicate a prior month's journal and update the date and amounts.
+- **Budget entries** — Use Journal Type "Budget" for budget or forecast entries.
+- **Audit trail** — Use Ref/Control # and Comments to document the reason for each entry.

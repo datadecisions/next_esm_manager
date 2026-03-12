@@ -1,0 +1,101 @@
+---
+title: Summary Charts
+description: Sales, expenses, overdue AR overview with KPI cards, charts, and overdue table
+---
+
+## Overview
+
+Summary Charts (Dashboard) gives you a visual overview of accounting performance. It displays KPI cards, bar and line charts for sales and expenses, and a table of overdue invoices. Use the date range and Branch/Department filter to focus on specific periods and locations.
+
+Data loads automatically on page load. Change filters and click **Refresh** to reload.
+
+---
+
+## KPI Cards
+
+Four summary cards appear at the top. Values are calculated from the selected date range and filters.
+
+| Card | Description | Color |
+|------|-------------|-------|
+| **Sales (Gross)** | Total sales for the date range. Sum of monthly net sales in the range. | Green (positive) |
+| **Expenses** | Total expenses for the date range. Sum of monthly expenses (absolute value). | Neutral |
+| **Net** | Sales minus expenses. Profit if positive, loss if negative. | Green if positive, red if negative |
+| **Overdue AR** | Total balance of invoices 30+ days past due. Shows count of overdue invoices in the description (e.g., "12 invoice(s) 30+ days past due"). | Red (negative) |
+
+**Note:** Overdue AR is **not** filtered by date range — it shows all currently overdue invoices across the system. Sales and Expenses are filtered by the date range and Branch/Department.
+
+---
+
+## Charts
+
+### Sales & Expenses Overview
+
+A **bar chart** showing monthly sales and expenses side by side for each month in the date range. Each month has two bars:
+
+- **Sales** — Gross sales (net) for that month
+- **Expenses** — Expenses for that month (displayed as positive)
+
+Hover over a bar to see the exact amount in a tooltip. The X-axis shows month labels (e.g., "Jan 2025"); the Y-axis shows amounts (abbreviated as "k" for thousands).
+
+### Sales (Gross)
+
+A **line chart** of monthly sales over the date range. Each point is the total sales for that month. Use to see sales trends over time.
+
+### Expenses
+
+A **line chart** of monthly expenses over the date range. Each point is the total expenses for that month. Use to see expense trends over time.
+
+**Chart behavior:** Sales and Expenses charts use the same underlying data as the Overview bar chart. They are filtered by the date range and Branch/Department. If no data exists for the range, the chart area shows "No sales or expenses data in date range."
+
+---
+
+## Customer Overdue Balance Table
+
+A table of invoices **30+ days past due**. Use this to follow up on past-due receivables.
+
+| Column | Description |
+|--------|-------------|
+| **Customer** | Customer name |
+| **Balance** | Outstanding balance (shown in red) |
+| **Invoice #** | Invoice number |
+| **Date** | Invoice date |
+
+The table header shows the total overdue amount: "Total: $X,XXX". The table scrolls if there are many rows (max height ~400px). If there are no overdue invoices, the message "No overdue invoices" appears.
+
+---
+
+## Filters
+
+### Date Range
+
+**Start** and **End** dates control which months appear in the charts and KPI totals.
+
+- **Default** — First day of current month last year through today (or end of current month). Example: If today is March 12, 2025, the default is April 1, 2024 through March 30, 2025.
+- **Sales & Expenses** — Only months within the range are included. Sales and Expenses are summed by month (SalesYear, SalesMonth) and aggregated for the chart.
+- **Overdue AR** — Not affected by date range; always shows current overdue status.
+
+### Branch / Department
+
+The Branch/Department filter narrows which sales and expenses appear in the charts and KPI cards.
+
+- **No branches selected** — All branches included.
+- **One or more branches selected** — Only sales and expenses with `SaleBranch` matching a selected branch are included.
+- **Departments** — If departments are selected within a branch, only rows with `SaleDept` matching a selected department are included.
+
+Overdue AR is **not** filtered by Branch/Department — it shows all overdue invoices.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload the data from the server. Use after changing the date range or Branch/Department filter. The button shows a loading spinner while data is fetching.
+
+---
+
+## Use Cases
+
+- **Monthly review** — Set the date range to the current month (or last month) and review Sales, Expenses, and Net. Compare to prior months using the line charts.
+- **Branch performance** — Select a branch (and optionally departments) to see sales and expenses for that location only.
+- **Year-over-year** — Set the range to the prior year (e.g., Jan 1–Dec 31 of last year) and compare to the current year.
+- **Overdue follow-up** — Use the Customer Overdue Balance table to identify customers with past-due invoices. Sort by balance or date to prioritize collections.
+- **Trend analysis** — Use the Sales and Expenses line charts to spot seasonal patterns or growth/decline over time.

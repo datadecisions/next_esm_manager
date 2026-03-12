@@ -1,10 +1,16 @@
 import { withSentryConfig } from '@sentry/nextjs';
+import { createMDX } from 'fumadocs-mdx/next';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
+  },
 };
 
-export default withSentryConfig(nextConfig, {
+const withMDX = createMDX({ configPath: 'source.config.mjs' });
+
+export default withSentryConfig(withMDX(nextConfig), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DateRangeInput } from "@/components/DateRangeInput";
 import { getEquipmentHistory } from "@/lib/api/equipment";
 import { getDispositionText } from "@/lib/api/work-order";
 
@@ -145,24 +145,16 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex-1 min-w-[120px]">
-                <Label className="text-xs">Start Date</Label>
-                <Input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div className="flex-1 min-w-[120px]">
-                <Label className="text-xs">End Date</Label>
-                <Input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
+              <DateRangeInput
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={(val) => setStartDate(val || "")}
+                onEndDateChange={(val) => setEndDate(val || "")}
+                onDebouncedChange={() => {}}
+                startLabel="Start Date"
+                endLabel="End Date"
+                inputClassName="mt-1 min-w-[120px]"
+              />
             </div>
 
             {loading ? (

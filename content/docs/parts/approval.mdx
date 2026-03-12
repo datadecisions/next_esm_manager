@@ -1,0 +1,202 @@
+---
+title: Parts Approval
+description: Approve or deny work order parts requests by work order, with comments back to the technician
+---
+
+## Overview
+
+Parts Approval lets you review and act on **parts requested from work orders**. Each row represents a work order with requested parts; you can drill into the work order, approve or deny individual parts, add private comments for denied lines, and see parts already approved on the work order.
+
+You can also bulk-approve **all requested parts across all visible work orders** with a single action.
+
+---
+
+## Filters & Search
+
+### Branch
+
+- **Branch** — Required. Use the shared `BranchDeptFilter` to select one or more branches.
+- When no branch is selected, the page prompts: *“Select one or more branches to view parts requests.”*
+
+### Search Work Orders
+
+- **Search** — Filters the list of work orders by:
+  - Work order number (WO No.)
+  - Serial number
+  - Customer / Ship name
+- Matching is case-insensitive and applied client-side to the loaded requests.
+
+---
+
+## Requests Table (Work Orders Requesting Parts)
+
+When branches are selected, the main table shows **work orders that have requested parts**.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **WO No.** | Work order number. Double-click to open the WO in a new tab. |
+| **Dispatch Date** | Date/time the work order was dispatched. |
+| **Equipment** | Serial number and Unit number. |
+| **Parts Requested** | Count of requested parts for the work order. |
+| **Comments** | First 40 characters of the work order comments (ellipsis when truncated). |
+
+### Row Behavior
+
+- **Single click** — Selects/deselects the row and opens the **Approve Parts** side dialog for that work order.
+- **Double-click** — Opens `/work-orders/{WONo}` in a new tab for a full work order view.
+
+### Empty States
+
+- **No branches selected** — Bordered message: *“Select one or more branches to view parts requests.”*
+- **No requests for selected branches** — Bordered message: *“There are no work orders requesting parts.”*
+
+---
+
+## Approve Parts Dialog (Per Work Order)
+
+Clicking a row opens a dialog titled **“Approve Parts for a Work Order”** with:
+
+### Work Order Header
+
+- **Customer / Ship Name** — Clickable link to the work order detail page in a new tab.
+- **Serial & Unit** — Serial number and unit number.
+- **Make / Model** — Basic equipment identifiers.
+- **Comments** — Optional comments from the WO (shown as a blockquote-style callout).
+
+---
+
+## Requested Parts Table
+
+The first table in the dialog lists **requested parts** (lines pending approval):
+
+| Column | Description |
+|--------|-------------|
+| **Action** | Approve / Deny buttons for each part. |
+| **Part #** | Requested part number (requested or resolved). |
+| **Description** | Part description (truncated with tooltip for long text). |
+| **Wh** | Warehouse code. |
+| **Qty** | Requested quantity. |
+| **Price** | Cost and Sell values for the part. |
+| **Markup** | Calculated margin percentage (Sell vs Cost). |
+
+### Approve / Deny Controls
+
+For each part:
+
+- **Approve** — Green button with check icon.
+  - Sets `approve = "APPROVE"`.
+  - On submit, calls `approvePart` with WO number, section/repair code, and pricing.
+- **Deny** — Red/destructive button with X icon.
+  - Sets `approve = "DENY"`.
+  - On submit, deletes the requested part with `deleteRequestedPart`.
+
+Row styling reflects the current decision:
+
+- **Approved** — Green-tinted background (approved).
+- **Denied** — Red-tinted background (denied).
+- **Untouched** — Neutral background.
+
+---
+
+## Denial Comments (Private Comments)
+
+If any requested part is marked **DENY**, submitting the form will:
+
+1. First open the **Private comments (for technician)** section (if not already open).
+2. Prompt you to enter a reason in a multiline text area.
+3. On confirmation, the comments are saved back to the work order via `updateWOCommentFields` so the technician can see the reason.
+
+The denial flow only completes when:
+
+- At least one denied part is present, and
+- Private comments have been confirmed via **Confirm & Submit**.
+
+---
+
+## Submit & Actions
+
+At the bottom of the dialog:
+
+- **Submit / Confirm & Submit** — Applies all APPROVE/DENY decisions for the selected work order:
+  - Approves selected parts via `approvePart`.
+  - Deletes denied requested parts via `deleteRequestedPart`.
+  - Optionally updates private comments when denials are present.
+  - Refreshes the requests list and closes the dialog on success.
+- **Add Part** — Opens an `AddPartDialog` to add a new part to the work order directly from Approval.
+  - On success, the dialog reloads current and approved parts.
+
+You can only submit when there is at least one part marked as APPROVE or DENY.
+
+---
+
+## Approved Parts on Work Order
+
+Below the requested parts, an **Approved Parts on WO** table shows parts already on the work order:
+
+| Column | Description |
+|--------|-------------|
+| **Action** | Trash icon to remove part from the work order. |
+| **Part #** | Part number. |
+| **Description** | Part description. |
+| **Wh** | Warehouse. |
+| **Qty** | Quantity. |
+| **Sell** | Sell price. |
+
+- Clicking the trash icon calls `deletePart` to remove the part from the work order.
+- On success, the panel reloads and the main requests list is refreshed.
+
+---
+
+## Approve All (Bulk)
+
+From the top card (above the table), when there are parts requesting approval:
+
+- **Approve All (N parts)** — Approves **all requested parts** across all work orders in the list.
+  - Iterates all `requests` and their `Parts`.
+  - Calls `approvePart` for each line.
+  - Shows a toast with the total count approved: *“Approved N part(s).”*
+  - Clears the selection and reloads the requests table.
+
+Use this when you want to **approve everything** without per-line review.
+
+---
+
+## Workflow Examples
+
+### Approve All Parts on a Single Work Order
+
+1. Select **Branch**.
+2. Optionally **Search** for a specific work order.
+3. Click the row to open the Approve Parts dialog.
+4. Leave each part as **Approve** (default).
+5. Click **Submit**.
+
+### Approve and Deny with Comments
+
+1. Select **Branch**.
+2. Open the work order from the table.
+3. In the **Requested Parts** table:
+   - Approve valid lines.
+   - Set Deny on lines that should not be added.
+4. Click **Submit** — this opens the **Private comments** section.
+5. Enter a reason for the denial.
+6. Click **Confirm & Submit** to apply decisions and save comments.
+
+### Clean Up Approved Lines
+
+1. Open the work order in the Approve Parts dialog.
+2. Scroll to **Approved Parts on WO**.
+3. Click the trash icon on a part to remove it.
+4. The list refreshes after each remove.
+
+---
+
+## Use Cases
+
+- **Dispatcher/manager review** — Quickly approve or deny requested parts before they are added to the work order.
+- **Pricing oversight** — Check cost/sell/markup before approval.
+- **Communicating denials** — Use private comments to explain why a part was denied.
+- **Daily sweep** — Use **Approve All (N parts)** to clear the queue when you’re comfortable approving everything. 
+

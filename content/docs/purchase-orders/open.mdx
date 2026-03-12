@@ -1,0 +1,71 @@
+---
+title: Open Purchase Orders
+description: View and manage open purchase orders by branch and department
+---
+
+## Overview
+
+Open Purchase Orders shows all open (unclosed) purchase orders for a selected branch and department. Use it to review POs, check vendor promises, and navigate to PO detail for editing. You can filter by branch and department, search by PO # or vendor, and use infinite scroll to load more results.
+
+---
+
+## Filters
+
+### Branch / Department
+
+Click **Branch / Dept** to show the Branch/Department filter. Select:
+
+- **Branch** — Required. Select a branch to load its open POs.
+- **Department** — Optional. Select a specific department, or use "Select All" to include all departments. When "Select All" or no department is selected, POs from all departments in the branch are merged (deduplicated by PO #).
+
+**Requirement:** A branch must be selected. If none is selected, the message "Select a branch to view open purchase orders" appears.
+
+### Search
+
+- **Search combobox** — Search by PO # or vendor name. Select a result to open that PO. The combobox excludes closed POs (`includeClosed: false`).
+- **Filter table** — Text input to filter the table by PO #, vendor name, or comments. Filters the displayed rows as you type.
+- **Go to PO #** — Enter a PO number and click **Go** to navigate directly to that PO.
+
+---
+
+## Table
+
+The table lists open purchase orders. Each row is clickable — click to open the PO detail page.
+
+| Column | Description |
+|--------|-------------|
+| **PO #** | Purchase order number. Shown in cyan; clickable. |
+| **Vendor** | Vendor name. |
+| **Amount** | Total PO amount. Shown in green. |
+| **Line Items** | Number of line items. |
+| **Vendor Date** | Vendor promise date. "Added" date shown below if available. |
+| **Comments** | PO comments. Truncated with ellipsis; hover for full text. |
+
+### Infinite Scroll
+
+The table loads 50 rows initially. Scroll down to load more (50 at a time). A footer shows "Showing X of Y purchase orders" and "Scroll down to load more" when more rows are available.
+
+---
+
+## Empty State
+
+When a branch is selected but no open POs exist:
+
+- **Message** — "No open purchase orders found."
+- **Subtext** — "Try adjusting your filters or create a new PO."
+
+---
+
+## Data Source
+
+Open POs are loaded from `getOpenPurchaseOrders(dept, branch, token)`. When a single department is selected, one API call is made. When "Select All" is used, the app fetches POs for each department and merges them, removing duplicates by PO #.
+
+---
+
+## Use Cases
+
+- **Review open POs** — See all open POs for a branch or department.
+- **Check vendor promises** — Use the Vendor Date column to see when vendors expect to ship.
+- **Quick navigation** — Use Search or Go to PO # to open a specific PO.
+- **Filter by vendor** — Use the Filter table input to narrow by vendor name.
+- **Department workload** — Filter by department to see POs for a specific department.

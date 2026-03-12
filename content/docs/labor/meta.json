@@ -1,0 +1,4 @@
+{
+  "title": "Labor Manager",
+  "pages": ["approval", "timecards", "kpi"]
+}

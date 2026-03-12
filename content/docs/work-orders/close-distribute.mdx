@@ -1,0 +1,106 @@
+---
+title: Close / Distribute Orders
+description: Print and distribute invoices, process paperwork-complete work orders, and search documents
+---
+
+## Overview
+
+Close / Distribute Orders is the central place for printing invoices, closing work orders with completed paperwork, and searching documents. It has three tabs:
+
+1. **Distribute** — Find and print invoices, or export Crown invoice files
+2. **Process** — View work orders with paperwork complete, pending close
+3. **Search** — Search and preview documents by type
+
+---
+
+## Distribute
+
+Find invoices in a date range and send them to print or export for Crown customers.
+
+### Workflow
+
+1. Select a **date range** (start and end dates)
+2. Optionally filter by **Branch/Department**
+3. Click **Search** to load invoices
+4. Review the list and select invoices via checkboxes
+5. Click **Distribute Selected** to send invoices to print
+6. For Crown customers, use **Get Crown Invoice File** to download a ZIP file
+
+### Invoice Types
+
+The **Type** column shows how each invoice will be sent:
+
+- **Print** — Invoice will be printed
+- **Email** — Invoice will be emailed
+- **Crown** — Crown customer; use Get Crown Invoice File to export
+
+### Status
+
+- **OK** — Problem Description and Corrective Action are complete (required for Crown customers)
+- **Needs attention** — Missing Problem Description or Corrective Action
+
+Click the status icon to open a panel and edit **Problem Description** and **Corrective Action** for Crown work orders.
+
+### Autoprint Client
+
+If available, use **Download Autoprint Client** to set up automatic printing.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| Type | Print, Email, or Crown |
+| Invoice # | Work order number (click to open) |
+| Ship To | Ship-to customer |
+| Bill To | Bill-to customer |
+| Status | OK or needs Problem Description / Corrective Action |
+| PO # | Purchase order |
+| Invoice Date | When the invoice was created |
+| Closed By | Who closed the order |
+
+---
+
+## Process
+
+Work orders with paperwork complete that are ready to be closed.
+
+### Workflow
+
+1. Select a **Branch** to load work orders
+2. Optionally search by WO number, customer, serial, technician, or comments
+3. Click a row to open the work order detail
+
+This tab shows work orders that have been marked paperwork complete and are pending close. Use it to review and navigate to orders that need final processing.
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| WO # | Work order number (click to open) |
+| Company | Ship-to name |
+| Technician | Assigned service van/technician |
+| Equipment | Serial and unit number |
+| Timeline | Opened date, dispatched date |
+| Comments | Order notes |
+
+---
+
+## Search
+
+Search and preview documents across different types.
+
+### Document Types
+
+- **Invoice / WO** — Work order invoices (search by customer # or invoice #)
+- **PO** — Purchase orders (search by PO #)
+- **Vendor** — Vendor documents
+- **AP Invoice** — Accounts payable invoices
+- **Customer** — Customer documents
+- **Equipment** — Equipment documents (search by serial, etc.)
+- **Mechanic** — Mechanic documents (search by mechanic #)
+
+### Workflow
+
+1. Select a **document type** tab
+2. Enter search criteria (for Invoice/WO, leave empty to see all)
+3. Click a row to preview the document in the right panel

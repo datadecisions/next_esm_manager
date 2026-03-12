@@ -1,0 +1,132 @@
+---
+title: Reports
+description: Balance Sheet and Cash Flow statements with expandable sections
+---
+
+## Overview
+
+Reports provides Balance Sheet and Cash Flow statements as of a selected month-end date. Use the **Balance Sheet** tab to view assets and liabilities, and the **Cash Flow** tab to view sales, costs, expenses, gross margin, and income. Both reports support expandable sections to drill from high-level totals down to individual accounts. Filter by branch to focus on a specific location.
+
+Data loads automatically when the page opens or when filters change. Click **Refresh** to reload.
+
+---
+
+## Tabs
+
+| Tab | Description |
+|-----|-------------|
+| **Balance Sheet** | Assets and Liabilities as of the month-end date. Expandable by type, section, and account. |
+| **Cash Flow** | Sales, costs, expenses, gross margin, and income. Expandable by activity and section. |
+
+---
+
+## Balance Sheet
+
+The Balance Sheet shows financial position as of the last day of the selected month. Amounts combine debits and credits; negative amounts appear in parentheses.
+
+### Structure
+
+The report is organized in a hierarchy:
+
+1. **Type** — Assets, Liabilities (top-level groups)
+2. **Section** — Subgroups within each type (e.g., "Current Assets", "Fixed Assets")
+3. **Account** — Individual account rows with Description and total
+
+### Expandable Sections
+
+- Click a **type** (Assets, Liabilities) to expand or collapse its sections.
+- Click a **section** to expand or collapse its individual accounts.
+- Chevron icons indicate state: down = expanded, right = collapsed.
+- Totals appear next to each expandable row.
+
+### Header
+
+**Balance Sheet**  
+*As of [Month] [Year]*
+
+The "As of" date is the last day of the selected month (e.g., "As of March 31, 2025").
+
+### Empty State
+
+If no data exists for the period, the message "No balance sheet data for this period" appears.
+
+---
+
+## Cash Flow
+
+The Cash Flow report shows sales, costs, expenses, and derived totals. It is organized into Operating Activities and Financial Activities.
+
+### Operating Activities
+
+| Section | Description |
+|--------|-------------|
+| **Sales** | Sales by section. Expand to see individual sales categories and amounts. |
+| **Costs** | Cost of sales by section. Expand to see cost categories. |
+| **Gross Margin** | Sales + Costs (typically costs are negative, so this is sales minus cost of goods sold). |
+
+### Financial Activities
+
+| Section | Description |
+|--------|-------------|
+| **Operating Expenses** | Expenses by section. Expand to see individual expense categories. |
+
+### Totals (Bottom of Report)
+
+| Line | Calculation |
+|------|-------------|
+| **Income Before Tax** | Sales + Costs + Expenses |
+| **Net Cash for Period** | Same as Income Before Tax (simplified cash flow view) |
+
+### Expandable Sections
+
+- **Operating Activities** — Expands to show Sales, Costs, and Gross Margin.
+- **Financial Activities** — Expands to show Operating Expenses.
+- **Sales**, **Costs**, **Operating Expenses** — Each can be expanded to show section-level breakdown (e.g., "Parts", "Labor", "Rental").
+
+### Header
+
+**Cash Flow**  
+*As of [Month] [Year]*
+
+---
+
+## Filters
+
+### Branch
+
+- **No branch selected** — All branches included.
+- **Branch selected** — Only data for that branch. Uses the primary (first) selected branch if multiple are chosen.
+
+The Branch filter applies to both Balance Sheet and Cash Flow.
+
+### Month / Year
+
+- **Month** — Dropdown (January–December). Select the month for the report.
+- **Year** — Dropdown (current year ± 3). Select the year.
+- **As-of date** — The report uses the **last day** of the selected month (e.g., March 31 for March).
+- **Default** — Current month and current year.
+
+Changing month or year reloads the data.
+
+---
+
+## Refresh
+
+Click **Refresh** to reload Balance Sheet and Cash Flow data from the server. Use after changing filters or if data may have been updated elsewhere.
+
+---
+
+## Amount Formatting
+
+- Positive amounts: `$1,234.56`
+- Negative amounts: `($1,234.56)` — parentheses indicate a credit or negative balance
+
+---
+
+## Use Cases
+
+- **Month-end close** — Run the Balance Sheet and Cash Flow as of month-end to verify totals before closing.
+- **Branch review** — Filter by branch to see financial position and cash flow for a specific location.
+- **Historical comparison** — Select prior months to compare assets, liabilities, sales, and expenses over time.
+- **Drill-down** — Expand sections to trace totals to individual accounts or categories.
+- **Audit support** — Use the expandable structure to verify that high-level totals roll up correctly from detail.

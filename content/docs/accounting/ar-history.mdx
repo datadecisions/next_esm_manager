@@ -1,0 +1,165 @@
+---
+title: AR History
+description: Search AR records by customer, invoice, or PO — view transaction history, aging, and customer details
+---
+
+## Overview
+
+AR History (Accounts Receivable Dashboard) lets you search AR records by customer, invoice number, or PO number. View transaction history grouped by invoice, export results to CSV, and when a customer is selected, view customer info, AR comments, and aging buckets. Use it to look up invoices, trace payments, reconcile AR, or review a customer's credit profile.
+
+The page uses a **two-column layout**: search filters and customer info on the left, results on the right. You must enter at least one filter and click **Search** to run a query.
+
+---
+
+## Search Filters (Left Panel)
+
+| Filter | Description |
+|--------|-------------|
+| **Customer #** | Search and select a customer. Type at least 2 characters. |
+| **PO #** | Purchase order number. Partial match supported. |
+| **Invoice #** | Invoice number. Partial match supported. |
+| **Date Range** | Shown when **History** is checked. Start and end dates to limit results. Default: first day of month 12 months ago through today. |
+
+**Requirement:** At least one filter must be set: Customer #, Invoice #, PO #, or Date Range (when History is enabled). Click **Search** to run the query.
+
+---
+
+## Results Options (Right Panel, Above Table)
+
+| Option | Description |
+|--------|-------------|
+| **Factura # w/ Apply To** | When checked, the Apply To # column shows the group identifier only on the first row of each invoice group. When unchecked, every row shows it. |
+| **History** | When checked, enables the date range filter and sends `showHistory: true` to the API. Use to include historical (closed/paid) records in the search. |
+| **Sort by** | Order results by **Apply To Inv #** (default), **Amount**, **Date**, or **Account #**. |
+| **Search** | Run the search. Disabled when no filters are set. |
+
+---
+
+## Results Table
+
+Results are **grouped by Apply To Invoice #** (the invoice the entry applies to). Each group can have multiple rows (e.g., invoice line + payment line).
+
+### Columns
+
+| Column | Description |
+|--------|-------------|
+| **Apply To #** | Invoice number the entry applies to. Shown per group (or per row if "Factura # w/ Apply To" is unchecked). |
+| **Amount** | Transaction amount. Positive = payment/credit; negative = invoice. Positive in black; negative in red. |
+| **Invoice #** | Invoice number for the row. |
+| **Check #** | Check number when applicable (e.g., for payments). |
+| **Date** | Entry date or effective date. |
+| **Entry Type** | Type of entry (e.g., Invoice, Payment, Credit). |
+| **Account #** | GL account number from the Chart of Accounts. |
+
+### Row Click
+
+Click a row to navigate to the work order detail page (`/work-orders/[id]`). Rows with a valid Apply To or Invoice number are clickable.
+
+### Footer
+
+A **Balance** row shows the sum of all Amount values (totalBalance). This is the net AR balance for the search results.
+
+---
+
+## Customer Info Card (Left Panel)
+
+When a customer is selected, a card appears below the search filters with:
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Customer name. |
+| **Address** | Address, City, State, Zip. |
+| **Phone** | Phone number. |
+| **Net 10 Limit** | Credit limit (from CreditLimit). |
+| **Hold Days** | Credit hold days. |
+| **Rating** | Credit rating. |
+| **Avg Days To Pay** | Average days to pay (from aging data). Shown when aging is available. |
+
+Edit and Print buttons appear on the card (functionality may vary).
+
+---
+
+## Customer Comments Tab (Left Panel)
+
+When a customer is selected, the **Customer Comments** tab shows a textarea for AR-related notes. Use it to record collection notes, payment arrangements, or other AR comments for the customer.
+
+- **Save Comments** — Saves the comments to the customer record. A success toast confirms the save.
+- Comments load automatically when you select a customer (from `getCustomerFullInfo`).
+
+---
+
+## Aging Tab (Left Panel)
+
+When a customer is selected, the **Aging** tab shows AR aging buckets:
+
+| Bucket | Description |
+|--------|-------------|
+| **Current** | Amount not yet due. |
+| **+30 Days** | 1–30 days past due. |
+| **+60 Days** | 31–60 days past due. |
+| **+90 Days** | 61–90 days past due. |
+| **+120 Days** | 91+ days past due. |
+| **Total Outstanding** | Sum of all buckets. |
+
+Aging is calculated as of today and is keyed by Bill To customer. If no aging data exists, "No aging data" is shown.
+
+---
+
+## Export
+
+Click **Export** in the header to download the search results as a CSV file. Columns: CustomerNo, InvoiceNo, ApplyToInvoiceNo, EntryType, EntryDate, EffectiveDate, Amount, CheckNo, AccountNo. The file is named `ar-history-YYYY-MM-DD.csv`. Export is disabled when there are no results.
+
+---
+
+## Empty States
+
+### Before Search
+
+When no search has been run:
+
+- **Message** — "Search AR records"
+- **Subtext** — "Use at least one filter: customer, invoice #, PO #, or date range. Click Search to run the query."
+
+### No Results
+
+When a search has run but no records match:
+
+- **Message** — "No AR records found"
+- **Subtext** — "Try adjusting filters or enabling History."
+- **Action** — Widen filters, enable History, or adjust the date range.
+
+### No Customer Selected (Comments / Aging)
+
+When the Comments or Aging tab is active but no customer is selected:
+
+- **Message** — "Select a customer to view comments and aging"
+
+---
+
+## Workflow: Search by Customer
+
+1. Select a **Customer** in the left panel.
+2. Optionally check **History** and set a **Date Range**.
+3. Click **Search**.
+4. Review results in the table. Use **Sort by** to reorder.
+5. Optionally view **Customer Info**, **Comments**, or **Aging** in the left panel.
+6. Click a row to open the work order, or click **Export** to download CSV.
+
+---
+
+## Workflow: Search by Invoice or PO
+
+1. Enter **Invoice #** or **PO #** in the search filters.
+2. Optionally add **Customer** or **Date Range** (with History) to narrow results.
+3. Click **Search**.
+4. Review results. Click a row to open the work order.
+
+---
+
+## Use Cases
+
+- **Invoice lookup** — Search by invoice # or PO # to find a specific transaction and its payment history.
+- **Customer AR review** — Select a customer to see all AR activity, aging, and comments in one place.
+- **Reconciliation** — Use the Balance total and grouped results to reconcile AR to the general ledger.
+- **Collections** — Use the Aging tab to identify overdue buckets and the Comments tab to record follow-up notes.
+- **Export for reporting** — Export results to CSV for external analysis or reporting.

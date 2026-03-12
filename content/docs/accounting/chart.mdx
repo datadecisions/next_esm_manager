@@ -1,0 +1,123 @@
+---
+title: Chart of Accounts
+description: Browse accounts with MTD and YTD totals, prior-year comparison, and create new accounts
+---
+
+## Overview
+
+Chart of Accounts displays a structured list of general ledger (GL) accounts with month-to-date (MTD) and year-to-date (YTD) activity. Use it to review account balances, compare current vs. prior fiscal year, search and sort accounts, and add new accounts to the chart.
+
+The page loads accounts with totals for the selected date range. MTD and YTD are calculated based on the **end date** of the range — the end date determines which month's MTD and YTD appear. Prior-year columns compare the same month and year-to-date from the previous fiscal year.
+
+---
+
+## Table Columns
+
+Each row represents one GL account. All columns are sortable — click a column header to sort; click again to reverse the order.
+
+| Column | Description |
+|--------|-------------|
+| **Description** | Account description (e.g., "Cash", "Accounts Receivable"). |
+| **Account No.** | Account number. Displayed in a badge. |
+| **Current MTD** | Month-to-date total for the selected month (the end date of your range). |
+| **Current YTD** | Year-to-date total through the end date. |
+| **Prior FY MTD** | Same month, prior fiscal year. Shows a percentage next to it when current MTD is non-zero — the % is (Prior MTD ÷ Current MTD) × 100. Green = prior was higher; red = prior was lower. |
+| **Prior FY YTD** | Year-to-date through the same month, prior fiscal year. Same percentage logic as Prior FY MTD. |
+
+### Understanding the Prior-Year Percentage
+
+The percentage next to Prior FY MTD and Prior FY YTD shows how the prior year compares to the current year:
+
+- **Green** — Prior year was higher (e.g., 120% means prior year had 20% more)
+- **Red** — Prior year was lower (e.g., 80% means prior year had 20% less)
+
+Use this to spot trends: accounts where current year is down vs. prior year will show a higher prior-year percentage.
+
+---
+
+## Date Range
+
+The **Start** and **End** date fields control which period's data is shown.
+
+- **End date** drives MTD and YTD: the month of the end date is used for Current MTD, and YTD runs from the start of the fiscal year through that end date.
+- **Start date** is used by the API to scope the data fetch; typically you set a range that includes the month you care about (e.g., first day of month to last day of month).
+- **Default** — First day of current month to last day of current month.
+
+After changing dates, click **Refresh** to reload the data.
+
+---
+
+## Search
+
+The search field filters the table by **account number** or **description**. Type any part of the account number or description; matching is case-insensitive. The table updates as you type. Clear the search to see all accounts again.
+
+---
+
+## Sorting
+
+Click any column header to sort by that column. Click again to toggle ascending/descending. Sortable columns:
+
+- **Description** — Alphabetical
+- **Account No.** — By account number
+- **Current MTD** — By current month-to-date amount
+- **Current YTD** — By current year-to-date amount
+- **Prior FY MTD** — By prior-year month-to-date amount
+- **Prior FY YTD** — By prior-year year-to-date amount
+
+The sort icon shows the active column and direction (up = ascending, down = descending).
+
+---
+
+## Refresh
+
+Click **Refresh** to reload the chart of accounts from the server. Use this after changing the date range or after creating a new account to see updated data.
+
+---
+
+## Create Account
+
+Click **Create** to open the Create Account dialog and add a new account to the chart.
+
+### Individual Account Info
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Account #** | Yes | Unique account number (e.g., 1100001). |
+| **GP Account #** | No | Optional Great Plains or external system account mapping. |
+| **Description** | Yes | Human-readable account name. |
+| **Type** | No | Account type code (e.g., A=Asset, L=Liability, S=Sales, E=Expense, C=Cost). |
+
+### Accounting Admin
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Section** | Yes | Report section (e.g., "Assets", "Sales"). |
+| **Section Group** | No | Optional grouping within the section. |
+| **Report Type** | Yes | Where the account appears: **Balance Sheet** or **Profit/Loss**. |
+
+### Options (Checkboxes)
+
+- **Controlled** — Mark as a controlled account (e.g., for approval workflows).
+- **Accounts Receivable** — AR account; used for customer receivables.
+- **Accounts Payable** — AP account; used for vendor payables.
+- **Cash Account** — Cash account; used for bank/cash tracking.
+
+Check the boxes that apply; leave unchecked if not applicable.
+
+### Workflow
+
+1. Click **Create**.
+2. Fill in required fields (Account #, Description, Section, Report Type).
+3. Optionally fill GP Account #, Type, Section Group, and set the option checkboxes.
+4. Click **Create Account** to save.
+5. The dialog closes and the table refreshes. Your new account appears in the list.
+
+---
+
+## Use Cases
+
+- **Review account activity** — Use the date range to see MTD/YTD for a specific month. Sort by Current YTD to find the largest accounts.
+- **Prior-year comparison** — Compare Current MTD/YTD to Prior FY MTD/YTD to see growth or decline. Use the percentage to quickly spot changes.
+- **Find an account** — Use search to locate an account by number or description.
+- **Add new accounts** — Use Create Account when setting up new GL accounts for new revenue streams, expense categories, or balance sheet items.
+- **Audit and reconciliation** — Verify account totals before closing a period or running financial reports.
