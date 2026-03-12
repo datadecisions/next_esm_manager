@@ -23,6 +23,10 @@ export function proxy(request) {
       if (pathname === "/sign-in") return NextResponse.redirect(new URL("/home", request.url));
       if (pathname === "/") return NextResponse.redirect(new URL("/home", request.url));
     }
+    // Unauthenticated: redirect root to sign-in so "/" never shows protected UI
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
     return NextResponse.next();
   }
 
