@@ -283,7 +283,7 @@ export default function ReconciliationPage() {
     } finally {
       setIsMatching(false);
     }
-  }, [selection, filters, token]);
+  }, [selection, token, debouncedDates.start, debouncedDates.end]);
 
   const unmatchSelected = useCallback(async () => {
     const acctIds = Array.from(selection.accounting);
@@ -361,7 +361,7 @@ export default function ReconciliationPage() {
     } finally {
       setIsMatching(false);
     }
-  }, [filtered, filters, token, loadData]);
+  }, [filtered, token, loadData, debouncedDates.start, debouncedDates.end, isMatching]);
 
   const exportCsv = useCallback(() => {
     const rows = [["Side", "Date", "Description", "Amount", "Status", "Account"]];

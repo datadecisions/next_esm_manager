@@ -99,7 +99,7 @@ export default function WorkOrderDocumentsDialog({
       }
     };
     loadContacts();
-  }, [open, wo?.ShipTo, wo?.BillTo, wo?.WONo, token]);
+  }, [open, wo?.ShipTo, wo?.BillTo, wo?.WONo, wo, token]);
 
   const handleRefresh = useCallback(async () => {
     await fetchDocs();

@@ -124,7 +124,7 @@ export default function PartsKPIPage() {
   const [requestsCount, setRequestsCount] = useState(0);
   const [showOutliers, setShowOutliers] = useState(true);
 
-  const branches = branchDeptFilter?.branches ?? [];
+  const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
 
   const fetchData = useCallback(async () => {
     if (!token) return;

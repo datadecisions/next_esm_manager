@@ -82,6 +82,14 @@ export default function ReportsPage() {
   const { token, isLoading: authLoading } = useAuth({ redirectToSignIn: true });
   const [branchDeptFilter, setBranchDeptFilter] = useBranchDeptFilter();
   const [dates, setDates] = useState(getDefaultDateRange);
+  const [debouncedDates, setDebouncedDates] = useState({
+    start: "",
+    end: "",
+    isValid: false,
+  });
+  const handleDebouncedChange = useCallback((start, end, isValid) => {
+    setDebouncedDates({ start, end, isValid });
+  }, []);
   const [loading, setLoading] = useState(false);
   const [invoices, setInvoices] = useState([]);
   const [openClosed, setOpenClosed] = useState([]);
@@ -112,7 +120,7 @@ export default function ReportsPage() {
         setLaborReport([]);
       })
       .finally(() => setLoading(false));
-  }, [token, debouncedDates.start, debouncedDates.end, debouncedDates.isValid]);
+  }, [token, debouncedDates]);
 
   useEffect(() => {
     queueMicrotask(() => fetchData());

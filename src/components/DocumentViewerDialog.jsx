@@ -282,6 +282,7 @@ export default function DocumentViewerDialog({
               />
             ) : blobUrl && fileType === "image" ? (
               <div className="flex-1 flex items-center justify-center min-h-0 overflow-auto">
+                {/* eslint-disable-next-line @next/next/no-img-element -- blob URL from object URL, not a static path */}
                 <img
                   src={blobUrl}
                   alt={selected.doc.FileName}

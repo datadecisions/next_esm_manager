@@ -184,7 +184,7 @@ export default function WorkOrderCreatePage() {
     getOpenOrdersForEquipment(serial, token)
       .then(setOpenOrders)
       .catch(() => setOpenOrders([]));
-  }, [token, equipments[0]?.SerialNo ?? equipments[0]?.serialNo]);
+  }, [token, primaryEquipment]);
 
 
   async function handleSubmit(e) {

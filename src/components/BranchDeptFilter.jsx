@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronDown, Loader2, Building2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +31,8 @@ export function BranchDeptFilter({ value, onChange, token, className }) {
   const [branchSearch, setBranchSearch] = useState("");
   const [deptSearch, setDeptSearch] = useState("");
 
-  const selectedBranches = value?.branches ?? [];
-  const selectedDepts = value?.depts ?? [];
+  const selectedBranches = useMemo(() => value?.branches ?? [], [value?.branches]);
+  const selectedDepts = useMemo(() => value?.depts ?? [], [value?.depts]);
   const selectAllDepts = value?.selectAllDepts ?? false;
 
   useEffect(() => {

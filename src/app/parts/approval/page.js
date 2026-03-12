@@ -86,7 +86,7 @@ export default function PartsApprovalPage() {
   const [deletingPartId, setDeletingPartId] = useState(null);
   const [approveAllProcessing, setApproveAllProcessing] = useState(false);
 
-  const branches = branchDeptFilter?.branches ?? [];
+  const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
 
   const loadRequests = useCallback(async () => {
     if (!token || branches.length === 0) {

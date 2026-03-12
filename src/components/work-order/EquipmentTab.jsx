@@ -48,7 +48,7 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
     setHourMeter(wo.HourMeter ?? "");
     setSpecStatus(wo.SpecStatus ? String(wo.SpecStatus) : NONE_VALUE);
     setServicePriority(wo.ServicePriority ? String(wo.ServicePriority) : NONE_VALUE);
-  }, [wo?.WONo]);
+  }, [wo]);
 
   useEffect(() => {
     if (!token) return;

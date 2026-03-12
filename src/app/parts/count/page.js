@@ -116,7 +116,7 @@ export default function PartsCountPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, activeCount?.InventoryID]);
+  }, [token, activeCount?.InventoryID, activeCount?.hideNew, activeCount?.hideZero]);
 
   useEffect(() => {
     loadParts();

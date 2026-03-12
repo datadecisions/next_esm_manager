@@ -62,7 +62,7 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
     setCountyTaxCode(wo.CountyTaxCode ? String(wo.CountyTaxCode) : NONE_VALUE);
     setCityTaxCode(wo.CityTaxCode ? String(wo.CityTaxCode) : NONE_VALUE);
     setLocalTaxCode(wo.LocalTaxCode ? String(wo.LocalTaxCode) : NONE_VALUE);
-  }, [wo?.WONo]);
+  }, [wo]);
 
   useEffect(() => {
     if (!token) return;

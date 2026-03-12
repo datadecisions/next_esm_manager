@@ -69,7 +69,7 @@ export default function LaborKPIPage() {
     setDebouncedDates({ start, end, isValid });
   }, []);
 
-  const branches = branchDeptFilter?.branches ?? [];
+  const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
   const branchNum = branches[0]?.Number ?? branches[0];
   const branchesParam = useMemo(
     () => branches.map((b) => b.Number ?? b).join(","),
@@ -138,7 +138,7 @@ export default function LaborKPIPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, branchNum, branchesParam, branches.length, debouncedDates.start, debouncedDates.end, debouncedDates.isValid]);
+  }, [token, branchNum, branchesParam, branches, debouncedDates]);
 
   useEffect(() => {
     loadData();

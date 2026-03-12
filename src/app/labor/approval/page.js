@@ -148,8 +148,8 @@ export default function LaborApprovalPage() {
     setDebouncedEffective({ start: date, end: date, isValid });
   }, []);
 
-  const branches = branchDeptFilter?.branches ?? [];
-  const selectedDepts = branchDeptFilter?.depts ?? [];
+  const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
+  const selectedDepts = useMemo(() => branchDeptFilter?.depts ?? [], [branchDeptFilter?.depts]);
   const selectAllDepts = branchDeptFilter?.selectAllDepts ?? false;
 
   const loadTechs = useCallback(async () => {
@@ -199,7 +199,7 @@ export default function LaborApprovalPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, branches, effectiveStart, effectiveEnd, selectedDepts, selectAllDepts]);
+  }, [token, branches, debouncedEffective.end, debouncedEffective.isValid, debouncedEffective.start, selectedDepts, selectAllDepts]);
 
   useEffect(() => {
     loadTechs();

@@ -309,12 +309,14 @@ export default function GanttPlanningView({ woNo, token }) {
 
   useEffect(() => {
     if (!woNo || !token) {
-      setTasks([]);
-      setLinks([]);
-      setLoading(false);
+      queueMicrotask(() => {
+        setTasks([]);
+        setLinks([]);
+        setLoading(false);
+      });
       return;
     }
-    setLoading(true);
+    queueMicrotask(() => setLoading(true));
     Promise.all([
       getProjectTasks(woNo, token),
       getProjectDependencies(woNo, token),

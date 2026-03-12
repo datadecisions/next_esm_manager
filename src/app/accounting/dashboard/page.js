@@ -144,7 +144,7 @@ export default function AccountingDashboardPage() {
   const [expenses, setExpenses] = useState([]);
   const [overdue, setOverdue] = useState([]);
 
-  const branches = branchDeptFilter?.branches ?? [];
+  const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
   const selectedBranchNumbers = useMemo(
     () => branches.map((b) => b.Number ?? b).filter(Boolean),
     [branches]

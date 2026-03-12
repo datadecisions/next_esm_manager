@@ -129,7 +129,7 @@ export default function ReportsPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, dateStr]);
+  }, [token, asOfDate]);
 
   useEffect(() => {
     fetchData();

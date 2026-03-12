@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -40,31 +40,29 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
     Section: "",
   });
 
+  const timeoutRef = useRef(null);
   const searchDebounce = useCallback(
-    (() => {
-      let t;
-      return (query, warehouse) => {
-        clearTimeout(t);
-        if (!query || query.length < 2) {
+    (query, warehouse) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (!query || query.length < 2) {
+        setSearchResults([]);
+        setShowSearchResults(false);
+        return;
+      }
+      timeoutRef.current = setTimeout(async () => {
+        if (!token) return;
+        setSearching(true);
+        try {
+          const results = await searchParts(query, warehouse || undefined, token);
+          setSearchResults(Array.isArray(results) ? results : []);
+          setShowSearchResults(true);
+        } catch {
           setSearchResults([]);
-          setShowSearchResults(false);
-          return;
+        } finally {
+          setSearching(false);
         }
-        t = setTimeout(async () => {
-          if (!token) return;
-          setSearching(true);
-          try {
-            const results = await searchParts(query, warehouse || undefined, token);
-            setSearchResults(Array.isArray(results) ? results : []);
-            setShowSearchResults(true);
-          } catch {
-            setSearchResults([]);
-          } finally {
-            setSearching(false);
-          }
-        }, 300);
-      };
-    })(),
+      }, 300);
+    },
     [token]
   );
 

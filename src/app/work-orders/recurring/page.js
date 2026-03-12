@@ -256,7 +256,7 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
         setDocuments([]);
       })
       .finally(() => setLoading(false));
-  }, [token, effectiveDates.start, effectiveDates.end, hideGM, branchDeptFilter]);
+  }, [token, effectiveDates.start, effectiveDates.end, hideGM]);
 
   useEffect(() => {
     fetchData();
@@ -669,7 +669,7 @@ function PMTab({ effectiveDates, search, setSearch, branchDeptFilter, token, rou
         setSchedules([]);
       })
       .finally(() => setLoading(false));
-  }, [token, effectiveDates.start, effectiveDates.end, branchDeptFilter]);
+  }, [token, effectiveDates.start, effectiveDates.end]);
 
   useEffect(() => {
     fetchData();
@@ -890,7 +890,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
         setSchedules([]);
       })
       .finally(() => setLoading(false));
-  }, [token, effectiveDates.start, effectiveDates.end, branchDeptFilter]);
+  }, [token, effectiveDates.start, effectiveDates.end]);
 
   useEffect(() => {
     fetchData();
