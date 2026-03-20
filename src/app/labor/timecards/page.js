@@ -73,9 +73,9 @@ function TimecardViewer({ imageId, fileName, onClose }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-slate-900"
+        className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-2xl"
       >
-        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <span className="truncate font-medium">{fileName || "Timecard"}</span>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={handleDownload} disabled={!url}>
@@ -87,15 +87,15 @@ function TimecardViewer({ imageId, fileName, onClose }) {
             </Button>
           </div>
         </div>
-        <div className="flex min-h-[60vh] items-center justify-center bg-slate-100 dark:bg-slate-800 p-4">
+        <div className="flex min-h-[60vh] items-center justify-center bg-muted/30 p-4">
           {loading && (
-            <div className="flex flex-col items-center gap-2 text-slate-500">
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <Loader2 className="h-10 w-10 animate-spin" />
               <span>Loading PDF...</span>
             </div>
           )}
           {error && (
-            <div className="text-center text-red-600 dark:text-red-400">{error}</div>
+            <div className="text-center text-destructive">{error}</div>
           )}
           {url && !error && (
             <iframe
@@ -183,28 +183,28 @@ function TechRow({ employee, startDate, endDate, searchQuery }) {
   if (!matchesSearch) return null;
 
   return (
-    <div className="border-b border-slate-200 last:border-b-0 dark:border-slate-700">
+    <div className="border-b border-border last:border-b-0">
       <div
         role="button"
         tabIndex={0}
         onClick={() => setExpanded(!expanded)}
         onKeyDown={(e) => e.key === "Enter" && setExpanded((x) => !x)}
-        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40"
       >
         {expanded ? (
-          <ChevronDown className="h-5 w-5 shrink-0 text-slate-500" />
+          <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground" />
         ) : (
-          <ChevronRight className="h-5 w-5 shrink-0 text-slate-500" />
+          <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
         )}
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-50 dark:bg-cyan-900/30">
-          <FolderOpen className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15">
+          <FolderOpen className="h-5 w-5 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="font-medium text-slate-900 dark:text-white truncate">
+          <div className="truncate font-medium text-foreground">
             {displayName}
           </div>
           {employee.DispatchName && (
-            <div className="text-sm text-slate-500 dark:text-slate-400 truncate">
+            <div className="truncate text-sm text-muted-foreground">
               {employee.DispatchName}
             </div>
           )}
@@ -224,7 +224,7 @@ function TechRow({ employee, startDate, endDate, searchQuery }) {
               )}
               Export ZIP
             </Button>
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-muted-foreground">
               {loading ? "..." : `${files.length} file${files.length !== 1 ? "s" : ""}`}
             </span>
           </div>
@@ -240,15 +240,15 @@ function TechRow({ employee, startDate, endDate, searchQuery }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/30">
+            <div className="border-t border-border/60 bg-muted/30 px-4 py-3">
               {loading && (
-                <div className="flex items-center gap-2 py-4 text-slate-500">
+                <div className="flex items-center gap-2 py-4 text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>Loading timecards...</span>
                 </div>
               )}
               {!loading && files.length === 0 && (
-                <div className="py-4 text-center text-slate-500 dark:text-slate-400">
+                <div className="py-4 text-center text-muted-foreground">
                   No timecard PDFs in this date range.
                 </div>
               )}
@@ -257,14 +257,14 @@ function TechRow({ employee, startDate, endDate, searchQuery }) {
                   {files.map((f) => (
                     <div
                       key={f.ID}
-                      className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800"
+                      className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2"
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2">
-                        <FileText className="h-4 w-4 shrink-0 text-cyan-600 dark:text-cyan-400" />
+                        <FileText className="h-4 w-4 shrink-0 text-primary" />
                         <span className="truncate text-sm font-medium">
                           {f.FileName || `Timecard ${f.ID}`}
                         </span>
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-muted-foreground">
                           {formatDate(f.DateAdded)}
                         </span>
                       </div>
@@ -357,14 +357,14 @@ export default function TimecardsPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -382,11 +382,11 @@ export default function TimecardsPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <FileText className="h-5 w-5" />
               Timecard Document Center
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               View signed timecard PDFs grouped by technician.
             </p>
           </div>
@@ -397,7 +397,7 @@ export default function TimecardsPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
                 <DateRangeInput
@@ -432,14 +432,14 @@ export default function TimecardsPage() {
               )}
 
               {!loading && employees.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   No technicians with timecard PDFs found.
                 </div>
               )}
 
               {!loading && employees.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
-                  <div className="bg-slate-50 dark:bg-slate-800/80 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                <div className="overflow-hidden rounded-lg border border-border bg-background">
+                  <div className="bg-muted/40 px-4 py-2 text-sm font-medium text-muted-foreground">
                     {filteredCount} technician{filteredCount !== 1 ? "s" : ""} with timecards
                   </div>
                   <div className="max-h-[60vh] overflow-y-auto">

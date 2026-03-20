@@ -391,21 +391,21 @@ export default function DistributeOrdersPage() {
   if (!token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-full bg-background text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="mb-8 flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/work-orders">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-foreground">
             Close / Distribute Orders
           </h1>
         </div>
@@ -418,7 +418,7 @@ export default function DistributeOrdersPage() {
           </TabsList>
 
           <TabsContent value="distribute" className="space-y-6">
-        <Card className="mb-6 dark:border-slate-700 dark:bg-slate-800/50">
+        <Card className="mb-6 border-border bg-card text-card-foreground">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Invoices Available to Print</CardTitle>
             <CardDescription>
@@ -458,7 +458,7 @@ export default function DistributeOrdersPage() {
           </CardContent>
         </Card>
 
-        <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+        <Card className="border-border bg-card text-card-foreground">
           <CardHeader className="flex flex-row items-center justify-between gap-4">
             <div>
               <CardTitle>Invoices</CardTitle>
@@ -468,7 +468,7 @@ export default function DistributeOrdersPage() {
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search"
                   value={search}
@@ -512,10 +512,10 @@ export default function DistributeOrdersPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : documents.length === 0 ? (
-              <p className="py-12 text-center text-slate-500 dark:text-slate-400">
+              <p className="py-12 text-center text-muted-foreground">
                 No invoices for the selected date range.
               </p>
             ) : (
@@ -532,13 +532,13 @@ export default function DistributeOrdersPage() {
                     <Upload className="h-4 w-4" /> Crown
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4 text-cyan-600 dark:text-cyan-400" /> OK
+                    <CheckCircle2 className="h-4 w-4 text-primary" /> OK
                   </span>
                   <span className="flex items-center gap-1.5">
                     <AlertCircle className="h-4 w-4 text-amber-500" /> Needs Problem Description / Corrective Action
                   </span>
                 </div>
-                <div className="max-h-[50vh] overflow-y-auto rounded-lg border dark:border-slate-700">
+                <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
                 <Table>
                   <TableHeader>
                     <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur">
@@ -628,7 +628,7 @@ export default function DistributeOrdersPage() {
                               onClick={() =>
                                 router.push(`/work-orders/${inv.InvoiceNo}`)
                               }
-                              className="text-cyan-600 hover:underline dark:text-cyan-400"
+                              className="text-primary hover:underline"
                             >
                               {inv.InvoiceNo}
                             </button>
@@ -649,7 +649,7 @@ export default function DistributeOrdersPage() {
                               title="Edit Problem Description / Corrective Action"
                             >
                               {inv.Status === "ok" ? (
-                                <CheckCircle2 className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
                               ) : (
                                 <AlertCircle className="h-4 w-4 text-amber-500" />
                               )}
@@ -687,7 +687,7 @@ export default function DistributeOrdersPage() {
           </TabsContent>
 
           <TabsContent value="process" className="space-y-6">
-            <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+            <Card className="border-border bg-card text-card-foreground">
               <CardHeader>
                 <CardTitle>Paperwork Complete Work Orders</CardTitle>
                 <CardDescription>
@@ -704,7 +704,7 @@ export default function DistributeOrdersPage() {
                     />
                   )}
                   <div className="relative flex-1 min-w-[200px]">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       placeholder="Search WOs..."
                       value={processSearch}
@@ -715,14 +715,14 @@ export default function DistributeOrdersPage() {
                 </div>
                 {processLoading ? (
                   <div className="flex justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   </div>
                 ) : processWOs.length === 0 ? (
-                  <p className="py-12 text-center text-slate-500 dark:text-slate-400">
+                  <p className="py-12 text-center text-muted-foreground">
                     No work orders for the selected branch.
                   </p>
                 ) : (
-                  <div className="max-h-[50vh] overflow-y-auto rounded-lg border dark:border-slate-700">
+                  <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur">
@@ -745,7 +745,7 @@ export default function DistributeOrdersPage() {
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); router.push(`/work-orders/${wo.WONo}`); }}
-                                className="text-cyan-600 hover:underline dark:text-cyan-400"
+                                className="text-primary hover:underline"
                               >
                                 {wo.WONo}
                               </button>
@@ -774,7 +774,7 @@ export default function DistributeOrdersPage() {
           </TabsContent>
 
           <TabsContent value="search" className="space-y-6">
-            <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+            <Card className="border-border bg-card text-card-foreground">
               <CardHeader>
                 <CardTitle>Document Search</CardTitle>
                 <CardDescription>
@@ -809,7 +809,7 @@ export default function DistributeOrdersPage() {
                     <div className="max-h-[40vh] overflow-y-auto rounded-lg border">
                       {docLoading ? (
                         <div className="flex justify-center py-12">
-                          <Loader2 className="h-6 w-6 animate-spin text-cyan-500" />
+                          <Loader2 className="h-6 w-6 animate-spin text-primary" />
                         </div>
                       ) : docGrid.length === 0 ? (
                         <p className="py-8 text-center text-sm text-muted-foreground">No documents found</p>
@@ -843,7 +843,7 @@ export default function DistributeOrdersPage() {
                     <Label>Preview</Label>
                     <div className="min-h-[40vh] rounded-lg border bg-muted/30 flex items-center justify-center">
                       {previewLoading ? (
-                        <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
                       ) : previewUrl ? (
                         <iframe src={previewUrl} title="Document preview" className="w-full h-[40vh] rounded" />
                       ) : (
@@ -872,7 +872,7 @@ export default function DistributeOrdersPage() {
               </p>
               <div>
                 <Label>Comments</Label>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {selectedInvoice.Comments || "—"}
                 </p>
               </div>
@@ -915,7 +915,6 @@ export default function DistributeOrdersPage() {
                 <Button
                   onClick={handleSavePanel}
                   disabled={savingPanel}
-                  className="bg-cyan-600 hover:bg-cyan-500"
                 >
                   {savingPanel ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

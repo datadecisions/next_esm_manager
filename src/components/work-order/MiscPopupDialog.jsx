@@ -96,29 +96,29 @@ export default function MiscPopupDialog({ open, onOpenChange, wo, billing, token
       <DialogContent size="wide" className="max-h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Cog className="h-5 w-5 text-cyan-500" />
+            <Cog className="h-5 w-5 text-primary" />
             Misc
           </DialogTitle>
         </DialogHeader>
 
-        <div className="overflow-auto flex-1 min-h-0 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border bg-card text-card-foreground">
           {isOpen ? (
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">Misc Charges</h3>
+                <h3 className="text-base font-semibold">Misc Charges</h3>
                 <Button size="sm" onClick={() => setShowAddMisc(true)} className="gap-2">
                   <Plus className="h-4 w-4" />
                   Add Misc Charge
                 </Button>
               </div>
               {loading ? (
-                <div className="flex items-center gap-2 py-8 text-slate-500">
+                <div className="flex items-center gap-2 py-8 text-muted-foreground">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   Loading…
                 </div>
               ) : miscItems.length === 0 ? (
                 <div className="py-4">
-                  <p className="text-slate-500 dark:text-slate-400 italic mb-3">No misc charges on this work order.</p>
+                  <p className="mb-3 italic text-muted-foreground">No misc charges on this work order.</p>
                   <Button size="sm" variant="outline" onClick={() => setShowAddMisc(true)} className="gap-2">
                     <Plus className="h-4 w-4" />
                     Add Misc Charge
@@ -126,27 +126,27 @@ export default function MiscPopupDialog({ open, onOpenChange, wo, billing, token
                 </div>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400 w-20"></th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Code</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
+                      <th className="w-20 px-4 py-2.5 text-left font-medium text-muted-foreground"></th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Code</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Description</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Date</th>
                       {showCost && (
-                        <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Cost</th>
+                        <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Cost</th>
                       )}
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Billed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {miscItems.map((item) => (
-                      <tr key={item.ID} className="border-b border-slate-100 dark:border-slate-700/50">
+                      <tr key={item.ID} className="border-b border-border/50">
                         <td className="py-2 px-4">
                           <div className="flex items-center gap-0.5">
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-slate-500 hover:text-cyan-600"
+                              className="h-8 w-8 text-muted-foreground hover:text-primary"
                               onClick={() => setEditEntry(item)}
                               title="Edit"
                             >
@@ -155,7 +155,7 @@ export default function MiscPopupDialog({ open, onOpenChange, wo, billing, token
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-red-500 hover:text-red-700"
+                              className="h-8 w-8 text-destructive hover:text-destructive/80"
                               onClick={() => handleDelete(item)}
                               disabled={deletingId === item.ID}
                               title="Delete"
@@ -168,26 +168,26 @@ export default function MiscPopupDialog({ open, onOpenChange, wo, billing, token
                             </Button>
                           </div>
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{getSaleCode(item)}</td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{formatDate(item.EntryDate)}</td>
+                        <td className="py-2 px-4 text-muted-foreground">{getSaleCode(item)}</td>
+                        <td className="py-2 px-4 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="py-2 px-4 text-muted-foreground">{formatDate(item.EntryDate)}</td>
                         {showCost && (
-                          <td className="py-2 px-4 text-right tabular-nums text-slate-600 dark:text-slate-400">
+                          <td className="py-2 px-4 text-right tabular-nums text-muted-foreground">
                             {item.Cost != null ? formatCurrency(item.Cost) : "—"}
                           </td>
                         )}
-                        <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                        <td className="py-2 px-4 text-right font-medium tabular-nums text-foreground">
                           {formatCurrency(item.Sell)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300" colSpan={showCost ? 5 : 4}>
+                    <tr className="border-t border-border bg-muted/40 font-medium">
+                      <td className="py-3 px-4 text-foreground" colSpan={showCost ? 5 : 4}>
                         Misc total
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                      <td className="py-3 px-4 text-right tabular-nums text-foreground">
                         {formatCurrency(miscSubTotal)}
                       </td>
                     </tr>
@@ -199,53 +199,53 @@ export default function MiscPopupDialog({ open, onOpenChange, wo, billing, token
             /* Closed WO – billing line items (M type) */
             <div className="p-4">
               {miscLineItems.length === 0 ? (
-                <p className="py-8 text-center text-slate-500 dark:text-slate-400">No misc charges on this work order.</p>
+                <p className="py-8 text-center text-muted-foreground">No misc charges on this work order.</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Type</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Item</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Qty</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Item</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Description</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Date</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Qty</th>
                       {showCost && (
-                        <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Cost</th>
+                        <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Cost</th>
                       )}
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Billed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {miscLineItems.map((item, i) => (
-                      <tr key={i} className="border-b border-slate-100 dark:border-slate-700/50">
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                      <tr key={i} className="border-b border-border/50">
+                        <td className="py-2 px-4 text-muted-foreground">
                           {item.CodeDescription || "Misc"} ({item.Code || item.EntryType || "M"})
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="py-2 px-4 text-muted-foreground">
                           {[item.ItemNo, item.ItemName].filter(Boolean).join(", ") || "—"}
                         </td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{formatDate(item.ItemDate)}</td>
-                        <td className="py-2 px-4 text-right tabular-nums text-slate-600 dark:text-slate-400">
+                        <td className="py-2 px-4 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="py-2 px-4 text-muted-foreground">{formatDate(item.ItemDate)}</td>
+                        <td className="py-2 px-4 text-right tabular-nums text-muted-foreground">
                           {item.Qty != null ? Number(item.Qty).toFixed(2) : "—"}
                         </td>
                         {showCost && (
-                          <td className="py-2 px-4 text-right tabular-nums text-slate-600 dark:text-slate-400">
+                          <td className="py-2 px-4 text-right tabular-nums text-muted-foreground">
                             {item.Cost != null && item.Cost !== "N/A" ? formatCurrency(item.Cost) : (item.Cost ?? "—")}
                           </td>
                         )}
-                        <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                        <td className="py-2 px-4 text-right font-medium tabular-nums text-foreground">
                           {formatCurrency(item.Extended)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300" colSpan={showCost ? 5 : 4}>
+                    <tr className="border-t border-border bg-muted/40 font-medium">
+                      <td className="py-3 px-4 text-foreground" colSpan={showCost ? 5 : 4}>
                         Misc total
                       </td>
-                      <td colSpan={showCost ? 2 : 1} className="py-3 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                      <td colSpan={showCost ? 2 : 1} className="py-3 px-4 text-right tabular-nums text-foreground">
                         {formatCurrency(miscSubTotal)}
                       </td>
                     </tr>

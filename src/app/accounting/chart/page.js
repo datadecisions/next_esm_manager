@@ -198,14 +198,14 @@ export default function ChartOfAccountsPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -224,10 +224,10 @@ export default function ChartOfAccountsPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Chart of Accounts
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Structured list of accounts to organize financial information.
               </p>
             </div>
@@ -245,7 +245,7 @@ export default function ChartOfAccountsPage() {
               onDebouncedChange={handleDebouncedChange}
               startLabel=""
               endLabel=""
-              inputClassName="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 w-auto"
+              inputClassName="rounded-lg border border-input bg-background px-3 py-2 text-sm w-auto"
             />
             <Button
               variant="outline"
@@ -275,11 +275,11 @@ export default function ChartOfAccountsPage() {
           token={token}
         />
 
-        <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+        <Card className="rounded-2xl border border-border/80 overflow-hidden">
           <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-cyan-500" />
+                <BookOpen className="h-5 w-5 text-primary" />
                 Accounts
               </CardTitle>
               <div className="relative w-full sm:w-72">
@@ -299,7 +299,7 @@ export default function ChartOfAccountsPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : !accounts.length ? (
               <p className="py-16 text-center text-sm text-muted-foreground">
@@ -373,7 +373,7 @@ export default function ChartOfAccountsPage() {
                           {account.Description ?? "—"}
                         </TableCell>
                         <TableCell>
-                          <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs dark:bg-slate-800">
+                          <span className="inline-flex items-center rounded-md bg-muted/20 px-2 py-0.5 font-mono text-xs">
                             {account.AccountNo ?? "—"}
                           </span>
                         </TableCell>
@@ -391,8 +391,8 @@ export default function ChartOfAccountsPage() {
                             <span
                               className={`ml-1 text-xs ${
                                 account.calculations.diffMTD < 0
-                                  ? "text-rose-600 dark:text-rose-400"
-                                  : "text-emerald-600 dark:text-emerald-400"
+                                  ? "text-destructive"
+                                  : "text-primary"
                               }`}
                             >
                               {formatPercent(account.calculations.diffMTD)}
@@ -407,8 +407,8 @@ export default function ChartOfAccountsPage() {
                             <span
                               className={`ml-1 text-xs ${
                                 account.calculations.diffYTD < 0
-                                  ? "text-rose-600 dark:text-rose-400"
-                                  : "text-emerald-600 dark:text-emerald-400"
+                                  ? "text-destructive"
+                                  : "text-primary"
                               }`}
                             >
                               {formatPercent(account.calculations.diffYTD)}

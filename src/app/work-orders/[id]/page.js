@@ -337,30 +337,30 @@ export default function WorkOrderDetailPage() {
   const fixedDisplayValue = fixedLineItems.length > 0 ? "Flat Rate" : "None";
   const statusColor =
     dispositionText === "Open" || dispositionText === "Accepted" || dispositionText === "Quote"
-      ? "bg-cyan-50 border-cyan-200 text-cyan-800 dark:bg-cyan-950/50 dark:border-cyan-800 dark:text-cyan-300"
+      ? "bg-primary/10 border-primary/30 text-primary"
       : dispositionText === "Closed"
-        ? "bg-slate-100 border-slate-300 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
+        ? "bg-muted border-border text-muted-foreground"
         : dispositionText === "Rejected"
           ? "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:text-red-300"
           : dispositionText === "Voided"
-            ? "bg-slate-100 border-slate-400 text-slate-500 dark:bg-slate-800 dark:border-slate-500 dark:text-slate-500"
-            : "bg-slate-100 border-slate-300 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+            ? "bg-muted border-border text-muted-foreground"
+            : "bg-muted border-border text-muted-foreground";
 
   if (loading) {
     return (
-      <div className="min-h-full bg-linear-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+      <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-8">
             <Button variant="ghost" size="icon" onClick={() => router.push("/work-orders")}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
               Work Order #{id}
             </h1>
           </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-12 dark:border-slate-700/50 dark:bg-slate-800/50 animate-pulse">
-            <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-4" />
-            <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3" />
+          <div className="rounded-2xl border border-border/80 bg-card p-12 animate-pulse">
+            <div className="h-6 bg-muted rounded w-1/3 mb-4" />
+            <div className="h-4 bg-muted rounded w-2/3" />
           </div>
         </div>
       </div>
@@ -369,7 +369,7 @@ export default function WorkOrderDetailPage() {
 
   if (error || !wo) {
     return (
-      <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+      <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-8">
             <Button variant="ghost" size="icon" onClick={() => router.push("/work-orders")}>
@@ -389,7 +389,7 @@ export default function WorkOrderDetailPage() {
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
       initial={fadeInUp.initial}
       animate={fadeInUp.animate}
       transition={fadeInUp.transition}
@@ -402,7 +402,7 @@ export default function WorkOrderDetailPage() {
           </Button>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
                 Work Order #{wo.WONo}
               </h1>
               <span
@@ -411,7 +411,7 @@ export default function WorkOrderDetailPage() {
                 {dispositionText || "N/A"}
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-sm sm:text-base text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-sm sm:text-base text-muted-foreground">
               {wo.PONo && <span>PO: {wo.PONo}</span>}
               {wo.AuthorizedBy && <span>Auth: {wo.AuthorizedBy}</span>}
               {(dispositionText === "Closed" || dispositionText === "Voided") && (closedDate || wo.ClosedBy) ? (
@@ -432,49 +432,49 @@ export default function WorkOrderDetailPage() {
           <div className="lg:col-span-2 flex flex-col gap-6 min-h-0">
             {/* Addresses */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-                <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2 mb-3">
-                  <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+              <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
+                <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2 mb-3">
+                  <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                   Shipping
                 </h3>
-                <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300">
+                <p className="text-sm sm:text-base font-medium text-foreground">
                   Branch {wo.SaleBranch} · Dept {wo.SaleDept} · Code {wo.SaleCode}
                 </p>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">
                   {wo.ShipName || wo.ShipTo}
                 </p>
                 {wo.ShipAddress && (
-                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     {[wo.ShipAddress, wo.ShipCity, wo.ShipState, wo.ShipZipCode]
                       .filter(Boolean)
                       .join(", ")}
                   </p>
                 )}
               </div>
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-                <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2 mb-3">
-                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+              <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
+                <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2 mb-3">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                   Billing
                 </h3>
                 {(hasExpenseInfo(wo) || billToCustomer) ? (
                   <>
                     {hasExpenseInfo(wo) && (
-                      <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300">
+                      <p className="text-sm sm:text-base font-medium text-foreground">
                         Branch {wo.ExpBranch ?? "—"} · Dept {wo.ExpDept ?? "—"} · Code {wo.ExpCode ?? "—"}
                       </p>
                     )}
                     {billToCustomer && (
                       <div className="mt-2 space-y-0.5">
-                        <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300">
+                        <p className="text-sm sm:text-base font-medium text-foreground">
                           {billToCustomer.Name ?? billToCustomer.name ?? ""} #{billToCustomer.Number ?? billToCustomer.number ?? wo.BillTo}
                         </p>
                         {((billToCustomer.Address ?? billToCustomer.address) || (billToCustomer.POBox ?? billToCustomer.poBox)) && (
-                          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                          <p className="text-sm sm:text-base text-muted-foreground">
                             {[billToCustomer.Address ?? billToCustomer.address, billToCustomer.POBox ?? billToCustomer.poBox].filter(Boolean).join(" ")}
                           </p>
                         )}
                         {(billToCustomer.City ?? billToCustomer.city) && (
-                          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                          <p className="text-sm sm:text-base text-muted-foreground">
                             {[billToCustomer.City ?? billToCustomer.city, billToCustomer.State ?? billToCustomer.state, billToCustomer.ZipCode ?? billToCustomer.zipCode].filter(Boolean).join(", ")}
                           </p>
                         )}
@@ -482,60 +482,60 @@ export default function WorkOrderDetailPage() {
                     )}
                   </>
                 ) : (
-                  <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">—</p>
+                  <p className="text-sm sm:text-base text-muted-foreground">—</p>
                 )}
               </div>
             </div>
 
             {/* Equipment */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-              <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2 mb-4">
-                <Tractor className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+            <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
+              <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2 mb-4">
+                <Tractor className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 Equipment
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Serial No.</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Serial No.</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.SerialNo || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Unit</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Unit</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.UnitNo || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Model Group</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Model Group</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.ModelGroup || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Make</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Make</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.Make || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Model</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Model</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.Model || "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Hour Meter (Key)</p>
-                  <p className="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200 mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Hour Meter (Key)</p>
+                  <p className="text-sm sm:text-base font-medium text-foreground mt-0.5">
                     {wo.HourMeter ?? "—"}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+                  className="text-muted-foreground hover:text-primary"
                   onClick={() => setShowHistory(true)}
                 >
                   <History className="h-4 w-4 mr-2" />
@@ -544,7 +544,7 @@ export default function WorkOrderDetailPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+                  className="text-muted-foreground hover:text-primary"
                   onClick={() => setActiveTab("equipment")}
                 >
                   <Construction className="h-4 w-4 mr-2" />
@@ -556,10 +556,10 @@ export default function WorkOrderDetailPage() {
             {/* Quick totals - row under equipment */}
             <div className="space-y-2">
               <div>
-                <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200">
+                <h3 className="font-semibold text-base sm:text-lg text-foreground">
                   Quick totals
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Click Parts, Labor, Misc, Equipment, or Fixed Price to view details
                 </p>
               </div>
@@ -569,7 +569,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowPartsPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowPartsPopup(true)}
-                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-primary/40 hover:bg-accent/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <SummaryCard
                     icon={Package}
@@ -584,7 +584,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowLaborPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowLaborPopup(true)}
-                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-primary/40 hover:bg-accent/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <SummaryCard
                     icon={Wrench}
@@ -600,7 +600,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowMiscPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowMiscPopup(true)}
-                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-primary/40 hover:bg-accent/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <SummaryCard icon={Cog} label="Misc" value={formatCurrency(sales.misc)} compact interactive />
                 </div>
@@ -609,7 +609,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowEquipmentPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowEquipmentPopup(true)}
-                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-primary/40 hover:bg-accent/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <SummaryCard icon={Tractor} label="Equipment" value={formatCurrency(sales.equipment)} compact interactive />
                 </div>
@@ -618,7 +618,7 @@ export default function WorkOrderDetailPage() {
                   tabIndex={0}
                   onClick={() => setShowFixedPopup(true)}
                   onKeyDown={(e) => e.key === "Enter" && setShowFixedPopup(true)}
-                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-cyan-200 hover:bg-cyan-50/50 dark:hover:border-cyan-700 dark:hover:bg-cyan-950/20 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                  className="cursor-pointer transition-colors rounded-lg border-2 border-transparent hover:border-primary/40 hover:bg-accent/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <SummaryCard icon={Quote} label="Fixed Price" value={fixedDisplayValue} compact interactive />
                 </div>
@@ -647,16 +647,16 @@ export default function WorkOrderDetailPage() {
             </div>
 
             {/* Documents card */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+            <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+                <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                   Documents
                 </h3>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950/50"
+                  className="text-primary hover:text-primary/90 hover:bg-accent/50"
                   onClick={() => setShowDocumentsPopup(true)}
                 >
                   <FileText className="h-4 w-4 mr-1.5" />
@@ -669,8 +669,8 @@ export default function WorkOrderDetailPage() {
                 onDrop={handleDocumentsDrop}
                 className={`relative rounded-xl border-2 border-dashed transition-colors ${
                   documentsDragOver
-                    ? "border-cyan-400 bg-cyan-50/50 dark:border-cyan-500 dark:bg-cyan-950/30"
-                    : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
+                    ? "border-primary/50 bg-accent/40"
+                    : "border-border hover:border-border/80"
                 } ${documentsUploading ? "pointer-events-none opacity-70" : ""}`}
               >
                 <label className="block cursor-pointer p-6 sm:p-8 text-center">
@@ -681,8 +681,8 @@ export default function WorkOrderDetailPage() {
                     accept="image/*,.pdf"
                     onChange={handleDocumentsFileSelect}
                   />
-                  <Upload className="h-8 w-8 mx-auto mb-2 text-slate-400 dark:text-slate-500" />
-                  <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm font-medium text-muted-foreground">
                     {documentsUploading ? "Uploading…" : "Drag files here or click to upload"}
                   </p>
                 </label>
@@ -692,17 +692,17 @@ export default function WorkOrderDetailPage() {
 
           {/* Right column: Comments - fixed max height so card does not grow; content scrolls */}
           <div className="lg:col-span-1 flex flex-col min-h-0">
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 flex-1 min-h-0 max-h-[min(80vh,950px)] flex flex-col overflow-y-auto">
+            <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm flex-1 min-h-0 max-h-[min(80vh,950px)] flex flex-col overflow-y-auto">
                 {/* General Comments */}
                 <div className="flex flex-col min-h-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+                        <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                           General Comments
                         </h3>
                         {originalComments != null && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:text-violet-300 ring-1 ring-violet-500/30 dark:ring-violet-400/30">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-violet-500/20 to-fuchsia-500/20 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:text-violet-300 ring-1 ring-violet-500/30 dark:ring-violet-400/30">
                             <Sparkles className="h-3 w-3" />
                             AI Enhanced
                           </span>
@@ -728,7 +728,7 @@ export default function WorkOrderDetailPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-accent/40"
                           onClick={() => copyToClipboard(wo.Comments)}
                           title={commentsCopied ? "Copied!" : "Copy to clipboard"}
                         >
@@ -743,14 +743,14 @@ export default function WorkOrderDetailPage() {
                     <Textarea
                       value={wo.Comments ?? ""}
                       onChange={(e) => setWo((prev) => (prev ? { ...prev, Comments: e.target.value } : null))}
-                      className={`text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700 ${originalComments != null ? "border-violet-200/60 bg-violet-50/30 dark:border-violet-500/20 dark:bg-violet-950/20" : ""}`}
+                      className={`text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-input ${originalComments != null ? "border-violet-200/60 bg-violet-50/30 dark:border-violet-500/20 dark:bg-violet-950/20" : ""}`}
                     />
-                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2 min-w-0">
+                    <div className="mt-3 pt-3 border-t border-border flex flex-wrap items-center gap-2 min-w-0">
                       <Button
                         onClick={handleProcessComment}
                         disabled={processingComment || !!originalComments}
                         title="Transform rough notes into professional, formatted service descriptions using AI"
-                        className="h-8 gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 text-xs font-semibold text-white shadow-md shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-fuchsia-500 hover:shadow-lg hover:shadow-violet-500/30 disabled:opacity-50 disabled:hover:shadow-md shrink-0"
+                        className="h-8 gap-1.5 rounded-lg bg-linear-to-r from-violet-600 to-fuchsia-600 px-3 text-xs font-semibold text-white shadow-md shadow-violet-500/25 transition-all hover:from-violet-500 hover:to-fuchsia-500 hover:shadow-lg hover:shadow-violet-500/30 disabled:opacity-50 disabled:hover:shadow-md shrink-0"
                       >
                         <Sparkles className={`h-3.5 w-3.5 shrink-0 ${processingComment ? "animate-spin" : ""}`} />
                         {processingComment ? "Enhancing…" : "AI Enhance"}
@@ -759,7 +759,7 @@ export default function WorkOrderDetailPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:text-cyan-400 dark:hover:bg-cyan-950/50 shrink-0"
+                          className="h-8 text-muted-foreground hover:text-primary hover:bg-accent/40 shrink-0"
                           onClick={handleUndoComment}
                           disabled={savingEnhancedComment}
                         >
@@ -773,8 +773,8 @@ export default function WorkOrderDetailPage() {
                 {/* To Quote */}
                 <div className="flex flex-col min-h-0 flex-1 mt-6">
                     <div className="mb-3">
-                      <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <Quote className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+                      <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
+                        <Quote className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         To Quote
                       </h3>
                     </div>
@@ -782,9 +782,9 @@ export default function WorkOrderDetailPage() {
                       value={wo.MobileRecommended ?? ""}
                       onChange={(e) => setWo((prev) => (prev ? { ...prev, MobileRecommended: e.target.value } : null))}
                       onBlur={handleToQuoteBlur}
-                      className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700"
+                      className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-input"
                     />
-                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="mt-3 pt-3 border-t border-border">
                       <Button
                         variant="outline"
                         onClick={handleSaveToQuote}
@@ -807,8 +807,8 @@ export default function WorkOrderDetailPage() {
                 {/* Private Comments */}
                 <div className="flex flex-col min-h-0 flex-1 mt-6">
                     <div className="mb-3">
-                      <h3 className="font-semibold text-base sm:text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-500" />
+                      <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
+                        <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         Private Comments
                       </h3>
                     </div>
@@ -816,9 +816,9 @@ export default function WorkOrderDetailPage() {
                       value={wo.PrivateComments ?? ""}
                       onChange={(e) => setWo((prev) => (prev ? { ...prev, PrivateComments: e.target.value } : null))}
                       onBlur={handlePrivateCommentsBlur}
-                      className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-slate-200 dark:border-slate-700"
+                      className="text-sm sm:text-base resize-none whitespace-pre-wrap overflow-y-auto flex-1 min-h-[120px] border-input"
                     />
-                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="mt-3 pt-3 border-t border-border">
                       <Button
                         variant="outline"
                         onClick={handleSavePrivateComments}
@@ -843,7 +843,7 @@ export default function WorkOrderDetailPage() {
 
         {/* Tabbed section: Line Items, Order, Dispatch, etc. */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-          <TabsList className="flex flex-wrap h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+          <TabsList className="flex flex-wrap h-auto gap-1 bg-muted p-1 rounded-lg">
             <TabsTrigger value="details" className="gap-1.5">
               <ClipboardList className="h-4 w-4" />
               Line Items
@@ -1022,25 +1022,25 @@ function SummaryCard({ icon: Icon, label, value, sub, highlight, compact, muted,
       } ${
         highlight
           ? muted
-            ? "border-cyan-200/70 bg-cyan-50/80 dark:border-cyan-800/70 dark:bg-cyan-950/20"
-            : "border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/30"
+            ? "border-primary/35 bg-primary/8"
+            : "border-primary/40 bg-primary/10"
           : muted
-            ? "border-slate-200/60 bg-slate-50/90 dark:border-slate-700/40 dark:bg-slate-800/40"
-            : "border-slate-200/80 bg-white dark:border-slate-700/50 dark:bg-slate-800/50"
+            ? "border-border/70 bg-muted/60"
+            : "border-border/80 bg-card"
       }`}
     >
-      <div className={`font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5 ${compact ? "text-xs" : "text-xs sm:text-sm"}`}>
+      <div className={`font-medium text-muted-foreground flex items-center gap-1.5 ${compact ? "text-xs" : "text-xs sm:text-sm"}`}>
         <Icon className={`shrink-0 ${compact ? "h-3 w-3" : "h-3 w-3 sm:h-4 sm:w-4"}`} />
         <span>{label}</span>
-        {sub && <span className="text-slate-400 dark:text-slate-500">· {sub}</span>}
+        {sub && <span className="text-muted-foreground/80">· {sub}</span>}
         {interactive && (
-          <ChevronRight className="ml-auto h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+          <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground shrink-0" />
         )}
       </div>
       <p
         className={`font-semibold tabular-nums mt-0.5 ${
           compact ? "text-sm" : "text-sm sm:text-base"
-        } ${highlight ? "text-cyan-700 dark:text-cyan-300" : "text-slate-800 dark:text-slate-200"}`}
+        } ${highlight ? "text-primary" : "text-foreground"}`}
       >
         {value}
       </p>

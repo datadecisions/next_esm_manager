@@ -217,15 +217,15 @@ export default function ReportsPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-full bg-background text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" asChild>
               <Link href="/work-orders">
@@ -233,10 +233,10 @@ export default function ReportsPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-2xl font-semibold text-foreground">
                 Reports Dashboard
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Interactive charts and KPIs for work orders, revenue, and labor
               </p>
             </div>
@@ -261,7 +261,7 @@ export default function ReportsPage() {
               onDebouncedChange={handleDebouncedChange}
               startLabel=""
               endLabel=""
-              inputClassName="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 w-auto"
+              inputClassName="w-auto rounded-lg border border-input bg-background px-3 py-2 text-sm"
             />
             <Button
               variant="outline"
@@ -282,7 +282,7 @@ export default function ReportsPage() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
           </div>
         ) : (
           <>
@@ -322,10 +322,10 @@ export default function ReportsPage() {
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-cyan-500" />
+                    <TrendingUp className="h-5 w-5 text-primary" />
                     Revenue by Month
                   </CardTitle>
                   <CardDescription>
@@ -373,10 +373,10 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-cyan-500" />
+                    <FileText className="h-5 w-5 text-primary" />
                     Work Orders Closed by Month
                   </CardTitle>
                   <CardDescription>
@@ -419,10 +419,10 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Wrench className="h-5 w-5 text-cyan-500" />
+                    <Wrench className="h-5 w-5 text-primary" />
                     Labor Hours Billed by Month
                   </CardTitle>
                   <CardDescription>
@@ -465,10 +465,10 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-cyan-500" />
+                    <TrendingUp className="h-5 w-5 text-primary" />
                     Revenue by Department
                   </CardTitle>
                   <CardDescription>
@@ -534,10 +534,10 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-cyan-500" />
+                    <BarChart3 className="h-5 w-5 text-primary" />
                     Open vs Closed by Department
                   </CardTitle>
                   <CardDescription>
@@ -596,16 +596,16 @@ export default function ReportsPage() {
 
 function KpiCard({ title, value, icon: Icon, description }) {
   return (
-    <Card className="rounded-xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+    <Card className="overflow-hidden rounded-xl border border-border bg-card text-card-foreground">
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">{value}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
           </div>
-          <div className="rounded-lg bg-cyan-50 dark:bg-cyan-900/30 p-2">
-            <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+          <div className="rounded-lg bg-primary/15 p-2">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
         </div>
       </CardContent>

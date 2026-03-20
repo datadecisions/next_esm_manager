@@ -144,7 +144,7 @@ export function RestockPartsTable({ token, className }) {
                 type="checkbox"
                 checked={recentOnly}
                 onChange={(e) => setRecentOnly(e.target.checked)}
-                className="rounded border-slate-300"
+                className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               Recent only (used in last 2 days)
             </label>
@@ -153,26 +153,26 @@ export function RestockPartsTable({ token, className }) {
       </div>
 
       {!selectedBranch ? (
-        <div className="py-16 text-center text-muted-foreground rounded-lg border border-dashed dark:border-slate-700">
-          <Package className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
+        <div className="rounded-lg border border-dashed border-border py-16 text-center text-muted-foreground">
+          <Package className="mx-auto h-12 w-12 text-muted-foreground/60" />
           <p className="mt-2">Select a branch to view parts to order.</p>
         </div>
       ) : loading ? (
-        <div className="flex items-center justify-center gap-2 py-16 text-muted-foreground rounded-lg border dark:border-slate-700">
+        <div className="flex items-center justify-center gap-2 rounded-lg border border-border py-16 text-muted-foreground">
           <Loader2 className="h-6 w-6 animate-spin" />
           Loading parts to order...
         </div>
       ) : (
         <>
-          <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 overflow-hidden">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+            <div className="border-b border-border p-4">
+              <h2 className="text-xl font-semibold text-foreground">
                 Create Restock Purchase Order
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-x divide-slate-200 dark:divide-slate-700">
+            <div className="grid grid-cols-1 divide-x divide-border md:grid-cols-2">
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                <h3 className="mb-4 text-lg font-semibold text-foreground">
                   Part Groups Needing Restock
                 </h3>
                 <div className="space-y-4 max-h-[50vh] overflow-auto">
@@ -182,12 +182,12 @@ export function RestockPartsTable({ token, className }) {
                     partGroups.map((partGroup) => (
                       <div
                         key={partGroup}
-                        className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden"
+                        className="overflow-hidden rounded-lg border border-border bg-background"
                       >
-                        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/80 font-medium text-slate-900 dark:text-white">
+                        <div className="bg-muted/40 px-4 py-2 font-medium text-foreground">
                           {partGroup}
                         </div>
-                        <ul className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        <ul className="divide-y divide-border/60">
                           {(groupedOrders[partGroup]?.warehouses ?? []).map((warehouse) => {
                             const sel = isSelected(partGroup, warehouse);
                             return (
@@ -195,8 +195,8 @@ export function RestockPartsTable({ token, className }) {
                                 key={warehouse}
                                 onClick={() => addOrRemovePartGroup(partGroup, warehouse)}
                                 className={cn(
-                                  "px-4 py-2 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50",
-                                  sel && "bg-cyan-50 dark:bg-cyan-950/30 font-medium"
+                                  "cursor-pointer px-4 py-2 transition-colors hover:bg-muted/40",
+                                  sel && "bg-primary/10 font-medium text-foreground"
                                 )}
                               >
                                 {warehouse}
@@ -211,7 +211,7 @@ export function RestockPartsTable({ token, className }) {
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Part Groups Included in Reorder
                   </h3>
                   <Button
@@ -233,16 +233,16 @@ export function RestockPartsTable({ token, className }) {
                       warehouses?.length ? (
                         <div
                           key={partGroup}
-                          className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden"
+                          className="overflow-hidden rounded-lg border border-border bg-background"
                         >
-                          <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/80 font-medium text-slate-900 dark:text-white">
+                          <div className="bg-muted/40 px-4 py-2 font-medium text-foreground">
                             {partGroup}
                           </div>
-                          <ul className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                          <ul className="divide-y divide-border/60">
                             {warehouses.map((warehouse) => (
                               <li
                                 key={warehouse}
-                                className="px-4 py-2 text-slate-700 dark:text-slate-300"
+                                className="px-4 py-2 text-foreground"
                               >
                                 {warehouse}
                               </li>

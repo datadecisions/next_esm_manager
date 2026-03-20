@@ -169,7 +169,7 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/50 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
             </div>
           )}
@@ -186,7 +186,7 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
                 autoComplete="off"
               />
               {searching && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-slate-400" />
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
               )}
               {showSearchResults && searchResults.length > 0 && (
                 <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover py-1 shadow-md max-h-48 overflow-auto">

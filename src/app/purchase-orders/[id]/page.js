@@ -79,9 +79,9 @@ function toFixed2(val) {
 }
 
 const ITEM_TYPE_BADGES = {
-  part: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
-  equipment: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300",
-  misc: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  part: "bg-primary/15 text-primary",
+  equipment: "bg-muted text-muted-foreground",
+  misc: "bg-primary/10 text-primary",
 };
 
 export default function PurchaseOrderDetailPage() {
@@ -501,7 +501,7 @@ export default function PurchaseOrderDetailPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -509,14 +509,14 @@ export default function PurchaseOrderDetailPage() {
   if (loading && !isNew) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -530,7 +530,7 @@ export default function PurchaseOrderDetailPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-2xl font-semibold text-foreground">
                 Purchase Order {po?.PONo ? `#${po.PONo}` : "(New)"}
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -553,13 +553,13 @@ export default function PurchaseOrderDetailPage() {
         </div>
 
         <motion.div
-          className="rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 overflow-hidden"
+          className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm"
           initial={fadeInUp.initial}
           animate={fadeInUp.animate}
           transition={fadeInUp.transition}
         >
           {/* Header form */}
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700 space-y-6">
+          <div className="space-y-6 border-b border-border p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <Label>Order date</Label>
@@ -637,7 +637,7 @@ export default function PurchaseOrderDetailPage() {
               <div className="flex items-end justify-end">
                 <div className="text-right">
                   <div className="text-sm text-muted-foreground">Total</div>
-                  <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">
+                  <div className="text-2xl font-bold text-primary">
                     {formatCurrency(calculations.total)}
                   </div>
                 </div>
@@ -646,10 +646,10 @@ export default function PurchaseOrderDetailPage() {
           </div>
 
           {/* Line items */}
-          <div className="border-b border-slate-200 dark:border-slate-700">
+          <div className="border-b border-border">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                <TableRow className="bg-muted/40">
                   <TableHead>Item</TableHead>
                   <TableHead className="w-24 text-right">Price</TableHead>
                   <TableHead className="w-48">Account</TableHead>
@@ -728,7 +728,7 @@ export default function PurchaseOrderDetailPage() {
           </div>
 
           {/* Add item */}
-          <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+          <div className="border-b border-border p-4">
             <Button variant="ghost" onClick={() => setShowAddItem(!showAddItem)} className="gap-2 -ml-2">
               <Plus className="h-4 w-4" />
               Add item
@@ -736,7 +736,7 @@ export default function PurchaseOrderDetailPage() {
           </div>
 
           {showAddItem && (
-            <div className="p-6 bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-200 dark:border-slate-700">
+            <div className="border-b border-border bg-muted/30 p-6">
               <Tabs value={addTab} onValueChange={setAddTab}>
                 <TabsList>
                   <TabsTrigger value="parts">Parts</TabsTrigger>
@@ -762,7 +762,7 @@ export default function PurchaseOrderDetailPage() {
                     </Select>
                     <Button onClick={searchPartsFn}>Search</Button>
                   </div>
-                  <div className="max-h-48 overflow-auto rounded-lg border dark:border-slate-700">
+                  <div className="max-h-48 overflow-auto rounded-lg border border-border bg-background">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -822,7 +822,7 @@ export default function PurchaseOrderDetailPage() {
               </div>
               <div className="flex justify-between gap-4 text-sm font-semibold">
                 <span className="shrink-0">Total</span>
-                <span className="tabular-nums text-right text-cyan-600 dark:text-cyan-400">{formatCurrency(calculations.total)}</span>
+                <span className="tabular-nums text-right text-primary">{formatCurrency(calculations.total)}</span>
               </div>
             </div>
           </div>

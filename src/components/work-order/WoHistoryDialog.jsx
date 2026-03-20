@@ -126,7 +126,7 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
         </DialogHeader>
 
         {!wo.SerialNo ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400 py-4">
+          <p className="py-4 text-sm text-muted-foreground">
             Add equipment (Serial No.) to this work order to view history.
           </p>
         ) : (
@@ -158,40 +158,40 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
             </div>
 
             {loading ? (
-              <div className="py-8 text-center text-slate-500 dark:text-slate-400">Loading…</div>
+              <div className="py-8 text-center text-muted-foreground">Loading…</div>
             ) : error ? (
-              <p className="text-sm text-red-600 dark:text-red-400 py-4">{error}</p>
+              <p className="py-4 text-sm text-destructive">{error}</p>
             ) : (
-              <div className="overflow-auto flex-1 min-h-0 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border bg-card text-card-foreground">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
                       <th
-                        className="text-left py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:underline"
+                        className="cursor-pointer px-4 py-2.5 text-left font-medium text-muted-foreground hover:underline"
                         onClick={() => sortBy("WONo")}
                       >
                         WONo {sortProp === "WONo" && (sortReverse ? "↓" : "↑")}
                       </th>
                       <th
-                        className="text-left py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:underline"
+                        className="cursor-pointer px-4 py-2.5 text-left font-medium text-muted-foreground hover:underline"
                         onClick={() => sortBy(historyType.dateKey)}
                       >
                         {historyType.dateTitle} {sortProp === historyType.dateKey && (sortReverse ? "↓" : "↑")}
                       </th>
                       <th
-                        className="text-left py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:underline"
+                        className="cursor-pointer px-4 py-2.5 text-left font-medium text-muted-foreground hover:underline"
                         onClick={() => sortBy("HourMeter")}
                       >
                         Meter {sortProp === "HourMeter" && (sortReverse ? "↓" : "↑")}
                       </th>
                       <th
-                        className="text-left py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:underline"
+                        className="cursor-pointer px-4 py-2.5 text-left font-medium text-muted-foreground hover:underline"
                         onClick={() => sortBy("TotalWithoutTax")}
                       >
                         Amount {sortProp === "TotalWithoutTax" && (sortReverse ? "↓" : "↑")}
                       </th>
                       <th
-                        className="text-left py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:underline"
+                        className="cursor-pointer px-4 py-2.5 text-left font-medium text-muted-foreground hover:underline"
                         onClick={() => sortBy("Disposition")}
                       >
                         Type {sortProp === "Disposition" && (sortReverse ? "↓" : "↑")}
@@ -203,21 +203,21 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
                       <tr
                         key={order.WONo}
                         onClick={() => handleRowClick(order.WONo)}
-                        className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 cursor-pointer"
+                        className="cursor-pointer border-b border-border/50 hover:bg-muted/30"
                       >
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200 font-medium">
+                        <td className="px-4 py-2 font-medium text-foreground">
                           {order.WONo}
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-2 text-muted-foreground">
                           {formatDate(order[historyType.dateKey])}
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-2 text-muted-foreground">
                           {order.HourMeter ?? "—"}
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-2 text-muted-foreground">
                           {formatCurrency(order.TotalWithoutTax)}
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="px-4 py-2 text-muted-foreground">
                           {order.GuaranteedMaintenance === -1 ? "Int" : getDispositionText(order.Disposition) || "—"}
                         </td>
                       </tr>
@@ -225,7 +225,7 @@ export default function WoHistoryDialog({ open, onOpenChange, wo, token }) {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div className="py-8 text-center text-slate-500 dark:text-slate-400">
+                  <div className="py-8 text-center text-muted-foreground">
                     No work orders in date range
                   </div>
                 )}

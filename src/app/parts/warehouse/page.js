@@ -118,7 +118,7 @@ export default function PartsWarehousePage() {
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -136,11 +136,11 @@ export default function PartsWarehousePage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <Warehouse className="h-5 w-5" />
               Warehouse
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Search for parts in a selected warehouse or across all warehouses.
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function PartsWarehousePage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-end">
             {!searchAll && (
@@ -208,7 +208,7 @@ export default function PartsWarehousePage() {
                     setSearchQuery("");
                   }
                 }}
-                className="h-4 w-4 rounded border-gray-300"
+                className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               <Label htmlFor="search-all" className="text-sm font-medium cursor-pointer">
                 Search All Warehouses
@@ -224,28 +224,28 @@ export default function PartsWarehousePage() {
           )}
 
           {showEmptySingle && (
-            <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+            <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
               There are currently no parts in this warehouse.
             </div>
           )}
 
           {showEmptyAll && (
-            <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+            <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
               Search for a part by part number or description (min 4 characters).
             </div>
           )}
 
           {showNoMatchAll && (
-            <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+            <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
               No match found. Try another search.
             </div>
           )}
 
           {showSingleTable && (
-            <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-border bg-background">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                  <TableRow className="bg-muted/40">
                     <TableHead className="font-semibold">Part No.</TableHead>
                     <TableHead className="font-semibold">Description</TableHead>
                     <TableHead className="font-semibold">Qty</TableHead>
@@ -258,7 +258,7 @@ export default function PartsWarehousePage() {
                       <TableCell>
                         <Link
                           href={`/parts/inventory/${encodeURIComponent(part.PartNo)}/${encodeURIComponent(part.Warehouse ?? warehouseValue)}`}
-                          className="text-cyan-600 hover:underline dark:text-cyan-400"
+                          className="font-medium text-primary hover:underline"
                         >
                           {part.PartNo}
                         </Link>
@@ -276,10 +276,10 @@ export default function PartsWarehousePage() {
           )}
 
           {showAllTable && (
-            <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-border bg-background">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                  <TableRow className="bg-muted/40">
                     <TableHead className="font-semibold">Part No.</TableHead>
                     <TableHead className="font-semibold">Description</TableHead>
                     <TableHead className="font-semibold">Warehouse</TableHead>
@@ -292,7 +292,7 @@ export default function PartsWarehousePage() {
                       <TableCell>
                         <Link
                           href={`/parts/inventory/${encodeURIComponent(part.PartNo)}/${encodeURIComponent(part.Warehouse ?? "")}`}
-                          className="text-cyan-600 hover:underline dark:text-cyan-400"
+                          className="font-medium text-primary hover:underline"
                         >
                           {part.PartNo}
                         </Link>

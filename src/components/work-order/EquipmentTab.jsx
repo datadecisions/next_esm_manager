@@ -115,9 +115,9 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
   );
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Equipment</h2>
+    <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+      <div className="border-b border-border px-6 py-4">
+        <h2 className="text-xl font-semibold">Equipment</h2>
       </div>
       <form className="p-6" onSubmit={handleSubmit}>
         <div className="grid md:grid-cols-2 gap-6">
@@ -206,13 +206,13 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
           <div className="flex items-center gap-4">
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+              className="text-muted-foreground hover:text-primary"
               onClick={onHistoryClick}
             >
               History
@@ -221,7 +221,7 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
               type="button"
               variant="ghost"
               size="sm"
-              className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+              className="text-muted-foreground hover:text-primary"
             >
               Build
             </Button>
@@ -229,7 +229,6 @@ export default function EquipmentTab({ wo, token, onEquipmentUpdate, onHistoryCl
           <Button
             type="submit"
             disabled={!dirty || saving}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white"
           >
             {saving ? "Saving…" : "Save"}
           </Button>

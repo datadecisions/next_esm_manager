@@ -268,14 +268,14 @@ export default function ARHistoryPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -295,10 +295,10 @@ export default function ARHistoryPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              <h1 className="text-2xl font-bold text-foreground">
                 Accounts Receivable Dashboard
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Manage customer payments and invoices
               </p>
             </div>
@@ -322,15 +322,15 @@ export default function ARHistoryPage() {
         </motion.div>
 
         {/* Main: two-column layout */}
-        <div className="flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-md dark:border-slate-700/50 dark:bg-slate-800/50 lg:flex-row">
+        <div className="flex flex-col overflow-hidden rounded-xl border border-border/80 bg-card shadow-md lg:flex-row">
           {/* Left: Search & Customer Info - fixed width, scrollable */}
-          <div className="w-full flex-shrink-0 border-b border-slate-200 p-6 dark:border-slate-700 lg:w-80 lg:border-b-0 lg:border-r lg:overflow-y-auto">
-            <h2 className="mb-4 font-semibold text-slate-800 dark:text-slate-200">
+          <div className="w-full shrink-0 border-b border-border/60 p-6 lg:w-80 lg:border-b-0 lg:border-r lg:overflow-y-auto">
+            <h2 className="mb-4 font-semibold text-foreground">
               Search Filters
             </h2>
             <div className="space-y-4">
               <div className="min-w-0">
-                <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   Customer #
                 </label>
                 <div className="min-w-0">
@@ -344,7 +344,7 @@ export default function ARHistoryPage() {
                 </div>
               </div>
               <div className="min-w-0">
-                <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   PO #
                 </label>
                 <input
@@ -352,11 +352,11 @@ export default function ARHistoryPage() {
                   value={poNo}
                   onChange={(e) => setPoNo(e.target.value)}
                   placeholder="PO Search"
-                  className="w-full min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800"
+                  className="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm"
                 />
               </div>
               <div className="min-w-0">
-                <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-sm font-medium text-muted-foreground">
                   Invoice #
                 </label>
                 <input
@@ -364,15 +364,15 @@ export default function ARHistoryPage() {
                   value={invoiceNo}
                   onChange={(e) => setInvoiceNo(e.target.value)}
                   placeholder="Invoice Search"
-                  className="w-full min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-800"
+                  className="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm"
                 />
               </div>
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="rounded border-slate-300 dark:border-slate-600"
+                  className="rounded border-border/60"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">
+                <span className="text-sm text-muted-foreground">
                   Cash Sales
                 </span>
               </label>
@@ -381,24 +381,24 @@ export default function ARHistoryPage() {
             {/* Customer Info Card */}
             {customerNo && (
               <div className="mt-6">
-                <div className="rounded-lg border border-cyan-200 bg-gradient-to-r from-cyan-50 to-blue-50 p-4 shadow-sm dark:border-cyan-800 dark:from-cyan-900/30 dark:to-blue-900/30">
+                <div className="rounded-lg border border-accent/30 bg-accent/10 p-4 shadow-sm">
                   {customerInfoLoading ? (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-cyan-500" />
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
                   ) : customerInfo ? (
                     <>
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-bold text-cyan-900 dark:text-cyan-100">
+                          <h3 className="font-bold text-foreground">
                             {customerInfo.Name}
                           </h3>
-                          <p className="text-sm text-cyan-700 dark:text-cyan-300">
+                          <p className="text-sm text-muted-foreground">
                             {[customerInfo.Address, customerInfo.City, customerInfo.State, customerInfo.ZipCode]
                               .filter(Boolean)
                               .join(", ")}
                           </p>
-                          <p className="text-sm text-cyan-600 dark:text-cyan-400">
+                          <p className="text-sm text-muted-foreground">
                             {customerInfo.Phone}
                           </p>
                         </div>
@@ -413,35 +413,35 @@ export default function ARHistoryPage() {
                       </div>
                       <div className="mt-3 space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             Net 10 Limit:
                           </span>
-                          <span className="font-semibold text-cyan-700 dark:text-cyan-300">
+                          <span className="font-semibold text-primary">
                             {formatCurrency(customerInfo.CreditLimit)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             Hold Days:
                           </span>
-                          <span className="font-semibold text-cyan-700 dark:text-cyan-300">
+                          <span className="font-semibold text-primary">
                             {customerInfo.CreditHoldDays ?? "—"}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             Rating:
                           </span>
-                          <span className="font-semibold text-cyan-700 dark:text-cyan-300">
+                          <span className="font-semibold text-primary">
                             {customerInfo.CreditRating1 ?? "—"}
                           </span>
                         </div>
                         {agingData && (
                           <div className="flex justify-between">
-                            <span className="text-slate-600 dark:text-slate-400">
+                            <span className="text-muted-foreground">
                               Avg Days To Pay:
                             </span>
-                            <span className="font-semibold text-cyan-700 dark:text-cyan-300">
+                            <span className="font-semibold text-primary">
                               {agingData.AvgDaysToPay ?? "—"}
                             </span>
                           </div>
@@ -449,7 +449,7 @@ export default function ARHistoryPage() {
                       </div>
                     </>
                   ) : (
-                    <p className="text-sm text-slate-500">Loading…</p>
+                    <p className="text-sm text-muted-foreground">Loading…</p>
                   )}
                 </div>
               </div>
@@ -457,14 +457,14 @@ export default function ARHistoryPage() {
 
             {/* Comments & Aging Tabs - always visible */}
             <div className="mt-6">
-              <div className="mb-4 flex border-b border-slate-200 dark:border-slate-700">
+              <div className="mb-4 flex border-b border-border/60">
                   <button
                     type="button"
                     onClick={() => setActiveTab("comments")}
                     className={`px-4 py-2 text-sm font-medium ${
                       activeTab === "comments"
-                        ? "border-b-2 border-cyan-500 text-cyan-600 dark:text-cyan-400"
-                        : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                        ? "border-b-2 border-primary text-primary"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Customer Comments
@@ -474,16 +474,16 @@ export default function ARHistoryPage() {
                     onClick={() => setActiveTab("aging")}
                     className={`px-4 py-2 text-sm font-medium ${
                       activeTab === "aging"
-                        ? "border-b-2 border-cyan-500 text-cyan-600 dark:text-cyan-400"
-                        : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                        ? "border-b-2 border-primary text-primary"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Aging
                   </button>
                 </div>
                 {!customerNo && (
-                  <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center dark:border-slate-700">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <div className="rounded-lg border border-dashed border-border/60 py-8 text-center">
+                    <p className="text-sm text-muted-foreground">
                       Select a customer to view comments and aging
                     </p>
                   </div>
@@ -495,7 +495,7 @@ export default function ARHistoryPage() {
                       value={arComments}
                       onChange={(e) => setArComments(e.target.value)}
                       placeholder="Enter customer AR comments..."
-                      className="w-full min-w-0 resize-none rounded-lg border border-slate-200 p-3 text-sm focus:ring-2 focus:ring-cyan-500 dark:border-slate-600 dark:bg-slate-800"
+                      className="w-full min-w-0 resize-none rounded-lg border border-input bg-background p-3 text-sm focus:ring-2 focus:ring-primary/30"
                     />
                     <div className="mt-2 flex justify-end">
                       <Button
@@ -513,19 +513,19 @@ export default function ARHistoryPage() {
                   </div>
                 )}
                 {customerNo && activeTab === "aging" && (
-                  <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/50">
+                  <div className="rounded-lg bg-muted/20 p-3">
                     {agingLoading ? (
                       <div className="flex justify-center py-4">
-                        <Loader2 className="h-6 w-6 animate-spin text-cyan-500" />
+                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
                       </div>
                     ) : agingData ? (
                       <div className="space-y-2 text-sm">
-                        <div className="flex justify-between font-medium text-slate-700 dark:text-slate-300">
+                        <div className="flex justify-between font-medium text-muted-foreground">
                           <span>Period</span>
                           <span>Amount</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             Current
                           </span>
                           <span className="font-medium">
@@ -533,7 +533,7 @@ export default function ARHistoryPage() {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             +30 Days
                           </span>
                           <span className="font-medium">
@@ -541,7 +541,7 @@ export default function ARHistoryPage() {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             +60 Days
                           </span>
                           <span className="font-medium">
@@ -549,7 +549,7 @@ export default function ARHistoryPage() {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             +90 Days
                           </span>
                           <span className="font-medium">
@@ -557,24 +557,24 @@ export default function ARHistoryPage() {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-muted-foreground">
                             +120 Days
                           </span>
                           <span className="font-medium">
                             {formatCurrency(agingData.age_120_days)}
                           </span>
                         </div>
-                        <div className="flex justify-between border-t border-slate-200 pt-2 font-semibold dark:border-slate-700">
-                          <span className="text-slate-700 dark:text-slate-300">
+                        <div className="flex justify-between border-t border-border/60 pt-2 font-semibold">
+                          <span className="text-muted-foreground">
                             Total Outstanding
                           </span>
-                          <span className="text-cyan-600 dark:text-cyan-400">
+                          <span className="text-primary">
                             {formatCurrency(agingData.Balance)}
                           </span>
                         </div>
                       </div>
                     ) : (
-                      <p className="py-4 text-center text-sm text-slate-500">
+                      <p className="py-4 text-center text-sm text-muted-foreground">
                         No aging data
                       </p>
                     )}
@@ -592,9 +592,9 @@ export default function ARHistoryPage() {
                     type="checkbox"
                     checked={facturaWithApplyTo}
                     onChange={(e) => setFacturaWithApplyTo(e.target.checked)}
-                    className="rounded border-slate-300 dark:border-slate-600"
+                    className="rounded border-border/60"
                   />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">
+                  <span className="text-sm text-muted-foreground">
                     Factura # w/Apply To
                   </span>
                 </label>
@@ -603,9 +603,9 @@ export default function ARHistoryPage() {
                     type="checkbox"
                     checked={showHistory}
                     onChange={(e) => setShowHistory(e.target.checked)}
-                    className="rounded border-slate-300 dark:border-slate-600"
+                    className="rounded border-border/60"
                   />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">
+                  <span className="text-sm text-muted-foreground">
                     History
                   </span>
                 </label>
@@ -622,15 +622,15 @@ export default function ARHistoryPage() {
                   onDebouncedChange={handleDebouncedChange}
                   startLabel="Start"
                   endLabel="End"
-                  inputClassName="w-40 rounded-lg border border-slate-200 px-3 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800"
+                  inputClassName="w-40 rounded-lg border border-input bg-background px-3 py-1.5 text-sm"
                 />
               )}
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-500">Sort by</span>
+                  <span className="text-sm text-muted-foreground">Sort by</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800"
+                    className="rounded-lg border border-input bg-background px-3 py-1.5 text-sm"
                   >
                     <option value="applyTo">Apply To Inv #</option>
                     <option value="amount">Amount</option>
@@ -655,62 +655,62 @@ export default function ARHistoryPage() {
             </div>
 
             {!hasSearched ? (
-              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 py-16 dark:border-slate-700">
-                <History className="mb-4 h-12 w-12 text-slate-300 dark:text-slate-600" />
-                <h3 className="font-medium text-slate-700 dark:text-slate-300">
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/60 py-16">
+                <History className="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="font-medium text-muted-foreground">
                   Search AR records
                 </h3>
-                <p className="mt-1 max-w-md text-center text-sm text-slate-500">
+                <p className="mt-1 max-w-md text-center text-sm text-muted-foreground">
                   Use at least one filter: customer, invoice #, PO #, or date
                   range. Click Search to run the query.
                 </p>
               </div>
             ) : loading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : results.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <FileText className="mb-4 h-12 w-12 text-slate-300 dark:text-slate-600" />
-                <h3 className="font-medium text-slate-700 dark:text-slate-300">
+                <FileText className="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="font-medium text-muted-foreground">
                   No AR records found
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Try adjusting filters or enabling History.
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
-                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                  <thead className="bg-slate-50 dark:bg-slate-800/80">
+              <div className="overflow-x-auto rounded-lg border border-border/60">
+                <table className="min-w-full divide-y divide-border/60">
+                  <thead className="bg-muted/20">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Apply To #
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Amount
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Invoice #
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Check #
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Date
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Entry Type
                       </th>
                       <th
-                        className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500"
+                        className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground"
                         title="GL account number from Chart of Accounts"
                       >
                         Account #
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-800/50">
+                  <tbody className="divide-y divide-border/60 bg-card">
                     {arGroups.map((group) =>
                       group.rows.map((row, idx) => {
                         const woNo = row.ApplyToInvoiceNo ?? row.InvoiceNo;
@@ -723,41 +723,41 @@ export default function ARHistoryPage() {
                             onClick={() =>
                               woNo && router.push(`/work-orders/${woNo}`)
                             }
-                            className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 even:bg-cyan-50/30 dark:even:bg-cyan-900/10 ${
+                            className={`hover:bg-muted/20 even:bg-accent/10 ${
                               woNo ? "cursor-pointer" : ""
                             }`}
                           >
-                            <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-slate-900 dark:text-white">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground">
                               {showApplyTo ? `#${group.key}` : ""}
                             </td>
                             <td
                               className={`whitespace-nowrap px-4 py-3 text-right text-sm ${
                                 Number(row.Amount) === 0
-                                  ? "text-slate-500 dark:text-slate-400"
+                                  ? "text-muted-foreground"
                                   : Number(row.Amount) >= 0
-                                    ? "font-medium text-slate-900 dark:text-white"
-                                    : "font-medium text-rose-600 dark:text-rose-400"
+                                    ? "font-medium text-foreground"
+                                    : "font-medium text-destructive"
                               }`}
                             >
                               {formatCurrency(row.Amount)}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
                               {row.InvoiceNo ?? "—"}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
                               {row.CheckNo ?? "—"}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
                               {row.EntryDate || row.EffectiveDate
                                 ? toYMD(
                                     new Date(row.EntryDate || row.EffectiveDate)
                                   )
                                 : "—"}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
                               {row.EntryType ?? "—"}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
                               {row.AccountNo ?? "—"}
                             </td>
                           </tr>
@@ -765,14 +765,14 @@ export default function ARHistoryPage() {
                       })
                     )}
                     {arGroups.length > 0 && (
-                      <tr className="bg-slate-50 font-semibold dark:bg-slate-800/80">
+                      <tr className="bg-muted/20 font-semibold">
                         <td
                           colSpan={6}
-                          className="whitespace-nowrap px-4 py-3 text-right text-slate-700 dark:text-slate-300"
+                          className="whitespace-nowrap px-4 py-3 text-right text-muted-foreground"
                         >
                           Balance
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 font-bold text-cyan-600 dark:text-cyan-400">
+                        <td className="whitespace-nowrap px-4 py-3 font-bold text-primary">
                           {formatCurrency(totalBalance)}
                         </td>
                       </tr>
@@ -784,7 +784,7 @@ export default function ARHistoryPage() {
 
             {hasSearched && results.length > 0 && (
               <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-                <p className="text-sm text-slate-700 dark:text-slate-300">
+                <p className="text-sm text-muted-foreground">
                   Showing <span className="font-medium">1</span> to{" "}
                   <span className="font-medium">{results.length}</span> of{" "}
                   <span className="font-medium">{results.length}</span> entries

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth";
+import DataDecisionsLogo from "@/components/icons/DataDecisionsLogo";
 import {
   Calculator,
   Pencil,
@@ -24,6 +25,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 
 const navMain = [
@@ -46,14 +48,26 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border">
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="h-14 justify-center border-b border-sidebar-border/5">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/home">
-                <span className="font-semibold text-cyan-600 dark:text-cyan-400">NOVA</span>
-                <span className="text-sidebar-foreground"> · Manager</span>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground"
+            >
+              <Link
+                href="/home"
+                className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
+              >
+                <DataDecisionsLogo className="size-6 text-sidebar-foreground" />
+                <span className="font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+                  NOVA
+                </span>
+                <span className="text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+                  · Manager
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -61,7 +75,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Navigation</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {navMain.map((item) => {
@@ -82,7 +96,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter className="border-t border-sidebar-border/5">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname?.startsWith("/docs")}>
@@ -100,6 +114,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

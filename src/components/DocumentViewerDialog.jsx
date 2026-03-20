@@ -125,28 +125,28 @@ export default function DocumentViewerDialog({
       >
         <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
           <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-cyan-500" />
+            <FileText className="h-5 w-5 text-primary" />
             Documents
           </DialogTitle>
         </DialogHeader>
 
         {emailSection && (
-          <div className="px-6 pb-4 shrink-0 border-b border-slate-200 dark:border-slate-700">
+          <div className="shrink-0 border-b border-border px-6 pb-4">
             {emailSection}
           </div>
         )}
 
-        <div className="flex flex-1 min-h-0 border-t border-slate-200 dark:border-slate-700 relative">
+        <div className="relative flex min-h-0 flex-1 border-t border-border">
           {initialLoading && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 rounded-b-lg">
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-b-lg bg-background/80">
               <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
-                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Loading documents…</p>
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                <p className="text-sm font-medium text-muted-foreground">Loading documents…</p>
               </div>
             </div>
           )}
           {/* Sidebar */}
-          <aside className={`w-64 shrink-0 border-r border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden ${initialLoading ? "pointer-events-none opacity-60" : ""}`}>
+          <aside className={`flex w-64 shrink-0 flex-col overflow-hidden border-r border-border ${initialLoading ? "pointer-events-none opacity-60" : ""}`}>
             <div className="overflow-auto p-2">
               {sections.map((section, idx) => {
                 const isOpen = expanded[idx] ?? true;
@@ -156,10 +156,10 @@ export default function DocumentViewerDialog({
                     <button
                       type="button"
                       onClick={() => toggleSection(idx)}
-                      className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-muted"
                     >
                       <span className="truncate">{section.title}</span>
-                      <span className="text-slate-500 dark:text-slate-400 text-xs shrink-0">
+                      <span className="shrink-0 text-xs text-muted-foreground">
                         {count}
                       </span>
                       {isOpen ? (
@@ -171,7 +171,7 @@ export default function DocumentViewerDialog({
                     {isOpen && (
                       <div className="mt-0.5 space-y-0.5">
                         {(section.docs ?? []).length === 0 ? (
-                          <p className="px-3 py-2 text-xs text-slate-500 dark:text-slate-400 italic">
+                          <p className="px-3 py-2 text-xs italic text-muted-foreground">
                             No documents
                           </p>
                         ) : (
@@ -189,8 +189,8 @@ export default function DocumentViewerDialog({
                                 key={doc.ID}
                                 className={`group flex items-center gap-2 min-w-0 px-3 py-2 rounded-md text-sm transition-colors ${
                                   isSelected
-                                    ? "bg-cyan-100 dark:bg-cyan-900/40 text-cyan-800 dark:text-cyan-200"
-                                    : "hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                                    ? "bg-primary/15 text-primary"
+                                    : "text-foreground hover:bg-muted"
                                 }`}
                               >
                                 <button
@@ -214,7 +214,7 @@ export default function DocumentViewerDialog({
                                 <div className={`flex items-center gap-0.5 shrink-0 transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                                     {showEmailSelect && (
                                       <label
-                                        className="cursor-pointer p-1 rounded hover:bg-slate-200/50 dark:hover:bg-slate-600/50"
+                                        className="cursor-pointer rounded p-1 hover:bg-muted"
                                         onClick={(e) => e.stopPropagation()}
                                         title="Select for email"
                                       >
@@ -224,14 +224,14 @@ export default function DocumentViewerDialog({
                                           onChange={() => onToggleDocForEmail?.(doc, section.basePath)}
                                           className="sr-only"
                                         />
-                                        <Mail className={`h-3.5 w-3.5 ${isDocSelectedForEmail?.(doc, section.basePath) ? "text-cyan-600 dark:text-cyan-400" : "text-slate-400 dark:text-slate-500"}`} />
+                                        <Mail className={`h-3.5 w-3.5 ${isDocSelectedForEmail?.(doc, section.basePath) ? "text-primary" : "text-muted-foreground"}`} />
                                       </label>
                                     )}
                                     {canDelete && (
                                       <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-7 w-7 shrink-0 opacity-70 hover:opacity-100 hover:text-red-600"
+                                        className="h-7 w-7 shrink-0 opacity-70 hover:text-destructive hover:opacity-100"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleDelete(doc, section.basePath);
@@ -260,25 +260,25 @@ export default function DocumentViewerDialog({
           </aside>
 
           {/* Main view */}
-          <div className={`flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-900/50 p-4 ${initialLoading ? "pointer-events-none" : ""}`}>
+          <div className={`flex min-w-0 flex-1 flex-col bg-muted/30 p-4 ${initialLoading ? "pointer-events-none" : ""}`}>
             {!selected ? (
               <div className="flex-1 flex items-center justify-center">
-                <p className="text-slate-500 dark:text-slate-400 italic text-sm">
+                <p className="text-sm italic text-muted-foreground">
                   Select a document from the list to view.
                 </p>
               </div>
             ) : loading ? (
               <div className="flex-1 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                  <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
-                  <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Loading document…</p>
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                  <p className="text-sm font-medium text-muted-foreground">Loading document…</p>
                 </div>
               </div>
             ) : blobUrl && fileType === "pdf" ? (
               <iframe
                 src={blobUrl}
                 title={selected.doc.FileName}
-                className="w-full flex-1 min-h-[60vh] rounded border border-slate-200 dark:border-slate-700 bg-white"
+                className="min-h-[60vh] w-full flex-1 rounded border border-border bg-background"
               />
             ) : blobUrl && fileType === "image" ? (
               <div className="flex-1 flex items-center justify-center min-h-0 overflow-auto">
@@ -291,13 +291,13 @@ export default function DocumentViewerDialog({
               </div>
             ) : fileType ? (
               <div className="flex-1 flex items-center justify-center">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                <p className="text-sm text-muted-foreground">
                   Preview not available for this file type.
                 </p>
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-center">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                <p className="text-sm text-muted-foreground">
                   Unsupported file type. Download may be available.
                 </p>
               </div>

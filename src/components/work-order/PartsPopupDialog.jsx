@@ -240,7 +240,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
       <DialogContent size="xl" className="max-h-[90vh] flex flex-col min-w-[900px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Package className="h-6 w-6 text-cyan-500" />
+            <Package className="h-6 w-6 text-primary" />
             Parts
           </DialogTitle>
         </DialogHeader>
@@ -249,12 +249,12 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
           {isOpen ? (
             <div className="flex flex-1 min-h-0 gap-4 p-4">
               {loading ? (
-                <div className="flex items-center gap-2 py-12 text-slate-500 col-span-2">
+                <div className="col-span-2 flex items-center gap-2 py-12 text-muted-foreground">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   Loading…
                 </div>
               ) : parts.length === 0 ? (
-                <p className="py-12 text-center text-slate-500 dark:text-slate-400 col-span-2">There are no parts for this work order.</p>
+                <p className="col-span-2 py-12 text-center text-muted-foreground">There are no parts for this work order.</p>
               ) : (
                 <>
                   {/* Left: Compact table */}
@@ -263,20 +263,20 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                       const pendingParts = parts.filter((p) => p.type === "WebPartsOrder");
                       return pendingParts.length > 0 ? (
                         <div className="mb-3">
-                          <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Quick approve</p>
+                          <p className="mb-2 text-sm font-medium text-muted-foreground">Quick approve</p>
                           <div className="flex flex-wrap gap-2">
                             {pendingParts.map((part) => (
                               <div
                                 key={part.ID}
-                                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2"
                               >
                                 <span className="truncate max-w-[140px] font-medium">{part.PartNo || part.RequestedPartNo}</span>
-                                <span className="text-slate-500 text-sm">×{part.Qty ?? 1}</span>
+                                <span className="text-sm text-muted-foreground">×{part.Qty ?? 1}</span>
                                 <div className="flex items-center gap-1">
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="h-7 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300"
+                                    className="h-7 border-primary/30 text-primary hover:bg-primary/10"
                                     onClick={() => handleApprovePart(part)}
                                     disabled={approvingId === part.ID}
                                   >
@@ -286,7 +286,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="h-7 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                                    className="h-7 border-destructive/30 text-destructive hover:bg-destructive/10"
                                     onClick={() => handleDeletePart(part)}
                                   >
                                     <XCircle className="h-3.5 w-3.5" />
@@ -299,14 +299,14 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                         </div>
                       ) : null;
                     })()}
-                    <div className="flex-1 min-h-0 overflow-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                    <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border">
                       <table className="w-full">
-                        <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 z-10">
+                        <thead className="sticky top-0 z-10 border-b border-border bg-muted/40">
                           <tr>
-                            <th className="text-left py-2.5 px-3 font-medium text-slate-600 dark:text-slate-400 w-10"></th>
-                            <th className="text-left py-2.5 px-3 font-medium text-slate-600 dark:text-slate-400 cursor-pointer hover:underline" onClick={() => sortBy("Section")}>Part</th>
-                            <th className="text-left py-2.5 px-3 font-medium text-slate-600 dark:text-slate-400 w-16">Qty</th>
-                            <th className="text-right py-2.5 px-3 font-medium text-slate-600 dark:text-slate-400 cursor-pointer hover:underline" onClick={() => sortBy("Sell")}>Sale</th>
+                            <th className="w-10 px-3 py-2.5 text-left font-medium text-muted-foreground"></th>
+                            <th className="cursor-pointer px-3 py-2.5 text-left font-medium text-muted-foreground hover:underline" onClick={() => sortBy("Section")}>Part</th>
+                            <th className="w-16 px-3 py-2.5 text-left font-medium text-muted-foreground">Qty</th>
+                            <th className="cursor-pointer px-3 py-2.5 text-right font-medium text-muted-foreground hover:underline" onClick={() => sortBy("Sell")}>Sale</th>
                             <th className="text-left py-2.5 px-2 w-10"></th>
                           </tr>
                         </thead>
@@ -315,20 +315,20 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                             <tr
                               key={part.ID}
                               onClick={() => setSelectedPart(part)}
-                              className={`border-b border-slate-100 dark:border-slate-700/50 cursor-pointer transition-colors ${
+                              className={`cursor-pointer border-b border-border/50 transition-colors ${
                                 selectedPart?.ID === part.ID
-                                  ? "bg-cyan-50/80 dark:bg-cyan-950/20"
-                                  : "hover:bg-slate-50/80 dark:hover:bg-slate-800/30"
-                              } ${part.BOStatus != null && part.BOStatus !== 0 ? "border-l-2 border-l-amber-400" : ""}`}
+                                  ? "bg-primary/10"
+                                  : "hover:bg-muted/40"
+                              } ${part.BOStatus != null && part.BOStatus !== 0 ? "border-l-2 border-l-primary/60" : ""}`}
                             >
                               <td className="py-2 px-3">
                                 {part.BOStatus != null && part.BOStatus !== 0 && (
-                                  <span className="inline-block w-2 h-2 rounded-full bg-amber-500" title="Back ordered" />
+                                  <span className="inline-block h-2 w-2 rounded-full bg-primary" title="Back ordered" />
                                 )}
                               </td>
                               <td className="py-2 px-3">
                                 <div className="font-medium">{part.PartNo || part.RequestedPartNo}</div>
-                                <div className="text-sm text-slate-600 dark:text-slate-400 truncate max-w-[200px]" title={part.Description}>
+                                <div className="max-w-[200px] truncate text-sm text-muted-foreground" title={part.Description}>
                                   {part.Description}
                                 </div>
                               </td>
@@ -344,7 +344,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                   <PopoverContent align="end" className="w-48 p-1">
                                     <Button
                                       variant="ghost"
-                                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                                      className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive"
                                       onClick={() => handleDeletePart(part)}
                                     >
                                       <Trash2 className="h-4 w-4 mr-2" />
@@ -358,9 +358,9 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                         </tbody>
                       </table>
                     </div>
-                    <div className="flex items-center justify-between py-2.5 px-3 bg-slate-50 dark:bg-slate-800/50 border border-t-0 border-slate-200 dark:border-slate-700 rounded-b-lg">
-                      <span className="font-medium">Total Qty <span className="text-cyan-600">{Number(totalPartsQty).toFixed(2)}</span></span>
-                      <span className="font-medium">Total Billed <span className="text-cyan-600">{formatCurrency(totalPartsSell)}</span></span>
+                    <div className="flex items-center justify-between rounded-b-lg border border-t-0 border-border bg-muted/40 px-3 py-2.5">
+                      <span className="font-medium">Total Qty <span className="text-primary">{Number(totalPartsQty).toFixed(2)}</span></span>
+                      <span className="font-medium">Total Billed <span className="text-primary">{formatCurrency(totalPartsSell)}</span></span>
                     </div>
                   </div>
 
@@ -372,11 +372,11 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                           <CardTitle className="text-base">
                             {selectedPart.PartNo || selectedPart.RequestedPartNo}
                           </CardTitle>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{selectedPart.Description}</p>
+                          <p className="line-clamp-2 text-sm text-muted-foreground">{selectedPart.Description}</p>
                         </CardHeader>
                         <CardContent className="flex-1 overflow-auto space-y-4 py-2">
                           <div>
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">Section</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Section</label>
                             {editingSection ? (
                               <div className="flex gap-2 mt-1">
                                 <Select
@@ -411,7 +411,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                             )}
                           </div>
                           <div>
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">Source</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Source</label>
                             <div className="mt-1 text-sm space-y-0.5">
                               <div>Code: {selectedPart.SaleCode ?? "—"}</div>
                               <div>Bin: {selectedPart.Bin ?? "—"}</div>
@@ -419,7 +419,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">Rates</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Rates</label>
                             <div className="mt-1 text-sm space-y-0.5">
                               <div>Cost: {formatCurrency(selectedPart.CostRate)}</div>
                               <div>List: {formatCurrency(selectedPart.ListRate)}</div>
@@ -427,13 +427,13 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">Quantity</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Quantity</label>
                             <div className="mt-1 text-sm">
                               Requested: {selectedPart.Qty ?? "—"} · BO: {selectedPart.BOQty ?? "—"}
                             </div>
                           </div>
                           <div>
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">Sale price</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sale price</label>
                             {editingSell ? (
                               <div className="flex gap-2 mt-1">
                                 <Input
@@ -445,7 +445,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                   className="h-9"
                                   autoFocus
                                 />
-                                <Button size="icon" className="h-9 w-9 shrink-0 text-green-600" onClick={handleSaveSell} disabled={savingId === selectedPart.ID}>
+                                <Button size="icon" className="h-9 w-9 shrink-0 text-primary" onClick={handleSaveSell} disabled={savingId === selectedPart.ID}>
                                   {savingId === selectedPart.ID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                                 </Button>
                                 <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={() => { setEditingSell(false); setEditSell(""); }} disabled={savingId === selectedPart.ID}>
@@ -466,11 +466,11 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                               const cost = Number(selectedPart.Cost) || 0;
                               const sell = Number(selectedPart.Sell) || 0;
                               const markup = cost > 0 ? (((sell - cost) / cost) * 100).toFixed(1) : "—";
-                              return <p className="text-xs text-slate-500 mt-0.5">Markup: {markup}%</p>;
+                              return <p className="mt-0.5 text-xs text-muted-foreground">Markup: {markup}%</p>;
                             })()}
                           </div>
                           {isWebPart ? (
-                            <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <div className="flex flex-wrap gap-2 border-t border-border pt-2">
                               <Button
                                 size="sm"
                                 onClick={() => handleApprovePart(selectedPart)}
@@ -479,13 +479,13 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                 {approvingId === selectedPart.ID ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : <CheckCircle className="h-4 w-4 mr-1.5" />}
                                 Approve
                               </Button>
-                              <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" onClick={() => handleDeletePart()}>
+                              <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDeletePart()}>
                                 <XCircle className="h-4 w-4 mr-1.5" />
                                 Deny
                               </Button>
                             </div>
                           ) : canEdit ? (
-                            <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <div className="flex flex-wrap gap-2 border-t border-border pt-2">
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -495,7 +495,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                 {refreshingId === selectedPart.ID ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : <RefreshCw className="h-4 w-4 mr-1.5" />}
                                 Refresh price
                               </Button>
-                              <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" onClick={() => handleDeletePart()}>
+                              <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDeletePart()}>
                                 <Trash2 className="h-4 w-4 mr-1.5" />
                                 Remove
                               </Button>
@@ -505,7 +505,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                       </Card>
                     ) : (
                       <Card className="flex-1 flex items-center justify-center min-h-[200px]">
-                        <CardContent className="text-center text-slate-500 dark:text-slate-400 py-8">
+                        <CardContent className="py-8 text-center text-muted-foreground">
                           <Package className="h-12 w-12 mx-auto mb-2 opacity-40" />
                           <p className="text-sm">Select a part to view details and edit</p>
                         </CardContent>
@@ -518,27 +518,27 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
           ) : (
             <div className="p-4 overflow-auto">
               {partsLineItems.length === 0 ? (
-                <p className="py-8 text-center text-slate-500 dark:text-slate-400">No parts on this work order.</p>
+                <p className="py-8 text-center text-muted-foreground">No parts on this work order.</p>
               ) : (
                 <table className="w-full text-base">
-                  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Type</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Item</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Qty</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Cost</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Item</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Description</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Date</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Qty</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Cost</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Billed</th>
                     </tr>
                   </thead>
                   <tbody>
                     {partsLineItems.map((item, i) => (
-                      <tr key={i} className={`border-b border-slate-100 dark:border-slate-700/50 ${item.BOStatus === 1 ? "bg-amber-50/50 dark:bg-amber-950/20" : ""}`}>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{item.CodeDescription || "Parts"} ({item.Code || "P"})</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{[item.ItemNo, item.ItemName].filter(Boolean).join(", ") || "—"}</td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{formatDate(item.ItemDate)}</td>
+                      <tr key={i} className={`border-b border-border/50 ${item.BOStatus === 1 ? "bg-muted/40" : ""}`}>
+                        <td className="px-4 py-2 text-muted-foreground">{item.CodeDescription || "Parts"} ({item.Code || "P"})</td>
+                        <td className="px-4 py-2 text-muted-foreground">{[item.ItemNo, item.ItemName].filter(Boolean).join(", ") || "—"}</td>
+                        <td className="px-4 py-2 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="px-4 py-2 text-muted-foreground">{formatDate(item.ItemDate)}</td>
                         <td className="py-2 px-4 text-right tabular-nums">{item.Qty != null ? Number(item.Qty).toFixed(2) : "—"}</td>
                         <td className="py-2 px-4 text-right tabular-nums">{item.Cost != null && item.Cost !== "N/A" ? formatCurrency(item.Cost) : (item.Cost ?? "—")}</td>
                         <td className="py-2 px-4 text-right tabular-nums font-medium">{formatCurrency(item.Extended)}</td>
@@ -546,7 +546,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
+                    <tr className="border-t border-border bg-muted/40 font-medium">
                       <td className="py-3 px-4" colSpan={5}>Parts total</td>
                       <td colSpan={2} className="py-3 px-4 text-right tabular-nums">{formatCurrency(partsSubTotal)}</td>
                     </tr>
@@ -558,7 +558,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
 
           {/* Toolbar - always visible when open WO */}
           {isOpen && parts.length > 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-700 mt-auto">
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" onClick={() => setAddPartOpen(true)}>
                   <Plus className="h-4 w-4 mr-1.5" />
@@ -569,7 +569,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                   Download
                 </Button>
               </div>
-              <Link href="/parts/approval" className="inline-flex items-center gap-1 text-base text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300">
+              <Link href="/parts/approval" className="inline-flex items-center gap-1 text-base text-primary hover:opacity-80">
                 Go to Parts Approval <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

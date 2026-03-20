@@ -240,7 +240,7 @@ export function WorkOrderActionsMenu({ wo, token, onRefresh }) {
         )}
 
         {shouldShow(disposition, [2, 12]) && !voided && (
-          <DropdownMenuItem onClick={handleVoid} disabled={isLoading("void")} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+          <DropdownMenuItem onClick={handleVoid} disabled={isLoading("void")} className="text-destructive focus:text-destructive">
             {isLoading("void") ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             Void this Invoice
           </DropdownMenuItem>
@@ -265,14 +265,14 @@ export function WorkOrderActionsMenu({ wo, token, onRefresh }) {
         <DialogHeader>
           <DialogTitle>Process to Order</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Are you sure you want to process this quote to an order?
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => setConfirmProcessToOrder(false)}>
             Cancel
           </Button>
-          <Button onClick={confirmProcessToOrderAction} disabled={isLoading("processToOrder")} className="bg-cyan-600 hover:bg-cyan-500">
+          <Button onClick={confirmProcessToOrderAction} disabled={isLoading("processToOrder")}>
             {isLoading("processToOrder") ? <Loader2 className="h-4 w-4 animate-spin" /> : "Process"}
           </Button>
         </DialogFooter>
@@ -284,14 +284,14 @@ export function WorkOrderActionsMenu({ wo, token, onRefresh }) {
         <DialogHeader>
           <DialogTitle>Duplicate Order</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Are you sure you want to duplicate this invoice?
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => setConfirmDuplicate(false)}>
             Cancel
           </Button>
-          <Button onClick={confirmDuplicateOrder} disabled={isLoading("duplicateOrder")} className="bg-cyan-600 hover:bg-cyan-500">
+          <Button onClick={confirmDuplicateOrder} disabled={isLoading("duplicateOrder")}>
             {isLoading("duplicateOrder") ? <Loader2 className="h-4 w-4 animate-spin" /> : "Duplicate"}
           </Button>
         </DialogFooter>
@@ -303,14 +303,14 @@ export function WorkOrderActionsMenu({ wo, token, onRefresh }) {
         <DialogHeader>
           <DialogTitle>Duplicate Order to Quote</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Are you sure you want to duplicate this closed invoice to a quote?
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => setConfirmDuplicateToQuote(false)}>
             Cancel
           </Button>
-          <Button onClick={confirmDuplicateToQuoteAction} disabled={isLoading("duplicateToQuote")} className="bg-cyan-600 hover:bg-cyan-500">
+          <Button onClick={confirmDuplicateToQuoteAction} disabled={isLoading("duplicateToQuote")}>
             {isLoading("duplicateToQuote") ? <Loader2 className="h-4 w-4 animate-spin" /> : "Duplicate"}
           </Button>
         </DialogFooter>
@@ -322,14 +322,14 @@ export function WorkOrderActionsMenu({ wo, token, onRefresh }) {
         <DialogHeader>
           <DialogTitle>Force Backup Paperwork</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Are you sure you want to generate backup paperwork for this order?
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => setConfirmRegenerateBackup(false)}>
             Cancel
           </Button>
-          <Button onClick={confirmRegenerateBackupAction} disabled={isLoading("regenerateBackup")} className="bg-cyan-600 hover:bg-cyan-500">
+          <Button onClick={confirmRegenerateBackupAction} disabled={isLoading("regenerateBackup")}>
             {isLoading("regenerateBackup") ? <Loader2 className="h-4 w-4 animate-spin" /> : "Generate"}
           </Button>
         </DialogFooter>

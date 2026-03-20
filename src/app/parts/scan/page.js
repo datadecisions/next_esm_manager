@@ -142,14 +142,14 @@ export default function PartsScanPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -167,10 +167,10 @@ export default function PartsScanPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-semibold text-foreground">
               Scan Parts / Bin
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Find parts by bin number. Enter manually or scan a barcode/QR.
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function PartsScanPage() {
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
           {/* Manual input */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+          <div className="rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="bin">Bin Number</Label>
@@ -208,7 +208,7 @@ export default function PartsScanPage() {
             </form>
 
             {/* Camera scan toggle */}
-            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="mt-4 border-t border-border pt-4">
               {!scanning ? (
                 <Button
                   type="button"
@@ -221,7 +221,7 @@ export default function PartsScanPage() {
                 </Button>
               ) : (
                 <div className="space-y-3">
-                  <div className="relative rounded-lg overflow-hidden bg-slate-900 aspect-video max-w-md">
+                  <div className="relative aspect-video max-w-md overflow-hidden rounded-lg bg-muted">
                     <video
                       ref={videoRef}
                       playsInline
@@ -230,7 +230,7 @@ export default function PartsScanPage() {
                     />
                     <canvas ref={canvasRef} className="hidden" />
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="border-2 border-cyan-400 rounded-lg w-48 h-48 opacity-80" />
+                      <div className="h-48 w-48 rounded-lg border-2 border-primary opacity-80" />
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -256,17 +256,17 @@ export default function PartsScanPage() {
 
           {/* Results */}
           {(parts.length > 0 || (lastScanned && parts.length === 0)) && (
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+            <div className="rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm">
               <h2 className="text-lg font-semibold mb-4">
                 Bin {lastScanned}
                 {parts.length === 0 && " — No parts found"}
               </h2>
               {parts.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                <div className="overflow-hidden rounded-lg border border-border bg-background">
                   <div className="max-h-[50vh] overflow-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                        <TableRow className="bg-muted/40">
                           <TableHead className="font-semibold">Part #</TableHead>
                           <TableHead className="font-semibold">Warehouse</TableHead>
                           <TableHead className="font-semibold">Description</TableHead>
@@ -279,7 +279,7 @@ export default function PartsScanPage() {
                             <TableCell className="font-medium">
                               <Link
                                 href={`/parts/inventory/${encodeURIComponent(p.PartNo)}/${encodeURIComponent(p.Warehouse ?? "Main")}`}
-                                className="text-cyan-600 dark:text-cyan-400 hover:underline"
+                                className="text-primary hover:underline"
                               >
                                 {p.PartNo}
                               </Link>

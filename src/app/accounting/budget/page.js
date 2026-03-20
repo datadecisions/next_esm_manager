@@ -185,14 +185,14 @@ export default function BudgetPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -211,10 +211,10 @@ export default function BudgetPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+                <h1 className="text-3xl font-semibold text-foreground">
                 Budget
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-muted-foreground">
                 Track department financial performance and set budget goals.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function BudgetPage() {
               <select
                 value={month}
                 onChange={(e) => setMonth(Number(e.target.value))}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               >
                 {MONTH_NAMES.map((name, i) => (
                   <option key={name} value={i + 1}>
@@ -242,7 +242,7 @@ export default function BudgetPage() {
               <select
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               >
                 {Array.from({ length: 7 }, (_, i) => year - 3 + i).map((y) => (
                   <option key={y} value={y}>
@@ -275,30 +275,30 @@ export default function BudgetPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+          <Card className="rounded-2xl border border-border/80 overflow-hidden">
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
                 Billing days for {MONTH_NAMES[month - 1]} {year}
               </h2>
               <div className="flex flex-wrap gap-8">
                 <div className="flex items-center gap-3">
-                  <div className="rounded-xl bg-cyan-50 dark:bg-cyan-900/30 p-3">
-                    <Calendar className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                  <div className="rounded-xl bg-accent/15 p-3">
+                    <Calendar className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Total weekdays</p>
-                    <p className="text-2xl font-semibold text-slate-900 dark:text-white">
+                    <p className="text-2xl font-semibold text-foreground">
                       {totalDays}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3">
-                    <Target className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                  <div className="rounded-xl bg-muted/20 p-3">
+                    <Target className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Remaining</p>
-                    <p className="text-2xl font-semibold text-slate-900 dark:text-white">
+                    <p className="text-2xl font-semibold text-foreground">
                       {totalDays - doneDays}
                     </p>
                   </div>
@@ -309,7 +309,7 @@ export default function BudgetPage() {
         </motion.div>
 
         {!branchNum || deptPairs.length === 0 ? (
-          <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50">
+          <Card className="rounded-2xl border border-border/80">
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
                 Select a branch and department(s) to view budget.
@@ -318,7 +318,7 @@ export default function BudgetPage() {
           </Card>
         ) : loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
           </div>
         ) : (
           <motion.div
@@ -337,10 +337,10 @@ export default function BudgetPage() {
 
               return (
                 <motion.div key={key} variants={staggerItem}>
-                  <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden h-full">
+                  <Card className="rounded-2xl border border-border/80 overflow-hidden h-full">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5 text-cyan-500" />
+                        <TrendingUp className="h-5 w-5 text-primary" />
                         Branch {branch} · {title}
                       </CardTitle>
                     </CardHeader>
@@ -350,7 +350,7 @@ export default function BudgetPage() {
                           <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Current MTD
                           </p>
-                          <p className="text-xl font-semibold text-slate-900 dark:text-white">
+                          <p className="text-xl font-semibold text-foreground">
                             {formatCurrency(mtd)}
                           </p>
                         </div>
@@ -358,7 +358,7 @@ export default function BudgetPage() {
                           <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Per day
                           </p>
-                          <p className="text-xl font-semibold text-slate-900 dark:text-white">
+                          <p className="text-xl font-semibold text-foreground">
                             {formatCurrency(perDay)}
                           </p>
                         </div>
@@ -416,8 +416,8 @@ export default function BudgetPage() {
                           <p
                             className={`text-xl font-semibold ${
                               variance >= 0
-                                ? "text-emerald-600 dark:text-emerald-400"
-                                : "text-rose-600 dark:text-rose-400"
+                                ? "text-primary"
+                                : "text-destructive"
                             }`}
                           >
                             {variance >= 0 ? "+" : ""}

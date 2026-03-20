@@ -142,15 +142,15 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Prices</h2>
+    <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+      <div className="border-b border-border px-6 py-4">
+        <h2 className="text-xl font-semibold">Prices</h2>
       </div>
       <form className="p-6" onSubmit={handleUpdate}>
         <div className="grid md:grid-cols-2 gap-8">
           {/* Rates (wo-rates-rates) */}
           <section>
-            <h4 className="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-4">Rates</h4>
+            <h4 className="mb-4 text-lg font-semibold text-primary">Rates</h4>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="LaborRate">Labor Rate</Label>
@@ -214,7 +214,7 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
 
           {/* Taxes (wo-rates-taxes) */}
           <section>
-            <h4 className="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-4">Taxes</h4>
+            <h4 className="mb-4 text-lg font-semibold text-primary">Taxes</h4>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="TaxCode">Tax Code</Label>
@@ -262,22 +262,22 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
                   id="Taxable"
                   checked={taxable}
                   onChange={(e) => { setTaxable(e.target.checked); setDirty(true); }}
-                  className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                  className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
                 <Label htmlFor="Taxable" className="cursor-pointer font-normal">
                   Taxable
                 </Label>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-600">
-                <h5 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Overrides</h5>
+              <div className="mt-4 border-t border-border pt-4">
+                <h5 className="mb-3 text-sm font-semibold text-muted-foreground">Overrides</h5>
                 <div className="flex items-center space-x-2 mb-3">
                   <input
                     type="checkbox"
                     id="AbsoluteTaxCodes"
                     checked={absoluteTaxCodes}
                     onChange={(e) => { setAbsoluteTaxCodes(e.target.checked); setDirty(true); }}
-                    className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                    className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                   <Label htmlFor="AbsoluteTaxCodes" className="cursor-pointer font-normal text-sm">
                     Use absolute tax codes (State + County + City + Local)
@@ -294,11 +294,10 @@ export default function PricesTab({ wo, token, onPricesUpdate }) {
           </section>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+        <div className="mt-6 border-t border-border pt-6">
           <Button
             type="submit"
             disabled={!dirty || saving}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white"
           >
             {saving ? "Saving…" : "Update"}
           </Button>

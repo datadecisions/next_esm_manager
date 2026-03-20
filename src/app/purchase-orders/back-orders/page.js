@@ -14,14 +14,14 @@ export default function BackOrderedPartsPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -39,17 +39,17 @@ export default function BackOrderedPartsPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-semibold text-foreground">
               Back Ordered Part Requests
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Select any number of requested parts to add to a new purchase order.
             </p>
           </div>
         </motion.div>
 
         <motion.div
-          className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50"
+          className="rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm"
           initial={fadeInUp.initial}
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}

@@ -63,18 +63,18 @@ export default function DispatchTab({ wo, token, onDispatchUpdate }) {
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Mechanic and Hours */}
       <div className="flex-1 min-w-0">
-        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-200">Mechanic and Hours</h3>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+          <div className="border-b border-border px-6 py-4">
+            <h3 className="font-semibold">Mechanic and Hours</h3>
           </div>
           <div className="p-6 space-y-4">
             {wo?.DispatchedDate && (
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Dispatched on <em>{formatDate(wo.DispatchedDate)}</em> to:
               </p>
             )}
             {!branch && (
-              <p className="text-sm text-amber-600 dark:text-amber-400">Select a sale branch in the Order tab to assign mechanics.</p>
+              <p className="text-sm text-muted-foreground">Select a sale branch in the Order tab to assign mechanics.</p>
             )}
             <div className="space-y-2">
               <Label>Primary Mechanic</Label>
@@ -130,7 +130,7 @@ export default function DispatchTab({ wo, token, onDispatchUpdate }) {
               </div>
             </div>
             {saving && (
-              <p className="text-xs text-slate-500 dark:text-slate-400">Saving…</p>
+              <p className="text-xs text-muted-foreground">Saving…</p>
             )}
           </div>
         </div>
@@ -138,10 +138,10 @@ export default function DispatchTab({ wo, token, onDispatchUpdate }) {
 
       {/* Map / Location */}
       <div className="flex-1 min-w-0 lg:min-w-[400px]">
-        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden h-[320px] flex flex-col">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-cyan-500" />
+        <div className="flex h-[320px] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <h3 className="flex items-center gap-2 font-semibold">
+              <MapPin className="h-4 w-4 text-primary" />
               Location
             </h3>
             {mapSearchUrl && (
@@ -149,7 +149,7 @@ export default function DispatchTab({ wo, token, onDispatchUpdate }) {
                 href={mapSearchUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 flex items-center gap-1"
+                className="flex items-center gap-1 text-sm text-primary hover:opacity-80"
               >
                 View on map
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -159,11 +159,11 @@ export default function DispatchTab({ wo, token, onDispatchUpdate }) {
           <div className="flex-1 p-4 overflow-auto">
             {mapAddress ? (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{wo?.ShipName || "Ship To"}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{mapAddress}</p>
+                <p className="text-sm font-medium text-foreground">{wo?.ShipName || "Ship To"}</p>
+                <p className="text-sm text-muted-foreground">{mapAddress}</p>
               </div>
             ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400 italic">No address available for this work order.</p>
+              <p className="text-sm italic text-muted-foreground">No address available for this work order.</p>
             )}
           </div>
         </div>

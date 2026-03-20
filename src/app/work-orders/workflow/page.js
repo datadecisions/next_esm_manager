@@ -162,26 +162,26 @@ export default function WorkflowPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-full bg-background text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="mb-8 flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/work-orders">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-foreground">
             Workflow
           </h1>
         </div>
 
-        <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+        <Card className="border-border bg-card text-card-foreground">
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
               <CardTitle className="flex items-center gap-2">
@@ -220,11 +220,11 @@ export default function WorkflowPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : displayQuotes.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-slate-500 dark:text-slate-400 mb-4">
+                <p className="mb-4 text-muted-foreground">
                   No quotes pending workflow approval.
                 </p>
                 <Button
@@ -239,9 +239,9 @@ export default function WorkflowPage() {
             ) : (
               <>
                 {showDemo && (
-                  <div className="mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-400">
+                  <div className="mb-4 flex items-center justify-between rounded-lg border border-border bg-muted/40 px-4 py-2 text-sm text-muted-foreground">
                     <span className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 shrink-0" />
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-primary" />
                       Example data — not from your system
                     </span>
                     <Button variant="ghost" size="sm" onClick={() => setShowDemo(false)}>
@@ -249,7 +249,7 @@ export default function WorkflowPage() {
                     </Button>
                   </div>
                 )}
-                <div className="overflow-x-auto rounded-lg border dark:border-slate-700">
+                <div className="overflow-x-auto rounded-lg border border-border">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-muted/50">
@@ -271,7 +271,7 @@ export default function WorkflowPage() {
                             <button
                               type="button"
                               onClick={() => router.push(`/work-orders/${wo.WONo}`)}
-                              className="text-cyan-600 hover:underline dark:text-cyan-400 font-medium"
+                              className="font-medium text-primary hover:underline"
                             >
                               {wo.WONo}
                             </button>
@@ -292,7 +292,7 @@ export default function WorkflowPage() {
                                 {wf ? (
                                   <div className="flex flex-col items-center gap-1">
                                     {isApproved ? (
-                                      <CheckCircle2 className="h-5 w-5 text-cyan-600 dark:text-cyan-400" title={wf.approvedBy ? `By ${wf.approvedBy}` : "Approved"} />
+                                      <CheckCircle2 className="h-5 w-5 text-primary" title={wf.approvedBy ? `By ${wf.approvedBy}` : "Approved"} />
                                     ) : (
                                       <Circle className="h-5 w-5 text-muted-foreground" title="Pending" />
                                     )}

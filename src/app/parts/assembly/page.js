@@ -51,14 +51,14 @@ export default function PartsAssemblyPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -77,11 +77,11 @@ export default function PartsAssemblyPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
                 <Layers className="h-5 w-5" />
                 Assembly (BOM)
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Create and manage parts assemblies.
               </p>
             </div>
@@ -101,7 +101,7 @@ export default function PartsAssemblyPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6">
               {loading ? (
                 <div className="flex items-center justify-center py-16 gap-2 text-muted-foreground">
@@ -113,10 +113,10 @@ export default function PartsAssemblyPage() {
                   There are no assemblies yet. Click Create to add one.
                 </div>
               ) : (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                <div className="overflow-hidden rounded-lg border border-border bg-background">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                      <TableRow className="bg-muted/40">
                         <TableHead className="font-semibold">Equipment</TableHead>
                         <TableHead className="font-semibold">Name</TableHead>
                         <TableHead className="font-semibold">Time to Complete</TableHead>

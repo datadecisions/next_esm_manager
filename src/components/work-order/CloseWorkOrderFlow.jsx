@@ -186,7 +186,7 @@ export function CloseWorkOrderFlow({ wo, billing, token, onRefresh }) {
     <>
       <Button
         onClick={handleOpen}
-        className="gap-2 bg-cyan-600 hover:bg-cyan-500 text-white"
+        className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
       >
         <CheckCircle2 className="h-4 w-4" />
         {buttonText}
@@ -203,14 +203,14 @@ export function CloseWorkOrderFlow({ wo, billing, token, onRefresh }) {
           <div className="flex-1 min-h-0 flex flex-col gap-4 overflow-hidden">
             {generating ? (
               <div className="flex-1 flex items-center justify-center min-h-[400px]">
-                <div className="flex flex-col items-center gap-3 text-slate-500">
+                <div className="flex flex-col items-center gap-3 text-muted-foreground">
                   <Loader2 className="h-10 w-10 animate-spin" />
                   <p>Generating PDF…</p>
                 </div>
               </div>
             ) : pdfUrl && showPdf ? (
               <>
-                <div className="flex-1 min-h-[50vh] rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-100 dark:bg-slate-900">
+                <div className="flex-1 min-h-[50vh] rounded-lg border border-border overflow-hidden bg-muted/40">
                   <iframe
                     ref={pdfIframeRef}
                     src={pdfUrl}
@@ -239,7 +239,7 @@ export function CloseWorkOrderFlow({ wo, billing, token, onRefresh }) {
                 <Button
                   onClick={handleCloseInvoice}
                   disabled={closing || generating}
-                  className="bg-cyan-600 hover:bg-cyan-500"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   {closing ? (
                     <>
@@ -296,7 +296,7 @@ export function CloseWorkOrderFlow({ wo, billing, token, onRefresh }) {
                   <Button
                     onClick={handleEmailQuote}
                     disabled={!selectedContact || emailing}
-                    className="bg-cyan-600 hover:bg-cyan-500"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     {emailing ? (
                       <>
@@ -322,7 +322,7 @@ export function CloseWorkOrderFlow({ wo, billing, token, onRefresh }) {
                 <Button
                   onClick={handleRegenerateInvoice}
                   disabled={closing}
-                  className="bg-cyan-600 hover:bg-cyan-500"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   {closing ? (
                     <>

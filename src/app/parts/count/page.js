@@ -272,14 +272,14 @@ export default function PartsCountPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full bg-background text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -297,11 +297,11 @@ export default function PartsCountPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <ClipboardList className="h-5 w-5" />
               Parts Count
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Perform inventory counts for a selected warehouse.
             </p>
           </div>
@@ -312,7 +312,7 @@ export default function PartsCountPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-4">
@@ -392,7 +392,7 @@ export default function PartsCountPage() {
                         onChange={(e) =>
                           handleHeaderChange(e.target.checked, hideZero)
                         }
-                        className="h-4 w-4 rounded border-gray-300 dark:border-slate-600"
+                        className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
                       <span className="text-sm">Hide New</span>
                     </label>
@@ -403,7 +403,7 @@ export default function PartsCountPage() {
                         onChange={(e) =>
                           handleHeaderChange(hideNew, e.target.checked)
                         }
-                        className="h-4 w-4 rounded border-gray-300 dark:border-slate-600"
+                        className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
                       <span className="text-sm">Hide Zero Qty</span>
                     </label>
@@ -412,13 +412,13 @@ export default function PartsCountPage() {
               </div>
 
               {!activeCount && counts.length === 0 && !loading && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   No active counts. Create one using the + button.
                 </div>
               )}
 
               {!activeCount && counts.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   Select an active count from the dropdown.
                 </div>
               )}
@@ -431,16 +431,16 @@ export default function PartsCountPage() {
               )}
 
               {activeCount && !loading && parts.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   There are no parts in this inventory count.
                 </div>
               )}
 
               {activeCount && !loading && filteredParts.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden max-h-[60vh] overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-border bg-background">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                      <TableRow className="bg-muted/40">
                         <TableHead className="w-[100px] font-semibold">
                           Action
                         </TableHead>
@@ -485,11 +485,7 @@ export default function PartsCountPage() {
                                   variant={
                                     part.answer === true ? "default" : "ghost"
                                   }
-                                  className={`h-8 w-8 ${
-                                    part.answer === true
-                                      ? "bg-green-600 hover:bg-green-700"
-                                      : ""
-                                  }`}
+                                  className="h-8 w-8"
                                   onClick={() =>
                                     handleCheckInventory(part, true)
                                   }
@@ -515,7 +511,7 @@ export default function PartsCountPage() {
                             <TableCell>
                               <Link
                                 href={`/parts/inventory/${encodeURIComponent(part.PartNo)}/${encodeURIComponent(wh)}`}
-                                className="text-cyan-600 hover:underline dark:text-cyan-400"
+                                className="font-medium text-primary hover:underline"
                               >
                                 {part.PartNo}
                               </Link>
