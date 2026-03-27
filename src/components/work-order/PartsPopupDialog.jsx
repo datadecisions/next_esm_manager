@@ -557,17 +557,19 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
           )}
 
           {/* Toolbar - always visible when open WO */}
-          {isOpen && parts.length > 0 && (
+          {isOpen && (
             <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" onClick={() => setAddPartOpen(true)}>
                   <Plus className="h-4 w-4 mr-1.5" />
                   Add Part
                 </Button>
-                <Button size="sm" variant="outline" onClick={handleDownload}>
-                  <Download className="h-4 w-4 mr-1.5" />
-                  Download
-                </Button>
+                {parts.length > 0 && (
+                  <Button size="sm" variant="outline" onClick={handleDownload}>
+                    <Download className="h-4 w-4 mr-1.5" />
+                    Download
+                  </Button>
+                )}
               </div>
               <Link href="/parts/approval" className="inline-flex items-center gap-1 text-base text-primary hover:opacity-80">
                 Go to Parts Approval <ArrowRight className="h-4 w-4" />

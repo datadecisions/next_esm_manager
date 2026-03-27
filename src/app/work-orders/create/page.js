@@ -277,7 +277,7 @@ export default function WorkOrderCreatePage() {
 
   return (
     <motion.div
-      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
+      className="min-h-full text-foreground"
       initial={fadeInUp.initial}
       animate={fadeInUp.animate}
       transition={fadeInUp.transition}

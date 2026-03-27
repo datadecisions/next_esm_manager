@@ -348,7 +348,7 @@ export default function WorkOrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
+      <div className="min-h-full text-foreground">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-8">
             <Button variant="ghost" size="icon" onClick={() => router.push("/work-orders")}>
@@ -369,7 +369,7 @@ export default function WorkOrderDetailPage() {
 
   if (error || !wo) {
     return (
-      <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
+      <div className="min-h-full text-foreground">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-8">
             <Button variant="ghost" size="icon" onClick={() => router.push("/work-orders")}>
@@ -389,7 +389,7 @@ export default function WorkOrderDetailPage() {
 
   return (
     <motion.div
-      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
+      className="min-h-full text-foreground"
       initial={fadeInUp.initial}
       animate={fadeInUp.animate}
       transition={fadeInUp.transition}
@@ -694,7 +694,7 @@ export default function WorkOrderDetailPage() {
           <div className="lg:col-span-1 flex flex-col min-h-0">
             <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm flex-1 min-h-0 max-h-[min(80vh,950px)] flex flex-col overflow-y-auto">
                 {/* General Comments */}
-                <div className="flex flex-col min-h-0 flex-1">
+                <div className="flex flex-col min-h-0">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
@@ -771,7 +771,7 @@ export default function WorkOrderDetailPage() {
                 </div>
 
                 {/* To Quote */}
-                <div className="flex flex-col min-h-0 flex-1 mt-6">
+                <div className="flex flex-col min-h-0 mt-6">
                     <div className="mb-3">
                       <h3 className="font-semibold text-base sm:text-lg text-foreground flex items-center gap-2">
                         <Quote className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
@@ -1000,17 +1000,6 @@ export default function WorkOrderDetailPage() {
     </motion.div>
   );
 }
-
-{/* Time Map — not ready to port yet
-function TimeMapTab({ wo }) {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-      <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Time Map</h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400">Time-based map — coming soon.</p>
-    </div>
-  );
-}
-*/}
 
 function SummaryCard({ icon: Icon, label, value, sub, highlight, compact, muted, interactive }) {
   return (

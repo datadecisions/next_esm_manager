@@ -177,7 +177,7 @@ export function HomeContent({ userName }) {
   const hasResults = showPrimary.length > 0 || showSubmodules.length > 0;
 
   return (
-    <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
+    <div className="min-h-full text-foreground">
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <motion.div
           className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"

@@ -214,7 +214,7 @@ export default function CustomerInvoicesPage() {
 
   return (
     <motion.div
-      className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}

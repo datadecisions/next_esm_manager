@@ -397,7 +397,7 @@ export default function DistributeOrdersPage() {
   }
 
   return (
-    <div className="min-h-full bg-background text-foreground">
+    <div className="min-h-full text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>

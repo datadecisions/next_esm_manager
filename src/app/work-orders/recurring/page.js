@@ -126,7 +126,7 @@ export default function RecurringOrdersPage() {
   }
 
   return (
-    <div className="min-h-full bg-linear-to-b from-background via-accent/10 to-background text-foreground">
+    <div className="min-h-full text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" asChild>

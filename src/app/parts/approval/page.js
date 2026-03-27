@@ -282,7 +282,7 @@ export default function PartsApprovalPage() {
 
   return (
     <motion.div
-      className="min-h-full bg-background text-foreground"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}

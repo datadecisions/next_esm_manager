@@ -31,6 +31,47 @@ function formatDate(val) {
   return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "2-digit" });
 }
 
+function filterBreakdownBySection(rows, section) {
+  if (!Array.isArray(rows) || !section) return Array.isArray(rows) ? rows : [];
+  const normalizedSection = String(section).trim().toLowerCase();
+  if (!normalizedSection) return rows;
+  const isMeaningfulSectionValue = (val) => {
+    if (typeof val !== "string") return false;
+    const normalized = val.trim().toLowerCase();
+    return normalized !== "" && normalized !== "n/a" && normalized !== "na" && normalized !== "none" && normalized !== "null" && normalized !== "undefined" && normalized !== "-";
+  };
+
+  const sectionKeys = [
+    "Section",
+    "section",
+    "SectionNo",
+    "sectionNo",
+    "RepairCode",
+    "repairCode",
+    "TaskSection",
+    "taskSection",
+    "ProjectSection",
+    "projectSection",
+  ];
+
+  const hasSectionMetadata = rows.some((row) =>
+    sectionKeys.some((key) => {
+      const val = row?.[key];
+      return isMeaningfulSectionValue(val);
+    })
+  );
+
+  // If API didn't include section metadata, avoid hiding valid rows.
+  if (!hasSectionMetadata) return rows;
+
+  return rows.filter((row) =>
+    sectionKeys.some((key) => {
+      const val = row?.[key];
+      return isMeaningfulSectionValue(val) && val.trim().toLowerCase() === normalizedSection;
+    })
+  );
+}
+
 function GppBadge({ value }) {
   const v = Number(value);
   if (isNaN(v)) return <span>—</span>;
@@ -542,7 +583,10 @@ export default function LineItemsTab({ wo, billing, token, onRefresh }) {
     setBreakdownLoadingMap((prev) => ({ ...prev, [section]: true }));
     try {
       const data = await getAccountingBreakdown(wo.WONo, token, section);
-      setBreakdownMap((prev) => ({ ...prev, [section]: Array.isArray(data) ? data : [] }));
+      setBreakdownMap((prev) => ({
+        ...prev,
+        [section]: filterBreakdownBySection(Array.isArray(data) ? data : [], section),
+      }));
     } catch {
       setBreakdownMap((prev) => ({ ...prev, [section]: [] }));
     } finally {
