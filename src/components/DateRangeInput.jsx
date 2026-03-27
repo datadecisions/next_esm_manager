@@ -67,7 +67,10 @@ export function DateRangeInput({
   return (
     <div className={cn("flex items-end gap-2", className)}>
       <div>
-        <label htmlFor={`${id}-start`} className="text-sm font-medium mb-2 block">
+        <label
+          htmlFor={`${id}-start`}
+          className="mb-2 block text-sm font-medium text-muted-foreground"
+        >
           {startLabel}
         </label>
         <Input
@@ -79,9 +82,12 @@ export function DateRangeInput({
           aria-invalid={!isValid && (startStr || endStr) ? "true" : undefined}
         />
       </div>
-      <span className="text-muted-foreground pb-2">–</span>
+      <span className="pb-2 text-muted-foreground">–</span>
       <div>
-        <label htmlFor={`${id}-end`} className="text-sm font-medium mb-2 block">
+        <label
+          htmlFor={`${id}-end`}
+          className="mb-2 block text-sm font-medium text-muted-foreground"
+        >
           {endLabel}
         </label>
         <Input
@@ -135,7 +141,10 @@ export function DateInput({
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="text-sm font-medium mb-2 block">
+      <label
+        htmlFor={id}
+        className="mb-2 block text-sm font-medium text-muted-foreground"
+      >
         {label}
       </label>
       <Input

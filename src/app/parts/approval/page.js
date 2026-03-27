@@ -275,14 +275,14 @@ export default function PartsApprovalPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -300,11 +300,11 @@ export default function PartsApprovalPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <CheckCircle className="h-5 w-5" />
               Parts Approval
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Approve work order parts requests.
             </p>
           </div>
@@ -315,7 +315,7 @@ export default function PartsApprovalPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
                 <div>
@@ -363,22 +363,22 @@ export default function PartsApprovalPage() {
               )}
 
               {!loading && branches.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   Select one or more branches to view parts requests.
                 </div>
               )}
 
               {!loading && branches.length > 0 && requests.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   There are no work orders requesting parts.
                 </div>
               )}
 
               {!loading && filteredRequests.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden max-h-[60vh] overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-border overflow-hidden">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                      <TableRow className="bg-muted/40">
                         <TableHead className="font-semibold">WO No.</TableHead>
                         <TableHead className="font-semibold">Dispatch Date</TableHead>
                         <TableHead className="font-semibold">Equipment</TableHead>
@@ -390,7 +390,7 @@ export default function PartsApprovalPage() {
                       {filteredRequests.map((r) => (
                         <TableRow
                           key={r.WONo}
-                          className={`cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 ${selectedWO?.WONo === r.WONo ? "bg-cyan-50 dark:bg-cyan-950/30" : ""}`}
+                          className={`cursor-pointer hover:bg-muted/40 ${selectedWO?.WONo === r.WONo ? "bg-primary/10" : ""}`}
                           onClick={() => handleRowClick(r)}
                           onDoubleClick={() => window.open(`/work-orders/${r.WONo}`, "_blank")}
                         >
@@ -431,7 +431,7 @@ export default function PartsApprovalPage() {
               <div className="mt-6 space-y-4">
                 <div>
                   <p className="font-medium">
-                    <Link href={`/work-orders/${selectedWO.WONo}`} className="text-cyan-600 hover:underline dark:text-cyan-400" target="_blank">
+                    <Link href={`/work-orders/${selectedWO.WONo}`} className="text-primary hover:underline" target="_blank">
                       {selectedWO.ShipName}
                     </Link>
                   </p>
@@ -442,7 +442,7 @@ export default function PartsApprovalPage() {
                     {selectedWO.Make ?? ""} / {selectedWO.Model ?? ""}
                   </p>
                   {selectedWO.Comments && (
-                    <p className="text-sm mt-2 border-l-2 pl-2 border-slate-200 dark:border-slate-700">
+                    <p className="mt-2 border-l-2 border-border pl-2 text-sm">
                       {selectedWO.Comments}
                     </p>
                   )}
@@ -450,10 +450,10 @@ export default function PartsApprovalPage() {
 
                 <div>
                   <h4 className="font-semibold mb-2">Requested Parts</h4>
-                  <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                  <div className="rounded-lg border border-border overflow-hidden">
                     <Table>
                         <TableHeader>
-                        <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                        <TableRow className="bg-muted/40">
                           <TableHead className="w-24">Action</TableHead>
                           <TableHead>Part #</TableHead>
                           <TableHead>Description</TableHead>
@@ -467,14 +467,14 @@ export default function PartsApprovalPage() {
                         {(selectedWO.Parts ?? []).map((part) => (
                           <TableRow
                             key={part.UniqueField}
-                            className={part.approve === "DENY" ? "opacity-60 bg-red-50/50 dark:bg-red-950/20" : part.approve === "APPROVE" ? "bg-green-50/50 dark:bg-green-950/20" : ""}
+                            className={part.approve === "DENY" ? "opacity-60 bg-destructive/10" : part.approve === "APPROVE" ? "bg-primary/10" : ""}
                           >
                             <TableCell>
                               <div className="flex gap-1">
                                 <Button
                                   size="icon"
                                   variant={part.approve === "APPROVE" ? "default" : "ghost"}
-                                  className={`h-7 w-7 ${part.approve === "APPROVE" ? "bg-green-600 hover:bg-green-700" : ""}`}
+                                  className="h-7 w-7"
                                   onClick={() => handlePartApproveChange(part, "APPROVE")}
                                 >
                                   <Check className="h-3.5 w-3.5" />
@@ -508,7 +508,7 @@ export default function PartsApprovalPage() {
                 </div>
 
                 {denyCommentsOpen && (
-                  <div className="rounded-lg border border-amber-200 dark:border-amber-800 p-4 space-y-2">
+                  <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
                     <label className="text-sm font-medium">Private comments (for technician)</label>
                     <p className="text-xs text-muted-foreground">
                       Add a reason for the denial. The technician will see this on the work order.
@@ -521,7 +521,7 @@ export default function PartsApprovalPage() {
                       }
                       placeholder="Reason for denial..."
                     />
-                    <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+                    <p className="text-xs font-medium text-primary">
                       Click the button below to deny the parts and save your comments.
                     </p>
                   </div>
@@ -544,10 +544,10 @@ export default function PartsApprovalPage() {
                 {approvedParts.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-2">Approved Parts on WO</h4>
-                    <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                    <div className="rounded-lg border border-border overflow-hidden">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                          <TableRow className="bg-muted/40">
                             <TableHead className="w-12"></TableHead>
                             <TableHead>Part #</TableHead>
                             <TableHead>Description</TableHead>
@@ -563,7 +563,7 @@ export default function PartsApprovalPage() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                                  className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                                   onClick={() => handleDeleteApprovedPart(p)}
                                   disabled={deletingPartId === p.ID}
                                   title="Remove part from work order"

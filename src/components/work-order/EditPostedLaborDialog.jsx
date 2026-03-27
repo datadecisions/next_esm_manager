@@ -209,14 +209,14 @@ export default function EditPostedLaborDialog({ open, onOpenChange, entry, wo, t
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/50 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
             </div>
           )}
 
           {/* Transfer to New Work Order */}
-          <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 p-4 space-y-2">
-            <h4 className="text-sm font-semibold text-amber-800 dark:text-amber-200">Transfer to New Work Order</h4>
+          <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
+            <h4 className="text-sm font-semibold text-foreground">Transfer to New Work Order</h4>
             <p className="text-xs text-muted-foreground">Move this labor entry to a different work order</p>
             <div className="relative">
               <Label htmlFor="wo-search" className="sr-only">Search Work Orders</Label>

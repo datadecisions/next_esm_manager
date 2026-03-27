@@ -211,9 +211,9 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
                   name="outputType"
                   checked={form.outputType === "standard"}
                   onChange={() => setForm((p) => ({ ...p, outputType: "standard" }))}
-                  className="rounded-full border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                  className="rounded-full border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">Standard</span>
+                <span className="text-sm text-foreground">Standard</span>
               </label>
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <input
@@ -221,16 +221,16 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
                   name="outputType"
                   checked={form.outputType === "output"}
                   onChange={() => setForm((p) => ({ ...p, outputType: "output" }))}
-                  className="rounded-full border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                  className="rounded-full border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">Output</span>
+                <span className="text-sm text-foreground">Output</span>
               </label>
             </div>
           </div>
 
           {/* Output destination (only when Type = Output) */}
           {form.outputType === "output" && (
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-4">
+            <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
               <Label className="mb-2 block">Where should the output be placed?</Label>
               <div className="flex flex-col sm:flex-row gap-4">
                 <label className="inline-flex items-center gap-2 cursor-pointer">
@@ -239,9 +239,9 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
                     name="outputDestination"
                     checked={form.outputDestination === "equipment"}
                     onChange={() => setForm((p) => ({ ...p, outputDestination: "equipment" }))}
-                    className="rounded-full border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                    className="rounded-full border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Add value to selected equipment</span>
+                  <span className="text-sm text-foreground">Add value to selected equipment</span>
                 </label>
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input
@@ -249,9 +249,9 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
                     name="outputDestination"
                     checked={form.outputDestination === "attachment"}
                     onChange={() => setForm((p) => ({ ...p, outputDestination: "attachment" }))}
-                    className="rounded-full border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                    className="rounded-full border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Create new attachment</span>
+                  <span className="text-sm text-foreground">Create new attachment</span>
                 </label>
               </div>
               {form.outputDestination === "attachment" && (
@@ -293,18 +293,18 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
                   type="checkbox"
                   checked={form.skillsWelding}
                   onChange={(e) => setForm((p) => ({ ...p, skillsWelding: e.target.checked }))}
-                  className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                  className="rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">Welding</span>
+                <span className="text-sm text-foreground">Welding</span>
               </label>
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={form.skillsMachining}
                   onChange={(e) => setForm((p) => ({ ...p, skillsMachining: e.target.checked }))}
-                  className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                  className="rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">Machining</span>
+                <span className="text-sm text-foreground">Machining</span>
               </label>
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function AddSectionDialog({ open, onOpenChange, wo, token, onSucc
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={saving} className="bg-cyan-600 hover:bg-cyan-500">
+            <Button type="submit" disabled={saving}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add Section"}
             </Button>
           </DialogFooter>

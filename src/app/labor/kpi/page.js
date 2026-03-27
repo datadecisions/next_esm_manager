@@ -181,14 +181,14 @@ export default function LaborKPIPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -201,16 +201,16 @@ export default function LaborKPIPage() {
           transition={fadeInUp.transition}
         >
           <Link href="/labor">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700/50">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card hover:bg-muted/40">
               <ArrowLeft className="h-4 w-4" />
             </span>
           </Link>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <BarChart3 className="h-5 w-5" />
               Labor KPI Dashboard
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Key metrics for labor managers.
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function LaborKPIPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="mb-6 dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="mb-6 border-border bg-card text-card-foreground">
             <CardContent className="pt-6">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
                 <div>
@@ -244,7 +244,7 @@ export default function LaborKPIPage() {
                   inputClassName="w-[140px]"
                 />
                 {loading && (
-                  <div className="flex items-center gap-2 text-slate-500">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span>Loading...</span>
                   </div>
@@ -254,7 +254,7 @@ export default function LaborKPIPage() {
           </Card>
 
           {!branchNum && branches.length === 0 && (
-            <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-slate-500 dark:text-slate-400">
+            <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
               Select a branch to view KPIs.
             </div>
           )}
@@ -263,69 +263,69 @@ export default function LaborKPIPage() {
             <>
               {/* Summary cards */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Pending Approval
                     </CardTitle>
                     <FileCheck className="h-4 w-4 text-amber-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : pendingCount}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Unimported labor entries
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Open Labor Value
                     </CardTitle>
-                    <DollarSign className="h-4 w-4 text-cyan-500" />
+                    <DollarSign className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : formatCurrency(openLaborValue)}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       WIP on open orders
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Hours Billed
                     </CardTitle>
                     <Clock className="h-4 w-4 text-emerald-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : formatHours(hoursBilled)}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       In date range
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Technicians Active
                     </CardTitle>
                     <Users className="h-4 w-4 text-violet-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : techCount}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       With open labor
                     </p>
                   </CardContent>
@@ -334,35 +334,35 @@ export default function LaborKPIPage() {
 
               {/* Utilization */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-6">
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Billable %
                     </CardTitle>
                     <TrendingUp className="h-4 w-4 text-emerald-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : formatPercent(billablePercent)}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       From timecards in range
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="border-border bg-card text-card-foreground">
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
                       Overtime %
                     </CardTitle>
                     <Clock className="h-4 w-4 text-amber-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-2xl font-bold text-foreground">
                       {loading ? "-" : formatPercent(overtimePercent)}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Hours over 8/day
                     </p>
                   </CardContent>
@@ -370,13 +370,13 @@ export default function LaborKPIPage() {
               </div>
 
               {/* Open orders aging */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5" />
                     Open Orders by Age
                   </CardTitle>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-muted-foreground">
                     Orders with unimported labor, grouped by last labor date
                   </p>
                 </CardHeader>
@@ -421,15 +421,15 @@ export default function LaborKPIPage() {
 
               {/* Labor revenue (from overview) */}
               {laborRevenue > 0 && (
-                <Card className="mt-6 dark:border-slate-700 dark:bg-slate-800/50">
+                <Card className="mt-6 border-border bg-card text-card-foreground">
                   <CardHeader>
                     <CardTitle>Labor Revenue (Period)</CardTitle>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <p className="text-sm text-muted-foreground">
                       From imported labor in date range
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-slate-900 dark:text-white">
+                    <div className="text-3xl font-bold text-foreground">
                       {formatCurrency(laborRevenue)}
                     </div>
                   </CardContent>

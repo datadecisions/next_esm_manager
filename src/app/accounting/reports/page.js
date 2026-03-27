@@ -189,14 +189,14 @@ export default function ReportsPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -215,10 +215,10 @@ export default function ReportsPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Reports
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Balance Sheet and Cash Flow statements.
               </p>
             </div>
@@ -235,7 +235,7 @@ export default function ReportsPage() {
               <select
                 value={month}
                 onChange={(e) => setMonth(Number(e.target.value))}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               >
                 {MONTH_NAMES.map((name, i) => (
                   <option key={name} value={i + 1}>
@@ -246,7 +246,7 @@ export default function ReportsPage() {
               <select
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               >
                 {Array.from({ length: 7 }, (_, i) => year - 3 + i).map((y) => (
                   <option key={y} value={y}>
@@ -291,7 +291,7 @@ export default function ReportsPage() {
 
             {loading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : (
               <>
@@ -320,7 +320,7 @@ export default function ReportsPage() {
                               <button
                                 type="button"
                                 onClick={() => toggleExpand(key)}
-                                className="flex w-full items-center justify-between py-3 font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg -mx-2 px-2"
+                                className="flex w-full items-center justify-between py-3 font-semibold text-foreground hover:bg-accent/10 rounded-lg -mx-2 px-2"
                               >
                                 <span className="flex items-center gap-2">
                                   {isExpanded ? (
@@ -352,7 +352,7 @@ export default function ReportsPage() {
                                             onClick={() =>
                                               toggleExpand(sectionKey)
                                             }
-                                            className="flex w-full items-center justify-between py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg -mx-2 px-2"
+                                            className="flex w-full items-center justify-between py-2 text-sm font-medium text-muted-foreground hover:bg-accent/10 rounded-lg -mx-2 px-2"
                                           >
                                             <span className="flex items-center gap-2">
                                               {sectionExpanded ? (
@@ -371,7 +371,7 @@ export default function ReportsPage() {
                                               {sectionRows.map((row, i) => (
                                                 <div
                                                   key={`${row.Description}-${i}`}
-                                                  className="flex justify-between py-1.5 text-sm text-slate-600 dark:text-slate-400"
+                                                      className="flex justify-between py-1.5 text-sm text-muted-foreground"
                                                 >
                                                   <span className="pl-4">
                                                     {row.Description || "—"}
@@ -425,7 +425,7 @@ export default function ReportsPage() {
                           expanded={expanded["COSTS"] ?? false}
                           onToggle={() => toggleExpand("COSTS")}
                         />
-                        <div className="py-2 border-t border-slate-200 dark:border-slate-700 mt-2">
+                        <div className="py-2 border-t border-border/60 mt-2">
                           <div className="flex justify-between font-medium">
                             <span>Gross Margin</span>
                             <span className="font-mono tabular-nums">
@@ -452,7 +452,7 @@ export default function ReportsPage() {
                       </Section>
 
                       {/* Totals */}
-                      <div className="pt-4 border-t-2 border-slate-200 dark:border-slate-700 space-y-2">
+                      <div className="pt-4 border-t-2 border-border/60 space-y-2">
                         <div className="flex justify-between font-semibold text-lg">
                           <span>Income Before Tax</span>
                           <span className="font-mono tabular-nums">
@@ -480,8 +480,8 @@ export default function ReportsPage() {
 
 function ReportHeader({ title, asOf }) {
   return (
-    <div className="p-6 pb-4 text-center border-b border-slate-200 dark:border-slate-700">
-      <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+    <div className="p-6 pb-4 text-center border-b border-border/60">
+      <h2 className="text-xl font-semibold text-foreground">
         {title}
       </h2>
       <p className="mt-1 text-sm text-muted-foreground">
@@ -494,7 +494,7 @@ function ReportHeader({ title, asOf }) {
 function ReportCard({ children, className = "" }) {
   return (
     <div
-      className={`rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 ${className}`}
+      className={`rounded-2xl border border-border/80 bg-card ${className}`}
     >
       {children}
     </div>
@@ -507,7 +507,7 @@ function Section({ title, expanded, onToggle, total, children }) {
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between py-3 font-semibold text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg -mx-2 px-2"
+        className="flex w-full items-center justify-between py-3 font-semibold text-foreground hover:bg-accent/10 rounded-lg -mx-2 px-2"
       >
         <span className="flex items-center gap-2">
           {expanded ? (
@@ -535,7 +535,7 @@ function SubSection({ title, items, total, expanded, onToggle }) {
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg -mx-2 px-2"
+        className="flex w-full items-center justify-between py-2 text-sm font-medium text-muted-foreground hover:bg-accent/10 rounded-lg -mx-2 px-2"
       >
         <span className="flex items-center gap-2">
           {expanded ? (
@@ -554,7 +554,7 @@ function SubSection({ title, items, total, expanded, onToggle }) {
           {entries.map(([name, val]) => (
             <div
               key={name}
-              className="flex justify-between py-1.5 text-sm text-slate-600 dark:text-slate-400"
+              className="flex justify-between py-1.5 text-sm text-muted-foreground"
             >
               <span className="pl-4">{name}</span>
               <span className="font-mono tabular-nums">

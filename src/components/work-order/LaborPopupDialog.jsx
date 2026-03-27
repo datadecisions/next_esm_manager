@@ -196,32 +196,31 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size="wide" className="max-h-[85vh] flex flex-col">
+      <DialogContent size="xl" className="max-h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Wrench className="h-5 w-5 text-cyan-500" />
+            <Wrench className="h-5 w-5 text-primary" />
             Labor
             {laborHours > 0 && (
-              <span className="text-sm font-normal text-slate-500 dark:text-slate-400">
+              <span className="text-sm font-normal text-muted-foreground">
                 ({laborHours.toFixed(1)} hrs)
               </span>
             )}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="overflow-auto flex-1 min-h-0 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border bg-card text-card-foreground">
           {isOpen ? (
             <div className="space-y-6 p-4">
               {/* Posted Labor (Labor To Import) */}
               <section>
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                  <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">Labor To Import</h3>
+                  <h3 className="text-base font-semibold">Labor To Import</h3>
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
                       variant={showDateFilter ? "secondary" : "ghost"}
-                      onClick={() => setShowDateFilter((v) => !v)}
-                    >
+                      onClick={() => setShowDateFilter(v => !v)}>
                       Filter by date
                     </Button>
                     {postedLabor.length > 0 && (
@@ -229,8 +228,7 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
                         size="sm"
                         onClick={handleImportAll}
                         disabled={importing}
-                        className="gap-2"
-                      >
+                        className="gap-2">
                         {importing ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
@@ -244,62 +242,79 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
                 {showDateFilter && postedLabor.length > 0 && (
                   <div className="flex flex-wrap items-center gap-4 mb-3">
                     <div>
-                      <Label htmlFor="startDate" className="text-xs">Start</Label>
+                      <Label htmlFor="startDate" className="text-xs">
+                        Start
+                      </Label>
                       <Input
                         id="startDate"
                         type="date"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={e => setStartDate(e.target.value)}
                         className="mt-0.5 h-8 w-36"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="endDate" className="text-xs">End</Label>
+                      <Label htmlFor="endDate" className="text-xs">
+                        End
+                      </Label>
                       <Input
                         id="endDate"
                         type="date"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={e => setEndDate(e.target.value)}
                         className="mt-0.5 h-8 w-36"
                       />
                     </div>
                   </div>
                 )}
                 {loadingPosted ? (
-                  <div className="flex items-center gap-2 py-8 text-slate-500">
+                  <div className="flex items-center gap-2 py-8 text-muted-foreground">
                     <Loader2 className="h-5 w-5 animate-spin" />
                     Loading…
                   </div>
                 ) : postedLabor.length === 0 ? (
-                  <p className="py-4 text-slate-500 dark:text-slate-400 italic">There is no labor to import.</p>
+                  <p className="py-4 italic text-muted-foreground">There is no labor to import.</p>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50">
+                      <thead className="bg-muted/40">
                         <tr>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400 w-12"></th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Technician</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">WO</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Start</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">End</th>
-                          <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Duration</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Comments</th>
+                          <th className="w-12 px-4 py-2.5 text-left font-medium text-muted-foreground"></th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Technician
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            WO
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Date
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Start
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            End
+                          </th>
+                          <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                            Duration
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Comments
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         {[...filteredPostedLabor]
                           .sort((a, b) => new Date(b.ArrivalDateTime) - new Date(a.ArrivalDateTime))
-                          .map((hours) => (
-                            <tr key={hours.ID} className="border-t border-slate-100 dark:border-slate-700/50">
+                          .map(hours => (
+                            <tr key={hours.ID} className="border-t border-border/50">
                               <td className="py-2 px-4">
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8 text-slate-500 hover:text-cyan-600"
+                                  className="h-8 w-8 text-muted-foreground hover:text-primary"
                                   onClick={() => setEditPostedEntry(hours)}
-                                  title="Edit"
-                                >
+                                  title="Edit">
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               </td>
@@ -307,16 +322,26 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
                               <td className="py-2 px-4">{hours.WONo ?? "—"}</td>
                               <td className="py-2 px-4">{formatDate(hours.ArrivalDateTime)}</td>
                               <td className="py-2 px-4">{formatDateTime(hours.ArrivalDateTime)}</td>
-                              <td className="py-2 px-4">{formatDateTime(hours.DepartureDateTime)}</td>
-                              <td className="py-2 px-4 text-right tabular-nums">{msToHours(hours.duration)} hrs</td>
-                              <td className="py-2 px-4">{hours.Section === "true" || hours.Section === true ? "Labor" : hours.Section ?? hours.SignatureComments ?? "—"}</td>
+                              <td className="py-2 px-4">
+                                {formatDateTime(hours.DepartureDateTime)}
+                              </td>
+                              <td className="py-2 px-4 text-right tabular-nums">
+                                {msToHours(hours.duration)} hrs
+                              </td>
+                              <td className="py-2 px-4">
+                                {hours.Section === "true" || hours.Section === true
+                                  ? "Labor"
+                                  : (hours.Section ?? hours.SignatureComments ?? "—")}
+                              </td>
                             </tr>
                           ))}
                       </tbody>
                       <tfoot>
-                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                          <td className="py-2.5 px-4" colSpan={6}>Total Hours</td>
-                          <td className="py-2.5 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                        <tr className="border-t border-border bg-muted/40 font-medium">
+                          <td className="py-2.5 px-4" colSpan={6}>
+                            Total Hours
+                          </td>
+                          <td className="py-2.5 px-4 text-right tabular-nums text-foreground">
                             {msToHours(totalPostedHours)} hrs
                           </td>
                           <td />
@@ -330,71 +355,90 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
               {/* Imported Labor */}
               <section>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">Labor</h3>
+                  <h3 className="text-base font-semibold">Labor</h3>
                   <Button size="sm" onClick={() => setShowAddLabor(true)} className="gap-2">
                     <Plus className="h-4 w-4" />
                     Add New Labor Entry
                   </Button>
                 </div>
                 {loadingImported ? (
-                  <div className="flex items-center gap-2 py-8 text-slate-500">
+                  <div className="flex items-center gap-2 py-8 text-muted-foreground">
                     <Loader2 className="h-5 w-5 animate-spin" />
                     Loading…
                   </div>
                 ) : importedLabor.length === 0 ? (
                   <div className="py-4">
-                    <p className="text-slate-500 dark:text-slate-400 italic mb-3">No labor has been imported.</p>
-                    <Button size="sm" variant="outline" onClick={() => setShowAddLabor(true)} className="gap-2">
+                    <p className="mb-3 italic text-muted-foreground">No labor has been imported.</p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setShowAddLabor(true)}
+                      className="gap-2">
                       <Plus className="h-4 w-4" />
                       Add New Labor Entry
                     </Button>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50">
+                      <thead className="bg-muted/40">
                         <tr>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400 w-20"></th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Tech</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
-                          <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Hrs</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">WO</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Code</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Rate</th>
-                          <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed</th>
-                          <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed × Hrs</th>
+                          <th className="w-20 px-4 py-2.5 text-left font-medium text-muted-foreground"></th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Tech
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Date
+                          </th>
+                          <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                            Hrs
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            WO
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Code
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Rate
+                          </th>
+                          <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                            Billed
+                          </th>
+                          <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                            Billed × Hrs
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         {[...importedLabor]
                           .sort((a, b) => new Date(b.DateOfLabor) - new Date(a.DateOfLabor))
-                          .map((entry) => (
+                          .map(entry => (
                             <tr
                               key={entry.ID}
-                              className={`border-t border-slate-100 dark:border-slate-700/50 ${
-                                entry.Transfer === -1 ? "bg-red-50 dark:bg-red-950/50 line-through text-slate-400" : ""
-                              }`}
-                            >
+                              className={`border-t border-border/50 ${
+                                entry.Transfer === -1
+                                  ? "bg-destructive/10 line-through text-muted-foreground"
+                                  : ""
+                              }`}>
                               <td className="py-2 px-4">
                                 {entry.Disposition !== 2 && entry.Transfer !== -1 && (
                                   <div className="flex items-center gap-0.5">
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      className="h-8 w-8 text-slate-500 hover:text-cyan-600"
+                                      className="h-8 w-8 text-muted-foreground hover:text-primary"
                                       onClick={() => setEditImportedEntry(entry)}
-                                      title="Edit"
-                                    >
+                                      title="Edit">
                                       <Pencil className="h-4 w-4" />
                                     </Button>
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      className="h-8 w-8 text-red-500 hover:text-red-700"
+                                      className="h-8 w-8 text-destructive hover:text-destructive/80"
                                       onClick={() => handleDeleteImport(entry)}
                                       disabled={deletingId === entry.ID}
-                                      title="Delete"
-                                    >
+                                      title="Delete">
                                       {deletingId === entry.ID ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                       ) : (
@@ -407,26 +451,36 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
                               <td className="py-2 px-4 whitespace-nowrap">
                                 {entry.MechanicName} ({entry.MechanicNo})
                               </td>
-                              <td className="py-2 px-4 whitespace-nowrap">{formatDate(entry.DateOfLabor)}</td>
-                              <td className="py-2 px-4 text-right tabular-nums">{(entry.Hours ?? 0).toFixed(2)}</td>
+                              <td className="py-2 px-4 whitespace-nowrap">
+                                {formatDate(entry.DateOfLabor)}
+                              </td>
+                              <td className="py-2 px-4 text-right tabular-nums">
+                                {(entry.Hours ?? 0).toFixed(2)}
+                              </td>
                               <td className="py-2 px-4 whitespace-nowrap">{entry.WONo}</td>
                               <td className="py-2 px-4 whitespace-nowrap">{getSaleCode(entry)}</td>
-                              <td className="py-2 px-4 whitespace-nowrap">{entry.LaborRateType ?? "—"}</td>
-                              <td className="py-2 px-4 whitespace-nowrap">{formatCurrency(entry.SellRate)}</td>
-                              <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                              <td className="py-2 px-4 whitespace-nowrap">
+                                {entry.LaborRateType ?? "—"}
+                              </td>
+                              <td className="py-2 px-4 whitespace-nowrap">
+                                {formatCurrency(entry.SellRate)}
+                              </td>
+                              <td className="py-2 px-4 text-right font-medium tabular-nums text-foreground">
                                 {formatCurrency(entry.Sell)}
                               </td>
                             </tr>
                           ))}
                       </tbody>
                       <tfoot>
-                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                          <td className="py-2.5 px-4" colSpan={3}>Total Hours</td>
-                          <td className="py-2.5 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                        <tr className="border-t border-border bg-muted/40 font-medium">
+                          <td className="py-2.5 px-4" colSpan={3}>
+                            Total Hours
+                          </td>
+                          <td className="py-2.5 px-4 text-right tabular-nums text-foreground">
                             {totalImportedHours.toFixed(2)} hrs
                           </td>
                           <td className="py-2.5 px-4" colSpan={4} />
-                          <td className="py-2.5 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                          <td className="py-2.5 px-4 text-right tabular-nums text-foreground">
                             Total Billed: {formatCurrency(totalImportedBilled)}
                           </td>
                         </tr>
@@ -440,49 +494,71 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
             /* Closed WO – billing line items (L type) */
             <div className="p-4">
               {laborLineItems.length === 0 ? (
-                <p className="py-8 text-center text-slate-500 dark:text-slate-400">No labor on this work order.</p>
+                <p className="py-8 text-center text-muted-foreground">
+                  No labor on this work order.
+                </p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Type</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Item</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Hrs</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Cost</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Billed</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                        Type
+                      </th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                        Item
+                      </th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                        Description
+                      </th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
+                        Date
+                      </th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                        Hrs
+                      </th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                        Cost
+                      </th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">
+                        Billed
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {laborLineItems.map((item, i) => (
-                      <tr key={i} className="border-b border-slate-100 dark:border-slate-700/50">
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                      <tr key={i} className="border-b border-border/50">
+                        <td className="py-2 px-4 text-muted-foreground">
                           {item.CodeDescription || "Labor"} ({item.Code || item.EntryType || "L"})
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">
+                        <td className="py-2 px-4 text-muted-foreground">
                           {[item.ItemNo, item.ItemName].filter(Boolean).join(", ") || "—"}
                         </td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{formatDate(item.ItemDate)}</td>
-                        <td className="py-2 px-4 text-right tabular-nums text-slate-600 dark:text-slate-400">
-                          {(item.Qty ?? item.Hours) != null ? Number(item.Qty ?? item.Hours).toFixed(2) : "—"}
+                        <td className="py-2 px-4 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="py-2 px-4 text-muted-foreground">
+                          {formatDate(item.ItemDate)}
                         </td>
-                        <td className="py-2 px-4 text-right tabular-nums text-slate-600 dark:text-slate-400">
-                          {item.Cost != null && item.Cost !== "N/A" ? formatCurrency(item.Cost) : (item.Cost ?? "—")}
+                        <td className="py-2 px-4 text-right tabular-nums text-muted-foreground">
+                          {(item.Qty ?? item.Hours) != null
+                            ? Number(item.Qty ?? item.Hours).toFixed(2)
+                            : "—"}
                         </td>
-                        <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                        <td className="py-2 px-4 text-right tabular-nums text-muted-foreground">
+                          {item.Cost != null && item.Cost !== "N/A"
+                            ? formatCurrency(item.Cost)
+                            : (item.Cost ?? "—")}
+                        </td>
+                        <td className="py-2 px-4 text-right font-medium tabular-nums text-foreground">
                           {formatCurrency(item.Extended)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300" colSpan={5}>
+                    <tr className="border-t border-border bg-muted/40 font-medium">
+                      <td className="py-3 px-4 text-foreground" colSpan={5}>
                         Labor total {laborHours > 0 && `(${laborHours.toFixed(1)} hrs)`}
                       </td>
-                      <td colSpan={2} className="py-3 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                      <td colSpan={2} className="py-3 px-4 text-right tabular-nums text-foreground">
                         {formatCurrency(laborSubTotal)}
                       </td>
                     </tr>
@@ -505,7 +581,7 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
       />
       <EditPostedLaborDialog
         open={!!editPostedEntry}
-        onOpenChange={(o) => !o && setEditPostedEntry(null)}
+        onOpenChange={o => !o && setEditPostedEntry(null)}
         entry={editPostedEntry}
         wo={wo}
         token={token}
@@ -516,7 +592,7 @@ export default function LaborPopupDialog({ open, onOpenChange, wo, billing, toke
       />
       <EditImportedLaborDialog
         open={!!editImportedEntry}
-        onOpenChange={(o) => !o && setEditImportedEntry(null)}
+        onOpenChange={o => !o && setEditImportedEntry(null)}
         entry={editImportedEntry}
         wo={wo}
         token={token}

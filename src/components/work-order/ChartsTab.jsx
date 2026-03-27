@@ -174,9 +174,9 @@ export default function ChartsTab({ wo, token }) {
 
   if (!hasSerial) {
     return (
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Charts</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+      <div className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-6">
+        <h3 className="mb-4 text-lg font-semibold">Charts</h3>
+        <p className="text-sm text-muted-foreground">
           Add equipment (Serial No.) to this work order to see AR aging and monthly invoice breakdown charts.
         </p>
       </div>
@@ -185,9 +185,9 @@ export default function ChartsTab({ wo, token }) {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Charts</h3>
-        <div className="h-64 flex items-center justify-center text-slate-500 dark:text-slate-400">
+      <div className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-6">
+        <h3 className="mb-4 text-lg font-semibold">Charts</h3>
+        <div className="flex h-64 items-center justify-center text-muted-foreground">
           Loading charts…
         </div>
       </div>
@@ -196,16 +196,16 @@ export default function ChartsTab({ wo, token }) {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-200 mb-4">Charts</h3>
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      <div className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-6">
+        <h3 className="mb-4 text-lg font-semibold">Charts</h3>
+        <p className="text-sm text-destructive">{error}</p>
       </div>
     );
   }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50">
+      <Card className="rounded-2xl border border-border">
         <CardHeader>
           <CardTitle className="text-base">Accounts Receivable Aging (Past 12 Months + Over)</CardTitle>
           <p className="text-sm text-muted-foreground">
@@ -252,7 +252,7 @@ export default function ChartsTab({ wo, token }) {
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50">
+      <Card className="rounded-2xl border border-border">
         <CardHeader>
           <CardTitle className="text-base">Monthly Invoice Breakdown</CardTitle>
           <p className="text-sm text-muted-foreground">

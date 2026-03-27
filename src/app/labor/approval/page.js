@@ -344,14 +344,14 @@ export default function LaborApprovalPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -369,11 +369,11 @@ export default function LaborApprovalPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <CheckCircle className="h-5 w-5" />
               Labor Approval
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Review and import technician labor by tech. Pending and imported hours shown together.
             </p>
           </div>
@@ -384,7 +384,7 @@ export default function LaborApprovalPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50 mb-6">
+          <Card className="mb-6 border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
                 <div>
@@ -465,7 +465,7 @@ export default function LaborApprovalPage() {
               )}
 
               {!loading && branches.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   Select one or more branches to view labor.
                 </div>
               )}
@@ -475,7 +475,7 @@ export default function LaborApprovalPage() {
           {!loading && branches.length > 0 && techs.length > 0 && (
             <div className="space-y-6">
               {/* Techs with pending labor */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader className="pb-3 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <CardTitle className="flex items-center gap-2 text-lg">
@@ -496,11 +496,11 @@ export default function LaborApprovalPage() {
                       </Button>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-2 border-t border-border pt-1">
                     <button
                       type="button"
                       onClick={() => shiftDateBy(-1)}
-                      className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-foreground"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                       title={isSingleDay ? "Previous day" : "Previous period"}
                     >
                       <ChevronLeft className="h-5 w-5" />
@@ -513,7 +513,7 @@ export default function LaborApprovalPage() {
                     <button
                       type="button"
                       onClick={() => shiftDateBy(1)}
-                      className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-foreground"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                       title={isSingleDay ? "Next day" : "Next period"}
                     >
                       <ChevronRight className="h-5 w-5" />
@@ -526,10 +526,10 @@ export default function LaborApprovalPage() {
                       All labor has been approved.
                     </p>
                   ) : (
-                    <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                    <div className="overflow-hidden rounded-lg border border-border bg-background">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                          <TableRow className="bg-muted/40">
                             <TableHead className="w-12">
                               <input
                                 type="checkbox"
@@ -540,7 +540,7 @@ export default function LaborApprovalPage() {
                                   )
                                 }
                                 onChange={toggleSelectAll}
-                                className="rounded border-input"
+                                className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                               />
                             </TableHead>
                             <TableHead className="font-semibold">Technician</TableHead>
@@ -555,7 +555,7 @@ export default function LaborApprovalPage() {
                           {techsWithPending.map((tech) => (
                             <TableRow
                               key={tech.techId}
-                              className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                              className="cursor-pointer hover:bg-muted/40"
                               onClick={() => handleOpenTechDetail(tech)}
                             >
                               <TableCell onClick={(e) => e.stopPropagation()}>
@@ -565,7 +565,7 @@ export default function LaborApprovalPage() {
                                   onChange={() =>
                                     toggleTechSelection(tech.techId)
                                   }
-                                  className="rounded border-input"
+                                  className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 />
                               </TableCell>
                               <TableCell className="font-medium">
@@ -598,7 +598,7 @@ export default function LaborApprovalPage() {
               {techsWithImported.some(
                 (t) => t.unimported.length === 0 && t.imported.length > 0
               ) && (
-                <Card className="dark:border-slate-700 dark:bg-slate-800/50 border-dashed">
+                <Card className="border-dashed border-border bg-card text-card-foreground">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base text-muted-foreground">
                       <FileCheck className="h-4 w-4" />
@@ -606,10 +606,10 @@ export default function LaborApprovalPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                    <div className="overflow-hidden rounded-lg border border-border bg-background">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
+                          <TableRow className="bg-muted/30">
                             <TableHead>Technician</TableHead>
                             <TableHead>Imported Hours</TableHead>
                             <TableHead className="w-12"></TableHead>
@@ -621,7 +621,7 @@ export default function LaborApprovalPage() {
                             .map((tech) => (
                               <TableRow
                                 key={tech.techId}
-                                className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 text-muted-foreground"
+                                className="cursor-pointer text-muted-foreground hover:bg-muted/40"
                                 onClick={() => handleOpenTechDetail(tech)}
                               >
                                 <TableCell>{techDisplayName(tech)}</TableCell>
@@ -645,7 +645,7 @@ export default function LaborApprovalPage() {
           {!loading &&
             branches.length > 0 &&
             techs.length === 0 && (
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardContent className="py-12">
                   <div className="flex flex-col items-center gap-4 text-muted-foreground">
                     <p>No labor entries in this date range.</p>
@@ -653,7 +653,7 @@ export default function LaborApprovalPage() {
                       <button
                         type="button"
                         onClick={() => shiftDateBy(-1)}
-                        className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-foreground"
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                         title={isSingleDay ? "Previous day" : "Previous period"}
                       >
                         <ChevronLeft className="h-5 w-5" />
@@ -666,7 +666,7 @@ export default function LaborApprovalPage() {
                       <button
                         type="button"
                         onClick={() => shiftDateBy(1)}
-                        className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-foreground"
+                        className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                         title={isSingleDay ? "Next day" : "Next period"}
                       >
                         <ChevronRight className="h-5 w-5" />
@@ -701,7 +701,7 @@ export default function LaborApprovalPage() {
               {techDetailTech.unimported.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                    <h4 className="text-sm font-semibold text-foreground">
                       Pending labor
                     </h4>
                     <Button
@@ -713,10 +713,10 @@ export default function LaborApprovalPage() {
                       Import all
                     </Button>
                   </div>
-                  <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                  <div className="overflow-hidden rounded-lg border border-border bg-background">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                        <TableRow className="bg-muted/40">
                           <TableHead className="font-medium">WO</TableHead>
                           <TableHead className="font-medium">Ship</TableHead>
                           <TableHead className="font-medium">Hours</TableHead>
@@ -730,7 +730,7 @@ export default function LaborApprovalPage() {
                               <TableCell>
                                 <Link
                                   href={`/work-orders/${wo.WONo}`}
-                                  className="text-cyan-600 hover:underline dark:text-cyan-400 font-medium"
+                                  className="font-medium text-primary hover:underline"
                                   target="_blank"
                                   onClick={(ev) => ev.stopPropagation()}
                                 >
@@ -748,7 +748,7 @@ export default function LaborApprovalPage() {
                                     ev.stopPropagation();
                                     handleEditEntry(e, ev);
                                   }}
-                                  className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400"
+                                  className="rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-primary"
                                   title="Edit labor entry"
                                 >
                                   <Pencil className="h-4 w-4" />
@@ -767,10 +767,10 @@ export default function LaborApprovalPage() {
                   <h4 className="text-sm font-semibold text-muted-foreground mb-3">
                     Already imported
                   </h4>
-                  <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                  <div className="overflow-hidden rounded-lg border border-border bg-background">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
+                        <TableRow className="bg-muted/30">
                           <TableHead className="font-medium">WO</TableHead>
                           <TableHead className="font-medium">Ship</TableHead>
                           <TableHead className="font-medium">Hours</TableHead>
@@ -783,7 +783,7 @@ export default function LaborApprovalPage() {
                               <TableCell>
                                 <Link
                                   href={`/work-orders/${wo.WONo}`}
-                                  className="text-cyan-600 hover:underline dark:text-cyan-400"
+                                  className="text-primary hover:underline"
                                   target="_blank"
                                   onClick={(ev) => ev.stopPropagation()}
                                 >

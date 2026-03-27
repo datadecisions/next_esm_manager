@@ -119,14 +119,14 @@ export default function RecurringOrdersPage() {
 
   if (!token) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+      <div className="flex min-h-[200px] items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-full text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" asChild>
@@ -134,13 +134,13 @@ export default function RecurringOrdersPage() {
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-foreground">
             Recurring Orders
           </h1>
         </div>
 
         {/* Date range */}
-        <Card className="mb-6 dark:border-slate-700 dark:bg-slate-800/50">
+        <Card className="mb-6 border-border/80 bg-card shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Date range</CardTitle>
             <CardDescription>
@@ -190,7 +190,7 @@ export default function RecurringOrdersPage() {
         </Card>
 
         <Tabs defaultValue="gm" className="space-y-4">
-          <TabsList className="bg-slate-100 dark:bg-slate-800">
+          <TabsList className="bg-muted/70">
             <TabsTrigger value="gm">GM / Rental Recurring</TabsTrigger>
             <TabsTrigger value="pm">PM Schedule</TabsTrigger>
             <TabsTrigger value="created">Created</TabsTrigger>
@@ -352,7 +352,7 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
   });
 
   return (
-    <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+    <Card className="border-border/80 bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between gap-4">
         <div>
           <CardTitle>Recurring Orders to Process</CardTitle>
@@ -362,7 +362,7 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search"
               value={search}
@@ -392,17 +392,17 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
       <CardContent>
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : documents.length === 0 ? (
-          <p className="py-12 text-center text-slate-500 dark:text-slate-400">
+          <p className="py-12 text-center text-muted-foreground">
             No available recurring items for dates selected.
           </p>
         ) : (
-          <div className="max-h-[50vh] overflow-y-auto rounded-lg border dark:border-slate-700">
+          <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/60 hover:bg-muted/95">
+                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-backdrop-filter:bg-muted/60 hover:bg-muted/95">
                   <TableHead className="w-10" />
                   <TableHead
                     className="cursor-pointer hover:underline"
@@ -464,12 +464,12 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
                       <button
                         type="button"
                         onClick={() => router.push(`/work-orders/${inv.WONo}`)}
-                        className="text-cyan-600 hover:underline dark:text-cyan-400"
+                        className="text-primary hover:underline"
                       >
                         {inv.WONo}
                       </button>
                       {inv.SaleDept && inv.SaleCode && (
-                        <span className="text-slate-500 text-xs ml-1">
+                        <span className="ml-1 text-xs text-muted-foreground">
                           ({inv.SaleDept} {inv.SaleCode})
                         </span>
                       )}
@@ -507,7 +507,7 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
                         </div>
                       ) : (
                         <span
-                          className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 px-1 rounded"
+                          className="cursor-pointer rounded px-1 hover:bg-muted"
                           onClick={() => setEditingPONo(inv.WONo)}
                           title="Click to edit"
                         >
@@ -577,7 +577,7 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
                         </div>
                       ) : (
                         <span
-                          className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 px-1 rounded block truncate max-w-[140px]"
+                          className="block max-w-[140px] cursor-pointer truncate rounded px-1 hover:bg-muted"
                           onClick={() => setEditingComment(inv.WONo)}
                           title={inv.Comments || "Click to add"}
                         >
@@ -602,10 +602,10 @@ function GMTab({ effectiveDates, hideGM, setHideGM, search, setSearch, branchDep
             {toClose.map((order) => (
               <div
                 key={order.WONo}
-                className="rounded-lg border p-4 dark:border-slate-700"
+                className="rounded-lg border border-border p-4"
               >
                 <h3 className="font-semibold">Order #{order.WONo}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Ship To: {order.ShipToName}
                   <br />
                   Rental Period: {order.RentalPeriod}
@@ -727,7 +727,7 @@ function PMTab({ effectiveDates, search, setSearch, branchDeptFilter, token, rou
   });
 
   return (
-    <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+    <Card className="border-border/80 bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between gap-4">
         <div>
           <CardTitle>PM Order Schedule</CardTitle>
@@ -737,7 +737,7 @@ function PMTab({ effectiveDates, search, setSearch, branchDeptFilter, token, rou
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search"
               value={search}
@@ -764,17 +764,17 @@ function PMTab({ effectiveDates, search, setSearch, branchDeptFilter, token, rou
       <CardContent>
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : schedules.length === 0 ? (
-          <p className="py-12 text-center text-slate-500 dark:text-slate-400">
+          <p className="py-12 text-center text-muted-foreground">
             No PM items for this selection.
           </p>
         ) : (
-          <div className="max-h-[50vh] overflow-y-auto rounded-lg border dark:border-slate-700">
+          <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/60 hover:bg-muted/95">
+                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-backdrop-filter:bg-muted/60 hover:bg-muted/95">
                   <TableHead className="w-10" />
                   <TableHead
                     className="cursor-pointer hover:underline"
@@ -825,7 +825,7 @@ function PMTab({ effectiveDates, search, setSearch, branchDeptFilter, token, rou
                           onClick={() =>
                             router.push(`/work-orders/${pm.WONo}`)
                           }
-                          className="text-cyan-600 hover:underline dark:text-cyan-400"
+                          className="text-primary hover:underline"
                         >
                           {pm.WONo}
                         </button>
@@ -1047,7 +1047,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
   });
 
   return (
-    <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+    <Card className="border-border/80 bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between gap-4">
         <div>
           <CardTitle>Recurring Creation</CardTitle>
@@ -1057,7 +1057,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search"
               value={search}
@@ -1076,17 +1076,17 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
       <CardContent>
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : schedules.length === 0 ? (
-          <p className="py-12 text-center text-slate-500 dark:text-slate-400">
+          <p className="py-12 text-center text-muted-foreground">
             No available recurring items for dates selected.
           </p>
         ) : (
-          <div className="max-h-[50vh] overflow-y-auto rounded-lg border dark:border-slate-700">
+          <div className="max-h-[50vh] overflow-y-auto rounded-lg border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/60 hover:bg-muted/95">
+                <TableRow className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-backdrop-filter:bg-muted/60 hover:bg-muted/95">
                   <TableHead className="w-10" />
                   <TableHead
                     className="cursor-pointer hover:underline"
@@ -1142,7 +1142,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
                         onClick={() =>
                           router.push(`/work-orders/${row.original}`)
                         }
-                        className="text-cyan-600 hover:underline dark:text-cyan-400"
+                        className="text-primary hover:underline"
                       >
                         {row.original}
                       </button>
@@ -1165,7 +1165,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
                         onClick={() =>
                           router.push(`/work-orders/${row.created}`)
                         }
-                        className="text-cyan-600 hover:underline dark:text-cyan-400"
+                        className="text-primary hover:underline"
                       >
                         {row.created}
                       </button>
@@ -1189,7 +1189,7 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
           <div className="px-6 pt-6 pb-4 shrink-0">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-cyan-500" />
+                <Mail className="h-5 w-5 text-primary" />
                 Export &amp; Email Invoices
               </DialogTitle>
               <p className="text-sm text-muted-foreground">
@@ -1241,13 +1241,13 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
                       emailInfo.emails.map((email) => (
                         <span
                           key={email}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-sm text-cyan-700 dark:text-cyan-300"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
                         >
                           {email}
                           <button
                             type="button"
                             onClick={() => removeEmail(email)}
-                            className="rounded-full p-0.5 hover:bg-cyan-500/20 transition-colors"
+                            className="rounded-full p-0.5 transition-colors hover:bg-primary/20"
                             aria-label={`Remove ${email}`}
                           >
                             <X className="h-3.5 w-3.5" />
@@ -1353,10 +1353,10 @@ function CreatedTab({ effectiveDates, search, setSearch, branchDeptFilter, token
               {/* Right: Preview */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Preview</Label>
-                <div className="min-h-[280px] rounded-lg border bg-slate-50 dark:bg-slate-900/50 overflow-hidden">
+                <div className="min-h-[280px] overflow-hidden rounded-lg border border-border bg-muted/30">
                   {pdfLoading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
-                      <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                      <Loader2 className="h-10 w-10 animate-spin text-primary" />
                       <span className="text-sm text-muted-foreground">Generating PDF...</span>
                     </div>
                   ) : pdfUrl ? (

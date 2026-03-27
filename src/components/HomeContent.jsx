@@ -125,14 +125,14 @@ function PrimaryCard({ title, text, href, icon: Icon }) {
   return (
     <Link
       href={href}
-      className="group flex min-h-[180px] flex-col rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-500/5 active:scale-[0.99] sm:min-h-[220px] dark:border-slate-700/50 dark:bg-slate-800/50 dark:hover:border-cyan-500/50"
+      className="group flex min-h-[180px] flex-col rounded-2xl border border-border/80 bg-card p-8 shadow-sm transition-all hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-500/5 active:scale-[0.99] sm:min-h-[220px]"
     >
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-50 to-sky-50 transition-colors group-hover:from-cyan-100 group-hover:to-sky-100 dark:from-cyan-900/30 dark:to-sky-900/30 dark:group-hover:from-cyan-800/40 dark:group-hover:to-sky-800/40">
-        <Icon className="h-7 w-7 text-slate-600 dark:text-slate-300" strokeWidth={1.5} />
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-br from-accent/20 to-primary/10 transition-colors group-hover:from-accent/30 group-hover:to-primary/15">
+        <Icon className="h-7 w-7 text-foreground/80" strokeWidth={1.5} />
       </div>
-      <h3 className="text-xl font-semibold text-slate-900 sm:text-2xl dark:text-white">{title}</h3>
-      <p className="mt-2 flex-1 text-slate-500 sm:text-base dark:text-slate-400">{text}</p>
-      <span className="mt-4 inline-flex items-center text-sm font-medium text-cyan-600 group-hover:text-cyan-500 dark:text-cyan-400">
+      <h3 className="text-xl font-semibold text-foreground sm:text-2xl">{title}</h3>
+      <p className="mt-2 flex-1 text-muted-foreground sm:text-base">{text}</p>
+      <span className="mt-4 inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/90">
         Open
         <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
       </span>
@@ -144,16 +144,16 @@ function SubmoduleCard({ title, text, href, icon: Icon, parent }) {
   return (
     <Link
       href={href}
-      className="group flex items-center gap-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all hover:border-cyan-200 hover:shadow-md hover:shadow-cyan-500/5 dark:border-slate-700/50 dark:bg-slate-800/50 dark:hover:border-cyan-500/50"
+      className="group flex items-center gap-4 rounded-xl border border-border/80 bg-card p-4 shadow-sm transition-all hover:border-cyan-200 hover:shadow-md hover:shadow-cyan-500/5"
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-50 dark:bg-cyan-900/30">
-        <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-400" strokeWidth={1.5} />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/15">
+        <Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="font-semibold text-slate-900 dark:text-white truncate">{title}</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 truncate">{parent} · {text}</p>
+        <h3 className="font-semibold text-foreground truncate">{title}</h3>
+        <p className="text-sm text-muted-foreground truncate">{parent} · {text}</p>
       </div>
-      <span className="shrink-0 text-sm font-medium text-cyan-600 group-hover:text-cyan-500 dark:text-cyan-400">→</span>
+      <span className="shrink-0 text-sm font-medium text-primary group-hover:text-primary/90">→</span>
     </Link>
   );
 }
@@ -177,7 +177,7 @@ export function HomeContent({ userName }) {
   const hasResults = showPrimary.length > 0 || showSubmodules.length > 0;
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-full text-foreground">
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <motion.div
           className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
@@ -186,10 +186,10 @@ export function HomeContent({ userName }) {
           transition={fadeInUp.transition}
         >
           <div>
-            <h2 className="text-2xl font-light text-slate-600 sm:text-3xl dark:text-slate-400">
+            <h2 className="text-2xl font-light text-muted-foreground sm:text-3xl">
               Welcome back,
             </h2>
-            <h3 className="mt-1 text-3xl font-semibold text-slate-900 sm:text-4xl dark:text-white">
+            <h3 className="mt-1 text-3xl font-semibold text-foreground sm:text-4xl">
               {userName}
             </h3>
           </div>
@@ -210,7 +210,7 @@ export function HomeContent({ userName }) {
                   e.target.blur();
                 }
               }}
-              className="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-slate-700 placeholder-slate-400 shadow-sm focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 dark:border-slate-700/50 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-400"
+              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-foreground placeholder-muted-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
               aria-label="Search modules"
             />
           </div>
@@ -241,7 +241,7 @@ export function HomeContent({ userName }) {
                 transition={fadeInUp.transition}
               >
                 {hasQuery && (
-                  <h2 className="mb-4 text-lg font-semibold text-slate-700 dark:text-slate-300">
+                  <h2 className="mb-4 text-lg font-semibold text-foreground">
                     Submodules
                   </h2>
                 )}
@@ -262,7 +262,7 @@ export function HomeContent({ userName }) {
           </div>
         ) : (
           <motion.p
-            className="rounded-xl border border-slate-200/80 bg-white px-6 py-8 text-center text-slate-500 dark:border-slate-700/50 dark:bg-slate-800/50 dark:text-slate-400"
+            className="rounded-xl border border-border/80 bg-card px-6 py-8 text-center text-muted-foreground"
             initial={fadeInUp.initial}
             animate={fadeInUp.animate}
           >

@@ -218,14 +218,14 @@ export default function JournalPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -244,10 +244,10 @@ export default function JournalPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Manual Journal
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Create and view journal entries.
               </p>
             </div>
@@ -259,8 +259,8 @@ export default function JournalPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/50 shadow-sm overflow-hidden">
-            <div className="p-4 flex flex-wrap items-end gap-4 border-b border-slate-200 dark:border-slate-700">
+          <div className="bg-card rounded-2xl border border-border/80 shadow-sm overflow-hidden">
+            <div className="p-4 flex flex-wrap items-end gap-4 border-b border-border/60">
               <DateRangeInput
                 startDate={dates.start}
                 endDate={dates.end}
@@ -273,7 +273,7 @@ export default function JournalPage() {
                 onDebouncedChange={handleDebouncedChange}
                 startLabel="Start Date"
                 endLabel="End Date"
-                inputClassName="rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm"
+                inputClassName="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               />
               <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
                 {loading ? (
@@ -289,23 +289,23 @@ export default function JournalPage() {
               </Button>
             </div>
 
-            <div className="px-6 py-4 bg-cyan-900/10 dark:bg-cyan-900/20 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+            <div className="px-6 py-4 bg-accent/10 border-b border-border/60">
+              <h2 className="text-xl font-semibold text-foreground">
                 Journals
               </h2>
             </div>
 
             {loading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : journalHeaders.length === 0 ? (
               <div className="p-12 text-center">
-                <BookOpen className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
-                <h3 className="mt-4 font-medium text-slate-700 dark:text-slate-300">
+                <BookOpen className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-4 font-medium text-muted-foreground">
                   No journals found
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   No journals for the selected date range.
                 </p>
                 <Button onClick={openNew} className="mt-4 gap-2">
@@ -315,57 +315,57 @@ export default function JournalPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                  <thead className="bg-slate-50 dark:bg-slate-800/80">
+                <table className="min-w-full divide-y divide-border/60">
+                  <thead className="bg-muted/20">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Journal
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Date
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Amount
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-slate-800/30 divide-y divide-slate-200 dark:divide-slate-700">
+                  <tbody className="bg-card divide-y divide-border/60">
                     {journalHeaders.map((j) => (
                       <tr
                         key={j.Journal}
-                        className="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition"
+                        className="hover:bg-accent/10 cursor-pointer transition"
                         onClick={() => openView(j)}
                       >
                         <td className="px-6 py-4">
-                          <div className="font-medium text-slate-900 dark:text-white">
+                          <div className="font-medium text-foreground">
                             {j.Journal}
                           </div>
                           {j.Comments && (
-                            <div className="text-sm text-slate-500">
+                            <div className="text-sm text-muted-foreground">
                               {j.Comments}
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {j.EffectiveDate
                             ? new Date(j.EffectiveDate).toLocaleDateString()
                             : "—"}
                         </td>
-                        <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
+                        <td className="px-6 py-4 font-medium text-foreground">
                           {formatCurrency(j.Amount)}
                         </td>
                         <td className="px-6 py-4">
                           <span
                             className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                               j.Posted
-                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                                : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                                ? "bg-primary/10 text-primary"
+                                : "bg-accent/10 text-muted-foreground"
                             }`}
                           >
                             {j.Posted ? "Posted" : "Open"}
@@ -377,7 +377,7 @@ export default function JournalPage() {
                               variant="ghost"
                               size="sm"
                               onClick={() => openView(j)}
-                              className="text-blue-600 hover:text-blue-800"
+                              className="text-primary hover:text-primary/90"
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               View
@@ -688,23 +688,23 @@ function JournalPanel({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-slate-500">Date</span>
+                  <span className="text-muted-foreground">Date</span>
                   <div>{viewData.EffectiveDate}</div>
                 </div>
                 <div>
-                  <span className="text-slate-500">Type</span>
+                  <span className="text-muted-foreground">Type</span>
                   <div>{viewData.JournalType}</div>
                 </div>
                 {viewData.Comments && (
                   <div className="col-span-2">
-                    <span className="text-slate-500">Comments</span>
+                    <span className="text-muted-foreground">Comments</span>
                     <div>{viewData.Comments}</div>
                   </div>
                 )}
               </div>
               <div className="border rounded-lg overflow-hidden">
                 <table className="min-w-full text-sm">
-                  <thead className="bg-slate-50 dark:bg-slate-800">
+                  <thead className="bg-muted/20">
                     <tr>
                       <th className="px-4 py-2 text-left">Account</th>
                       <th className="px-4 py-2 text-right">Debit</th>
@@ -749,7 +749,7 @@ function JournalPanel({
                       setForm((p) => ({ ...p, Journal: e.target.value }))
                     }
                     placeholder="e.g. Month-end adjustment"
-                    className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2"
                   />
                 </div>
                 <div>
@@ -762,7 +762,7 @@ function JournalPanel({
                     onChange={(e) =>
                       setForm((p) => ({ ...p, EffectiveDate: e.target.value }))
                     }
-                    className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2"
                   />
                 </div>
                 <div>
@@ -775,7 +775,7 @@ function JournalPanel({
                     onChange={(e) =>
                       setForm((p) => ({ ...p, ControlNo: e.target.value }))
                     }
-                    className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2"
                   />
                 </div>
                 <div>
@@ -787,7 +787,7 @@ function JournalPanel({
                     onChange={(e) =>
                       setForm((p) => ({ ...p, JournalType: e.target.value }))
                     }
-                    className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2"
                   >
                     <option value="Actual">Actual</option>
                     <option value="Budget">Budget</option>
@@ -803,7 +803,7 @@ function JournalPanel({
                       setForm((p) => ({ ...p, Comments: e.target.value }))
                     }
                     rows={2}
-                    className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2"
                   />
                 </div>
               </div>
@@ -814,8 +814,8 @@ function JournalPanel({
                   <span
                     className={`text-sm font-medium ${
                       Math.abs(balance) < 0.01
-                        ? "text-green-600"
-                        : "text-amber-600"
+                        ? "text-primary"
+                        : "text-destructive"
                     }`}
                   >
                     Balance: {formatCurrency(balance)}
@@ -823,7 +823,7 @@ function JournalPanel({
                 </div>
                 <div className="border rounded-lg overflow-hidden">
                   <table className="min-w-full text-sm">
-                    <thead className="bg-slate-50 dark:bg-slate-800">
+                    <thead className="bg-muted/20">
                       <tr>
                         <th className="px-4 py-2 text-left">Account</th>
                         <th className="px-4 py-2 text-right w-24">Debit</th>
@@ -875,7 +875,7 @@ function JournalPanel({
                               variant="ghost"
                               size="sm"
                               onClick={() => removeLine(i)}
-                              className="text-red-600 hover:text-red-800"
+                              className="text-destructive hover:text-destructive/80"
                             >
                               ×
                             </Button>
@@ -908,7 +908,7 @@ function JournalPanel({
                       <Button
                         type="button"
                         disabled={submitting || Math.abs(balance) > 0.01}
-                        className="rounded-l-none border-l border-white/20 px-2"
+                        className="rounded-l-none border-l border-border/60 px-2"
                       >
                         <ChevronDown className="h-4 w-4" />
                       </Button>
@@ -927,7 +927,7 @@ function JournalPanel({
             </form>
           ) : (
             <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           )}
         </div>

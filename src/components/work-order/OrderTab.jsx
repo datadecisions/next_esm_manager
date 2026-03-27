@@ -100,14 +100,14 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
     <div className="space-y-6 py-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sale & Expense Information */}
-        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Sale & Expense Information</h5>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+          <div className="border-b border-border px-6 py-4">
+            <h5 className="font-semibold">Sale & Expense Information</h5>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Sale Information */}
             <div className="space-y-4">
-              <h6 className="font-medium text-slate-700 dark:text-slate-300">Sale Information</h6>
+              <h6 className="font-medium text-foreground">Sale Information</h6>
               <div className="space-y-2">
                 <Label>Branch</Label>
                 <Select
@@ -174,7 +174,7 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
 
             {/* Expense Information */}
             <div className="space-y-4">
-              <h6 className="font-medium text-slate-700 dark:text-slate-300">Expense Information</h6>
+              <h6 className="font-medium text-foreground">Expense Information</h6>
               <div className="space-y-2">
                 <Label>Branch</Label>
                 <Select
@@ -234,9 +234,9 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
         </div>
 
         {/* Other Information */}
-        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-            <h5 className="font-semibold text-slate-800 dark:text-slate-200">Other Information</h5>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+          <div className="border-b border-border px-6 py-4">
+            <h5 className="font-semibold">Other Information</h5>
           </div>
           <div className="p-6 space-y-4">
             <div className="space-y-2">
@@ -310,8 +310,8 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
                 }}
               />
             </div>
-            <hr className="border-slate-200 dark:border-slate-700" />
-            <div className="text-sm text-slate-500 dark:text-slate-400 space-y-1">
+            <hr className="border-border" />
+            <div className="space-y-1 text-sm text-muted-foreground">
               <p><em>Created by {wo?.OpenBy || "—"} on {openDate}</em></p>
               {wo?.ChangedBy && <p><em>Changed by {wo.ChangedBy} on {changedDate}</em></p>}
             </div>
@@ -320,9 +320,9 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
       </div>
 
       {/* Additional Order Information */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-          <h5 className="font-semibold text-slate-800 dark:text-slate-200">Additional Order Information</h5>
+      <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+        <div className="border-b border-border px-6 py-4">
+          <h5 className="font-semibold">Additional Order Information</h5>
         </div>
         <div className="p-6 space-y-4">
           <div className="space-y-2">
@@ -337,27 +337,27 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
           </div>
           {openWOForEquipment.length > 0 && (
             <div className="space-y-2">
-              <h4 className="font-semibold text-slate-800 dark:text-slate-200">Equipment Open Orders</h4>
-              <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700 max-h-40">
+              <h4 className="font-semibold text-foreground">Equipment Open Orders</h4>
+              <div className="max-h-40 overflow-x-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50">
-                      <th className="px-4 py-2 text-left font-medium text-slate-600 dark:text-slate-400">WO Number</th>
-                      <th className="px-4 py-2 text-left font-medium text-slate-600 dark:text-slate-400">Name</th>
+                    <tr className="bg-muted/40">
+                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">WO Number</th>
+                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Name</th>
                     </tr>
                   </thead>
                   <tbody>
                     {openWOForEquipment.map((order) => (
-                      <tr key={order.WONo} className="border-t border-slate-100 dark:border-slate-700/50">
+                      <tr key={order.WONo} className="border-t border-border/50">
                         <td className="px-4 py-2">
                           <Link
                             href={`/work-orders/${order.WONo}`}
-                            className="font-medium text-cyan-600 dark:text-cyan-400 hover:underline"
+                            className="font-medium text-primary hover:underline"
                           >
                             {order.WONo}
                           </Link>
                         </td>
-                        <td className="px-4 py-2 text-slate-600 dark:text-slate-400">{order.Name || "—"}</td>
+                        <td className="px-4 py-2 text-muted-foreground">{order.Name || "—"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -368,15 +368,15 @@ export default function OrderTab({ wo, billing, billToCustomer, token, onOrderUp
           <div className="space-y-2 text-sm">
             <p>
               <span className="font-semibold">Full Maintenance / GM: </span>
-              <span className="text-slate-400 dark:text-slate-500">{wo?.GuaranteedMaintenance === -1 ? "Yes" : "No"}</span>
+              <span className="text-muted-foreground">{wo?.GuaranteedMaintenance === -1 ? "Yes" : "No"}</span>
             </p>
             <p>
               <span className="font-semibold">Terms: </span>
-              <span className="italic text-slate-400 dark:text-slate-500">{custInfo?.Terms || "N/A"}</span>
+              <span className="italic text-muted-foreground">{custInfo?.Terms || "N/A"}</span>
             </p>
             <p>
               <span className="font-semibold">Credit Limit: </span>
-              <span className="italic text-slate-400 dark:text-slate-500">{formatCurrency(custInfo?.CreditLimit)}</span>
+              <span className="italic text-muted-foreground">{formatCurrency(custInfo?.CreditLimit)}</span>
             </p>
           </div>
         </div>

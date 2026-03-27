@@ -225,7 +225,7 @@ export default function AddEquipmentDialog({ open, onOpenChange, wo, token, onSu
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/50 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
             </div>
           )}
@@ -238,7 +238,7 @@ export default function AddEquipmentDialog({ open, onOpenChange, wo, token, onSu
                 <div className="mt-1 flex min-h-9 w-full items-center gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs">
                   {selectedEquipment ? (
                     <>
-                      <span className="flex-1 text-slate-700 dark:text-slate-300">
+                      <span className="flex-1 text-foreground">
                         {equipmentDisplay(selectedEquipment)}
                       </span>
                       <Button
@@ -385,7 +385,7 @@ export default function AddEquipmentDialog({ open, onOpenChange, wo, token, onSu
               id="print"
               checked={form.Print}
               onChange={(e) => setForm((p) => ({ ...p, Print: e.target.checked }))}
-              className="h-4 w-4 rounded border-slate-300 text-cyan-600"
+              className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <Label htmlFor="print" className="cursor-pointer font-normal text-sm">
               Include on invoice?

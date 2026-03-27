@@ -149,7 +149,7 @@ export default function AddFixedDialog({ open, onOpenChange, wo, token, onSucces
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/50 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
             </div>
           )}
@@ -254,7 +254,7 @@ export default function AddFixedDialog({ open, onOpenChange, wo, token, onSucces
               id="print"
               checked={form.Print}
               onChange={(e) => setForm((p) => ({ ...p, Print: e.target.checked }))}
-              className="h-4 w-4 rounded border-slate-300"
+              className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <Label htmlFor="print" className="cursor-pointer">Include on invoice</Label>
           </div>

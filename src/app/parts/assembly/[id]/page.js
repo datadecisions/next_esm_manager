@@ -138,14 +138,14 @@ export default function AssemblyDetailPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -163,11 +163,11 @@ export default function AssemblyDetailPage() {
             </Link>
           </Button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <Layers className="h-5 w-5" />
               Assembly Details
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               {assembly
                 ? `${assembly.equipment_name ?? ""} ${assembly.assembly_name ?? ""}`.trim() || "Assembly"
                 : "Loading…"}
@@ -204,7 +204,7 @@ export default function AssemblyDetailPage() {
               <span>Loading…</span>
             </div>
           ) : !assembly ? (
-            <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+            <Card className="border-border bg-card text-card-foreground">
               <CardContent className="py-12 text-center text-muted-foreground">
                 Assembly not found.
               </CardContent>
@@ -212,7 +212,7 @@ export default function AssemblyDetailPage() {
           ) : (
             <div className="space-y-6">
               {/* Header summary */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>
                     {assembly.equipment_name ?? ""} {assembly.assembly_name ?? ""}
@@ -229,7 +229,7 @@ export default function AssemblyDetailPage() {
               </Card>
 
               {/* Parts */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Parts</CardTitle>
                   <Button
@@ -244,10 +244,10 @@ export default function AssemblyDetailPage() {
                 </CardHeader>
                 <CardContent>
                   {assembly.parts?.length > 0 ? (
-                    <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                    <div className="overflow-hidden rounded-lg border border-border bg-background">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                          <TableRow className="bg-muted/40">
                             <TableHead className="font-semibold">Part #</TableHead>
                             <TableHead className="font-semibold">Description</TableHead>
                             <TableHead className="font-semibold text-right">Qty</TableHead>
@@ -280,7 +280,7 @@ export default function AssemblyDetailPage() {
               </Card>
 
               {/* Miscellaneous */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Miscellaneous</CardTitle>
                   <Button
@@ -295,10 +295,10 @@ export default function AssemblyDetailPage() {
                 </CardHeader>
                 <CardContent>
                   {assembly.miscs?.length > 0 ? (
-                    <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+                    <div className="overflow-hidden rounded-lg border border-border bg-background">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                          <TableRow className="bg-muted/40">
                             <TableHead className="font-semibold">Description</TableHead>
                             <TableHead className="font-semibold text-right">Qty</TableHead>
                           </TableRow>
@@ -322,7 +322,7 @@ export default function AssemblyDetailPage() {
               </Card>
 
               {/* Documents */}
-              <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+              <Card className="border-border bg-card text-card-foreground">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5" />
@@ -346,8 +346,8 @@ export default function AssemblyDetailPage() {
                     onDrop={handleDocsDrop}
                     className={`relative rounded-xl border-2 border-dashed transition-colors ${
                       docsDragOver
-                        ? "border-cyan-400 bg-cyan-50/50 dark:border-cyan-500 dark:bg-cyan-950/30"
-                        : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
                     } ${docsUploading ? "pointer-events-none opacity-70" : ""}`}
                   >
                     <label className="block cursor-pointer p-6 sm:p-8 text-center">
@@ -358,8 +358,8 @@ export default function AssemblyDetailPage() {
                         accept="image/*,.pdf"
                         onChange={handleDocsFileSelect}
                       />
-                      <Upload className="h-8 w-8 mx-auto mb-2 text-slate-400 dark:text-slate-500" />
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                      <Upload className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                      <p className="text-sm font-medium text-muted-foreground">
                         {docsUploading ? "Uploading…" : "Drag files here or click to upload"}
                       </p>
                     </label>

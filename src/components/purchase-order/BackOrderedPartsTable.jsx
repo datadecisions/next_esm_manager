@@ -119,11 +119,11 @@ export function BackOrderedPartsTable({ token, className }) {
         </Button>
       </div>
 
-      <div className="rounded-lg border dark:border-slate-700 overflow-hidden">
+      <div className="overflow-hidden rounded-lg border border-border bg-background">
         <div className="max-h-[60vh] overflow-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+              <TableRow className="bg-muted/40">
                 <TableHead className="w-10"></TableHead>
                 <TableHead className="font-semibold">Part #</TableHead>
                 <TableHead className="font-semibold">Warehouse</TableHead>
@@ -145,7 +145,7 @@ export function BackOrderedPartsTable({ token, className }) {
                     key={key}
                     className={cn(
                       "cursor-pointer transition-colors",
-                      isSelected && "bg-cyan-50 dark:bg-cyan-950/30"
+                      isSelected && "bg-primary/10"
                     )}
                     onClick={() => togglePart(part)}
                   >
@@ -153,10 +153,10 @@ export function BackOrderedPartsTable({ token, className }) {
                       <div
                         className={cn(
                           "h-4 w-4 rounded border flex items-center justify-center",
-                          isSelected ? "bg-cyan-600 border-cyan-600" : "border-slate-300 dark:border-slate-600"
+                          isSelected ? "border-primary bg-primary" : "border-input bg-background"
                         )}
                       >
-                        {isSelected && <span className="text-white text-xs">✓</span>}
+                        {isSelected && <span className="text-xs text-primary-foreground">✓</span>}
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">{part.PartNo}</TableCell>
@@ -179,7 +179,7 @@ export function BackOrderedPartsTable({ token, className }) {
                                 return next;
                               });
                             }}
-                            className="p-0.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                            className="rounded p-0.5 hover:bg-muted"
                           >
                             {isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
                           </button>
@@ -191,7 +191,7 @@ export function BackOrderedPartsTable({ token, className }) {
                                 key={wo.WONo}
                                 href={`/work-orders/${wo.WONo}`}
                                 onClick={(e) => e.stopPropagation()}
-                                className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline"
+                                className="text-xs text-primary hover:underline"
                               >
                                 #{wo.WONo}
                               </a>
@@ -208,7 +208,7 @@ export function BackOrderedPartsTable({ token, className }) {
           </Table>
         </div>
         {filtered.length > 0 && (
-          <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+          <div className="border-t border-border bg-muted/30 px-4 py-3">
             <p className="text-sm text-muted-foreground">
               {filtered.length} part{filtered.length !== 1 ? "s" : ""}
               {selectedCount > 0 && ` · ${selectedCount} selected`}

@@ -87,19 +87,19 @@ function formatPercent(val) {
 
 function KpiStatCard({ title, value, description, icon: Icon }) {
   return (
-    <Card className="rounded-xl border-slate-200/80 dark:border-slate-700/50 bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-900 dark:to-slate-800">
+    <Card className="rounded-xl border-border bg-card text-card-foreground">
       <CardContent className="pt-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-white">{value}</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">{value}</p>
             {description && (
               <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
             )}
           </div>
           {Icon && (
-            <div className="rounded-lg bg-cyan-500/10 p-2">
-              <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+            <div className="rounded-lg bg-primary/15 p-2">
+              <Icon className="h-5 w-5 text-primary" />
             </div>
           )}
         </div>
@@ -284,14 +284,14 @@ export default function PartsKPIPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -310,10 +310,10 @@ export default function PartsKPIPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Parts KPI Dashboard
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Fill rate, inventory turns, stock-to-critical, and reports.
               </p>
             </div>
@@ -336,9 +336,9 @@ export default function PartsKPIPage() {
                     start: e.target.value ? new Date(e.target.value) : d.start,
                   }))
                 }
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               />
-              <span className="text-slate-400">–</span>
+              <span className="text-muted-foreground">–</span>
               <input
                 type="date"
                 value={toYMD(dates.end)}
@@ -348,7 +348,7 @@ export default function PartsKPIPage() {
                     end: e.target.value ? new Date(e.target.value) : d.end,
                   }))
                 }
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
               />
             </div>
             <Button
@@ -370,7 +370,7 @@ export default function PartsKPIPage() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
           </div>
         ) : (
           <>
@@ -404,10 +404,10 @@ export default function PartsKPIPage() {
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="rounded-2xl border border-border bg-card text-card-foreground overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-cyan-500" />
+                    <TrendingUp className="h-5 w-5 text-primary" />
                     Fill Rate
                   </CardTitle>
                   <CardDescription>
@@ -465,10 +465,10 @@ export default function PartsKPIPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="rounded-2xl border border-border bg-card text-card-foreground overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-cyan-500" />
+                    <BarChart3 className="h-5 w-5 text-primary" />
                     Stock-to-Critical
                   </CardTitle>
                   <CardDescription>
@@ -528,7 +528,7 @@ export default function PartsKPIPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden lg:col-span-2">
+              <Card className="rounded-2xl border border-border bg-card text-card-foreground overflow-hidden lg:col-span-2">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
@@ -603,7 +603,7 @@ export default function PartsKPIPage() {
             </div>
 
             {/* Tables */}
-            <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="rounded-2xl border border-border bg-card text-card-foreground overflow-hidden">
               <CardHeader>
                 <CardTitle>Reports</CardTitle>
                 <CardDescription>

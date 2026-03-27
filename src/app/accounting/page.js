@@ -88,15 +88,15 @@ export default function AccountingPage() {
 
   if (authLoading || !token) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+      <div className="flex min-h-[200px] items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -109,12 +109,12 @@ export default function AccountingPage() {
           transition={fadeInUp.transition}
         >
           <div className="flex items-center gap-3 mb-2">
-            <Calculator className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+            <Calculator className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-semibold text-foreground">
               Accounting
             </h1>
           </div>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground">
             View accounting summary graphs. AR and AP data.
           </p>
         </motion.div>
@@ -125,7 +125,7 @@ export default function AccountingPage() {
           initial="initial"
           animate="animate"
         >
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -135,43 +135,43 @@ export default function AccountingPage() {
               return (
                 <motion.div key={card.title} variants={staggerItem}>
                   {isComingSoon ? (
-                    <div className="relative flex items-center gap-4 p-4 rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/30 dark:border-slate-700/50 h-full opacity-75 cursor-not-allowed">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700/50">
+                    <div className="relative flex items-center gap-4 p-4 rounded-xl border border-border/80 bg-muted/20 h-full opacity-75 cursor-not-allowed">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15">
                         <Icon
-                          className="h-6 w-6 text-slate-400 dark:text-slate-500"
+                          className="h-6 w-6 text-muted-foreground"
                           strokeWidth={1.5}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-500 dark:text-slate-400 truncate">
+                        <h3 className="font-semibold text-muted-foreground truncate">
                           {card.title}
                         </h3>
-                        <p className="mt-0.5 text-sm text-slate-400 dark:text-slate-500 line-clamp-2 min-h-[2.5rem]">
+                        <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2 min-h-10">
                           {card.text}
                         </p>
                       </div>
-                      <span className="absolute top-3 right-3 rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-600 dark:text-slate-300">
+                      <span className="absolute top-3 right-3 rounded-full bg-accent/30 px-2.5 py-0.5 text-xs font-medium text-foreground">
                         Coming soon
                       </span>
                     </div>
                   ) : (
                     <Link href={card.href} className="block">
-                      <div className="flex items-center gap-4 p-4 rounded-xl border border-slate-200/80 bg-white shadow-sm transition-all hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-500/5 dark:border-slate-700/50 dark:bg-slate-800/50 dark:hover:border-cyan-500/50 h-full">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-900/30">
+                      <div className="flex items-center gap-4 p-4 rounded-xl border border-border/80 bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 h-full">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15">
                           <Icon
-                            className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
+                            className="h-6 w-6 text-primary"
                             strokeWidth={1.5}
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-slate-900 dark:text-white truncate">
+                          <h3 className="font-semibold text-foreground truncate">
                             {card.title}
                           </h3>
-                          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400 line-clamp-2 min-h-[2.5rem]">
+                          <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2 min-h-10">
                             {card.text}
                           </p>
                         </div>
-                        <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 dark:text-slate-500" />
+                        <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
                       </div>
                     </Link>
                   )}

@@ -38,14 +38,14 @@ export default function LaborPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -58,12 +58,12 @@ export default function LaborPage() {
           transition={fadeInUp.transition}
         >
           <div className="flex items-center gap-3 mb-2">
-            <Clock className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+            <Clock className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-semibold text-foreground">
               Labor Manager
             </h1>
           </div>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground">
             Approve labor entries and manage timecards.
           </p>
         </motion.div>
@@ -73,7 +73,7 @@ export default function LaborPage() {
           initial="initial"
           animate="animate"
         >
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          <h2 className="mb-4 text-xl font-semibold text-foreground">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -82,22 +82,22 @@ export default function LaborPage() {
               return (
                 <motion.div key={card.title} variants={staggerItem}>
                   <Link href={card.href} className="block">
-                    <div className="flex gap-4 p-4 rounded-xl border border-slate-200/80 bg-white shadow-sm transition-all hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-500/5 dark:border-slate-700/50 dark:bg-slate-800/50 dark:hover:border-cyan-500/50 h-full">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-900/30">
+                    <div className="flex h-full gap-4 rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm transition-all hover:border-primary/40 hover:shadow-lg">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/15">
                         <Icon
-                          className="h-6 w-6 text-cyan-600 dark:text-cyan-400"
+                          className="h-6 w-6 text-primary"
                           strokeWidth={1.5}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-900 dark:text-white truncate">
+                        <h3 className="truncate font-semibold text-foreground">
                           {card.title}
                         </h3>
-                        <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400 line-clamp-2 min-h-[2.5rem]">
+                        <p className="mt-0.5 min-h-[2.5rem] line-clamp-2 text-sm text-muted-foreground">
                           {card.text}
                         </p>
                       </div>
-                      <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 dark:text-slate-500" />
+                      <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
                     </div>
                   </Link>
                 </motion.div>

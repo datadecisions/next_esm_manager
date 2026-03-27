@@ -184,12 +184,12 @@ export default function WorkOrderDocumentsDialog({
   const hasRecipients = sendToEmails.length > 0;
 
   const emailSection = (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4">
-      <h4 className="text-base font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-        <Mail className="h-4 w-4 text-cyan-500" />
+    <div className="rounded-lg border border-border bg-muted/30 p-4">
+      <h4 className="mb-2 flex items-center gap-2 text-base font-semibold text-foreground">
+        <Mail className="h-4 w-4 text-primary" />
         Emails
       </h4>
-      <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+      <p className="mb-3 text-sm text-muted-foreground">
         To send a document, add customer email addresses below. Select documents from the list with the envelope icon, then click Email Selected Documents.
       </p>
       <div className="flex flex-wrap gap-2 mb-3">
@@ -208,7 +208,7 @@ export default function WorkOrderDocumentsDialog({
         </div>
         {contacts.length > 0 && (
           <select
-            className="rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm px-3 py-2"
+            className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
             onChange={(e) => {
               const idx = e.target.value;
               if (idx !== "") {
@@ -231,13 +231,13 @@ export default function WorkOrderDocumentsDialog({
           {sendToEmails.map((e) => (
             <span
               key={(e.EMail || "").toLowerCase()}
-              className="inline-flex items-center gap-1 rounded-full bg-cyan-100 dark:bg-cyan-900/40 px-3 py-1 text-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-3 py-1 text-sm text-foreground"
             >
               {e.EMail}
               <button
                 type="button"
                 onClick={() => removeEmail((e.EMail || "").toLowerCase())}
-                className="hover:text-red-600"
+                className="hover:text-destructive"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

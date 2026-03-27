@@ -80,18 +80,14 @@ function KpiStatCard({ title, value, description, icon: Icon, variant }) {
   const isPositive = variant === "positive";
   const isNegative = variant === "negative";
   return (
-    <Card className="rounded-xl border-slate-200/80 dark:border-slate-700/50 bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-900 dark:to-slate-800">
+    <Card className="rounded-xl border-border/80 bg-card">
       <CardContent className="pt-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">{title}</p>
             <p
               className={`mt-1 text-2xl font-semibold ${
-                isPositive
-                  ? "text-emerald-600 dark:text-emerald-400"
-                  : isNegative
-                    ? "text-rose-600 dark:text-rose-400"
-                    : "text-slate-900 dark:text-white"
+                isPositive ? "text-primary" : isNegative ? "text-destructive" : "text-foreground"
               }`}
             >
               {value}
@@ -104,19 +100,19 @@ function KpiStatCard({ title, value, description, icon: Icon, variant }) {
             <div
               className={`rounded-lg p-2 ${
                 isPositive
-                  ? "bg-emerald-500/10"
+                  ? "bg-primary/10"
                   : isNegative
-                    ? "bg-rose-500/10"
-                    : "bg-cyan-500/10"
+                    ? "bg-destructive/10"
+                    : "bg-accent/10"
               }`}
             >
               <Icon
                 className={`h-5 w-5 ${
                   isPositive
-                    ? "text-emerald-600 dark:text-emerald-400"
+                    ? "text-primary"
                     : isNegative
-                      ? "text-rose-600 dark:text-rose-400"
-                      : "text-cyan-600 dark:text-cyan-400"
+                      ? "text-destructive"
+                      : "text-primary"
                 }`}
               />
             </div>
@@ -271,14 +267,14 @@ export default function AccountingDashboardPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -297,10 +293,10 @@ export default function AccountingDashboardPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-semibold text-foreground">
                 Summary Charts
               </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-muted-foreground">
                 Sales, expenses, and overdue AR overview.
               </p>
             </div>
@@ -325,7 +321,7 @@ export default function AccountingDashboardPage() {
               onDebouncedChange={handleDebouncedChange}
               startLabel=""
               endLabel=""
-              inputClassName="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 w-auto"
+              inputClassName="rounded-lg border border-input bg-background px-3 py-2 text-sm w-auto"
             />
             <Button
               variant="outline"
@@ -346,7 +342,7 @@ export default function AccountingDashboardPage() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
           </div>
         ) : (
           <>
@@ -384,10 +380,10 @@ export default function AccountingDashboardPage() {
             </div>
 
             {/* Sales vs Expenses Chart */}
-            <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden mb-8">
+            <Card className="rounded-2xl border border-border/80 overflow-hidden mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-cyan-500" />
+                  <BarChart3 className="h-5 w-5 text-primary" />
                   Sales & Expenses Overview
                 </CardTitle>
                 <CardDescription>
@@ -459,10 +455,10 @@ export default function AccountingDashboardPage() {
 
             {/* Sales & Expenses Line Charts (side by side) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="rounded-2xl border border-border/80 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-emerald-500" />
+                    <TrendingUp className="h-5 w-5 text-primary" />
                     Sales (Gross)
                   </CardTitle>
                   <CardDescription>
@@ -517,10 +513,10 @@ export default function AccountingDashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+              <Card className="rounded-2xl border border-border/80 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingDown className="h-5 w-5 text-rose-500" />
+                    <TrendingDown className="h-5 w-5 text-destructive" />
                     Expenses
                   </CardTitle>
                   <CardDescription>
@@ -577,10 +573,10 @@ export default function AccountingDashboardPage() {
             </div>
 
             {/* Customer Overdue Balance Table */}
-            <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 overflow-hidden">
+            <Card className="rounded-2xl border border-border/80 overflow-hidden">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-rose-500" />
+                  <AlertCircle className="h-5 w-5 text-destructive" />
                   Customer Overdue Balance
                 </CardTitle>
                 <CardDescription>
@@ -604,7 +600,7 @@ export default function AccountingDashboardPage() {
                           <TableCell className="font-medium">
                             {r.CustomerName ?? "—"}
                           </TableCell>
-                          <TableCell className="text-right font-mono text-rose-600 dark:text-rose-400">
+                          <TableCell className="text-right font-mono text-destructive">
                             {formatCurrency(r.Balance)}
                           </TableCell>
                           <TableCell className="font-mono">

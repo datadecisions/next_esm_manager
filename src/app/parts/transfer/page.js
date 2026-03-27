@@ -178,14 +178,14 @@ export default function PartsTransferPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -203,11 +203,11 @@ export default function PartsTransferPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <ArrowRightLeft className="h-5 w-5" />
               Transfer
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Move parts between warehouses.
             </p>
           </div>
@@ -218,7 +218,7 @@ export default function PartsTransferPage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div>
@@ -276,16 +276,16 @@ export default function PartsTransferPage() {
               )}
 
               {!loading && parts.length === 0 && fromWarehouse && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   No parts in this warehouse.
                 </div>
               )}
 
               {!loading && filteredParts.length > 0 && (
-                <div className="rounded-lg border dark:border-slate-700 overflow-hidden max-h-[60vh] overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-border bg-background">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-slate-50 dark:bg-slate-800/80">
+                      <TableRow className="bg-muted/40">
                         <TableHead className="w-[80px] font-semibold">Action</TableHead>
                         <TableHead
                           className="font-semibold cursor-pointer hover:underline"
@@ -320,9 +320,7 @@ export default function PartsTransferPage() {
                               <Button
                                 size="icon"
                                 variant={part.answer ? "default" : "ghost"}
-                                className={`h-8 w-8 ${
-                                  part.answer ? "bg-green-600 hover:bg-green-700" : ""
-                                }`}
+                                className="h-8 w-8"
                                 onClick={() => handleCheckInventory(part, !part.answer)}
                                 title={part.answer ? "Remove from transfer" : "Include in transfer"}
                               >
@@ -332,7 +330,7 @@ export default function PartsTransferPage() {
                             <TableCell>
                               <Link
                                 href={`/parts/inventory/${encodeURIComponent(part.PartNo)}/${encodeURIComponent(wh)}`}
-                                className="text-cyan-600 hover:underline dark:text-cyan-400"
+                                className="font-medium text-primary hover:underline"
                               >
                                 {part.PartNo}
                               </Link>

@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CustomerCombobox } from "@/components/CustomerCombobox";
 import { EquipmentCombobox } from "@/components/EquipmentCombobox";
 import { getAuthToken } from "@/lib/auth";
@@ -30,12 +31,12 @@ function SectionHeader({ number, title }) {
   return (
     <header className="flex items-center gap-3 mb-5">
       <span
-        className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 dark:bg-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 tabular-nums"
+        className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md bg-muted text-sm font-semibold text-foreground tabular-nums"
         aria-hidden
       >
         {number}
       </span>
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+      <h2 className="text-lg font-semibold text-foreground">
         {title}
       </h2>
     </header>
@@ -44,7 +45,7 @@ function SectionHeader({ number, title }) {
 
 function SubsectionTitle({ children }) {
   return (
-    <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+    <h3 className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">
       {children}
     </h3>
   );
@@ -276,26 +277,26 @@ export default function WorkOrderCreatePage() {
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeInUp.initial}
       animate={fadeInUp.animate}
       transition={fadeInUp.transition}
     >
-      <div className="max-w-3xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/work-orders">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-foreground">
             Create Work Order
           </h1>
         </div>
 
         <motion.form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50"
+          className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm lg:p-8"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -307,34 +308,24 @@ export default function WorkOrderCreatePage() {
           )}
 
           {/* Document type - compact top bar */}
-          <div className="flex gap-6 rounded-lg bg-slate-50 dark:bg-slate-800/50 px-4 py-3 mb-8">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-400 self-center">
+          <div className="rounded-lg bg-muted/60 px-4 py-3 mb-8">
+            <span className="text-sm font-medium text-muted-foreground">
               Document type
             </span>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="disposition"
-                checked={disposition === DISPOSITION_WO}
-                onChange={() => setDisposition(DISPOSITION_WO)}
-                className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
-              />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Work Order
-              </span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="disposition"
-                checked={disposition === DISPOSITION_QUOTE}
-                onChange={() => setDisposition(DISPOSITION_QUOTE)}
-                className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
-              />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Quote
-              </span>
-            </label>
+            <RadioGroup
+              value={String(disposition)}
+              onValueChange={(v) => setDisposition(Number(v))}
+              className="mt-3 flex flex-wrap gap-6"
+            >
+              <label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value={String(DISPOSITION_WO)} id="disposition-wo" />
+                <span className="text-sm font-medium text-foreground">Work Order</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value={String(DISPOSITION_QUOTE)} id="disposition-quote" />
+                <span className="text-sm font-medium text-foreground">Quote</span>
+              </label>
+            </RadioGroup>
           </div>
 
           <div className="space-y-12">
@@ -346,7 +337,7 @@ export default function WorkOrderCreatePage() {
                   <SubsectionTitle>Sale Information</SubsectionTitle>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Branch
                       </label>
                       <Select
@@ -367,7 +358,7 @@ export default function WorkOrderCreatePage() {
                       </Select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Department
                       </label>
                       <Select
@@ -388,7 +379,7 @@ export default function WorkOrderCreatePage() {
                       </Select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Type of Sale
                       </label>
                       <Select
@@ -414,7 +405,7 @@ export default function WorkOrderCreatePage() {
                   <SubsectionTitle>Expense Information</SubsectionTitle>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Branch
                       </label>
                       <Select
@@ -435,7 +426,7 @@ export default function WorkOrderCreatePage() {
                       </Select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Department
                       </label>
                       <Select
@@ -456,7 +447,7 @@ export default function WorkOrderCreatePage() {
                       </Select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs text-slate-500 dark:text-slate-400">
+                      <label className="mb-1 block text-xs text-muted-foreground">
                         Type of Expense
                       </label>
                       <Select
@@ -484,9 +475,9 @@ export default function WorkOrderCreatePage() {
             {/* 2. Customer Information */}
             <section className="pt-2">
               <SectionHeader number={2} title="Customer Information" />
-              <div className="space-y-4">
+              <div className="grid gap-4 lg:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Ship To Customer <span className="text-red-500">*</span>
                   </label>
                   <CustomerCombobox
@@ -498,7 +489,7 @@ export default function WorkOrderCreatePage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Bill To Customer <span className="text-red-500">*</span>
                   </label>
                   <CustomerCombobox
@@ -509,8 +500,8 @@ export default function WorkOrderCreatePage() {
                     minChars={2}
                   />
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                <div className="lg:col-span-2">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Purchase Order (PO) Number
                   </label>
                   <Input
@@ -527,7 +518,7 @@ export default function WorkOrderCreatePage() {
               <SectionHeader number={3} title="Equipment Information" />
               <div className="space-y-4">
                 {!equipmentEnabled && (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-muted-foreground">
                     Select Ship To and Bill To customers first
                   </p>
                 )}
@@ -536,21 +527,21 @@ export default function WorkOrderCreatePage() {
                     type="checkbox"
                     checked={forceEquipment}
                     onChange={(e) => setForceEquipment(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+                    className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
                   />
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-muted-foreground">
                     Or force enable
                   </span>
                 </label>
                 <div className={!equipmentEnabled ? "opacity-50 pointer-events-none" : ""}>
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <label className="block text-sm font-medium text-foreground">
                       Equipment <span className="text-red-500">*</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setSequenceMode(!sequenceMode)}
-                      className={`text-sm underline decoration-dotted underline-offset-2 hover:no-underline ${sequenceMode ? "font-medium text-primary" : "text-slate-500 dark:text-slate-400"}`}
+                      className={`text-sm underline decoration-dotted underline-offset-2 hover:no-underline ${sequenceMode ? "font-medium text-primary" : "text-muted-foreground"}`}
                     >
                       {sequenceMode ? "✓ " : ""}Sequence Mode
                     </button>
@@ -574,11 +565,11 @@ export default function WorkOrderCreatePage() {
                   />
                 </div>
                 {primaryEquipment && (primaryEquipment.Location || primaryEquipment.Comments) && (
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/50">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+                    <div className="text-sm font-medium text-foreground mb-1">
                       Equipment Notes
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="text-sm text-muted-foreground">
                       {[primaryEquipment.Location, primaryEquipment.Comments].filter(Boolean).join(" ")}
                     </div>
                   </div>
@@ -586,15 +577,15 @@ export default function WorkOrderCreatePage() {
                 <div className="grid gap-6 sm:grid-cols-3 mt-6">
                   <div className="sm:col-span-2">
                     {primaryEquipment && (
-                      <div className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div className="bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                      <div className="rounded-lg border border-border overflow-hidden">
+                        <div className="bg-muted px-4 py-2 text-sm font-medium text-foreground">
                           Open Orders for This Equipment
                         </div>
                         <div className="max-h-40 overflow-auto">
                           {openOrders.length > 0 ? (
                             <table className="w-full text-sm">
                               <thead>
-                                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                <tr className="border-b border-border bg-muted/40">
                                   <th className="px-4 py-2 text-left font-medium">Order #</th>
                                   <th className="px-4 py-2 text-left font-medium">Date</th>
                                   <th className="px-4 py-2 text-left font-medium">Comments</th>
@@ -602,7 +593,7 @@ export default function WorkOrderCreatePage() {
                               </thead>
                               <tbody>
                                 {openOrders.map((wo) => (
-                                  <tr key={wo.WONo} className="border-b border-slate-100 dark:border-slate-800">
+                                  <tr key={wo.WONo} className="border-b border-border/60">
                                     <td className="px-4 py-2 font-medium">{wo.WONo}</td>
                                     <td className="px-4 py-2">{wo.OpenDate ? new Date(wo.OpenDate).toLocaleDateString() : ""}</td>
                                     <td className="px-4 py-2 truncate max-w-[200px]">{wo.Comments ?? ""}</td>
@@ -611,7 +602,7 @@ export default function WorkOrderCreatePage() {
                               </tbody>
                             </table>
                           ) : (
-                            <div className="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                            <div className="px-4 py-6 text-center text-sm text-muted-foreground">
                               No open orders found
                             </div>
                           )}
@@ -620,35 +611,21 @@ export default function WorkOrderCreatePage() {
                     )}
                   </div>
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <label className="mb-2 block text-sm font-medium text-foreground">
                       Billing Type
                     </label>
-                    <div className="space-y-2">
+                    <RadioGroup value={woMain} onValueChange={setWoMain} className="space-y-2">
                       <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="woMain"
-                          value="CUSTOMER"
-                          checked={woMain === "CUSTOMER"}
-                          onChange={() => setWoMain("CUSTOMER")}
-                          className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
-                        />
-                        <User className="h-4 w-4 text-slate-500" />
+                        <RadioGroupItem value="CUSTOMER" id="wo-main-customer" />
+                        <User className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">Customer Billing</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="woMain"
-                          value="MAINTENANCE"
-                          checked={woMain === "MAINTENANCE"}
-                          onChange={() => setWoMain("MAINTENANCE")}
-                          className="h-4 w-4 border-slate-300 text-slate-600 focus:ring-slate-500"
-                        />
-                        <Wrench className="h-4 w-4 text-slate-500" />
+                        <RadioGroupItem value="MAINTENANCE" id="wo-main-maintenance" />
+                        <Wrench className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">Full Maintenance</span>
                       </label>
-                    </div>
+                    </RadioGroup>
                   </div>
                 </div>
               </div>
@@ -659,7 +636,7 @@ export default function WorkOrderCreatePage() {
               <SectionHeader number={4} title="Comments" />
               <div className="space-y-4">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Private Comments
                   </label>
                   <textarea
@@ -671,7 +648,7 @@ export default function WorkOrderCreatePage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Comments
                   </label>
                   <textarea
@@ -688,24 +665,37 @@ export default function WorkOrderCreatePage() {
             {/* 5. Additional Options */}
             <section className="pt-2">
               <SectionHeader number={5} title="Additional Options" />
-              <div className="space-y-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={requiresHourMeter}
-                    onChange={(e) => setRequiresHourMeter(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-slate-600 focus:ring-slate-500"
-                  />
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                    Requires Hour Meter
-                  </span>
-                </label>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <div className="grid gap-4 lg:grid-cols-3">
+                <div className="space-y-4 lg:col-span-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={requiresHourMeter}
+                      onChange={(e) => setRequiresHourMeter(e.target.checked)}
+                      className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      Requires Hour Meter
+                    </span>
+                  </label>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-foreground">
+                      Number of Work Orders to Create
+                    </label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={createCounter}
+                      onChange={(e) => setCreateCounter(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Photos
                   </label>
                   <label className="flex flex-col cursor-pointer">
-                    <div className="rounded-md border border-dashed border-slate-300 dark:border-slate-600 px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400 hover:border-slate-400 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800/50 transition-colors">
+                    <div className="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground hover:border-border/80 hover:bg-muted/40 transition-colors">
                       <span className="block mb-1">
                         {photos.length > 0
                           ? `${photos.length} photo${photos.length === 1 ? "" : "s"} selected`
@@ -730,13 +720,13 @@ export default function WorkOrderCreatePage() {
                       {photos.map((f, i) => (
                         <span
                           key={`${f.name}-${i}`}
-                          className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs"
+                          className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs"
                         >
                           {f.name}
                           <button
                             type="button"
                             onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
-                            className="ml-1 rounded-full p-0.5 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400"
+                            className="ml-1 rounded-full p-0.5 hover:bg-muted/80 text-muted-foreground"
                             aria-label={`Remove ${f.name}`}
                           >
                             ×
@@ -745,17 +735,6 @@ export default function WorkOrderCreatePage() {
                       ))}
                     </div>
                   )}
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Number of Work Orders to Create
-                  </label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={createCounter}
-                    onChange={(e) => setCreateCounter(e.target.value)}
-                  />
                 </div>
               </div>
             </section>

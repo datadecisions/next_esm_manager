@@ -89,16 +89,16 @@ export default function FixedPricePopupDialog({ open, onOpenChange, wo, billing,
         <DialogContent size="wide" className="max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Quote className="h-5 w-5 text-cyan-500" />
+              <Quote className="h-5 w-5 text-primary" />
               Fixed Price
             </DialogTitle>
           </DialogHeader>
 
-          <div className="overflow-auto flex-1 min-h-0 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border bg-card text-card-foreground">
             {isOpen ? (
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">Fixed Price Items</h3>
+                <h3 className="text-base font-semibold">Fixed Price Items</h3>
                 <Button
                   variant="outline"
                   size="sm"
@@ -110,31 +110,31 @@ export default function FixedPricePopupDialog({ open, onOpenChange, wo, billing,
                 </Button>
               </div>
               {loading ? (
-                <div className="flex items-center gap-2 py-8 text-slate-500">
+                <div className="flex items-center gap-2 py-8 text-muted-foreground">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   Loading…
                 </div>
               ) : fixedItems.length === 0 ? (
-                <p className="py-4 text-slate-500 dark:text-slate-400 italic">No fixed price items on this work order.</p>
+                <p className="py-4 italic text-muted-foreground">No fixed price items on this work order.</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400 w-20"></th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Type</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Section</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Amount</th>
+                      <th className="w-20 px-4 py-2.5 text-left font-medium text-muted-foreground"></th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Description</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Section</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {fixedItems.map((item) => (
-                      <tr key={item.ID} className="border-b border-slate-100 dark:border-slate-700/50">
+                      <tr key={item.ID} className="border-b border-border/50">
                         <td className="py-2 px-4">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-red-500 hover:text-red-700"
+                            className="h-8 w-8 text-destructive hover:text-destructive/80"
                             onClick={() => handleDelete(item)}
                             disabled={deletingId === item.ID}
                             title="Delete"
@@ -146,21 +146,21 @@ export default function FixedPricePopupDialog({ open, onOpenChange, wo, billing,
                             )}
                           </Button>
                         </td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{getTypeLabel(item.Type)}</td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{item.RepairCode ?? item.Section ?? "—"}</td>
-                        <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                        <td className="px-4 py-2 text-muted-foreground">{getTypeLabel(item.Type)}</td>
+                        <td className="px-4 py-2 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="px-4 py-2 text-muted-foreground">{item.RepairCode ?? item.Section ?? "—"}</td>
+                        <td className="px-4 py-2 text-right font-medium tabular-nums text-foreground">
                           {formatCurrency(item.Amount)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300" colSpan={4}>
+                    <tr className="border-t border-border bg-muted/40 font-medium">
+                      <td className="px-4 py-3 text-foreground" colSpan={4}>
                         Total
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                      <td className="px-4 py-3 text-right tabular-nums text-foreground">
                         {formatCurrency(fixedSubTotal)}
                       </td>
                     </tr>
@@ -171,33 +171,33 @@ export default function FixedPricePopupDialog({ open, onOpenChange, wo, billing,
           ) : (
             <div className="p-4">
               {fixedLineItems.length === 0 ? (
-                <p className="py-8 text-center text-slate-500 dark:text-slate-400">No fixed price items on this work order.</p>
+                <p className="py-8 text-center text-muted-foreground">No fixed price items on this work order.</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                  <thead className="sticky top-0 border-b border-border bg-muted/40">
                     <tr>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Type</th>
-                      <th className="text-left py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Description</th>
-                      <th className="text-right py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">Amount</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Type</th>
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">Description</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {fixedLineItems.map((item, idx) => (
-                      <tr key={item.ID ?? idx} className="border-b border-slate-100 dark:border-slate-700/50">
-                        <td className="py-2 px-4 text-slate-600 dark:text-slate-400">{getTypeLabel(item.Type ?? item.ItemNo)}</td>
-                        <td className="py-2 px-4 text-slate-800 dark:text-slate-200">{item.Description ?? "—"}</td>
-                        <td className="py-2 px-4 text-right tabular-nums font-medium text-slate-800 dark:text-slate-200">
+                      <tr key={item.ID ?? idx} className="border-b border-border/50">
+                        <td className="px-4 py-2 text-muted-foreground">{getTypeLabel(item.Type ?? item.ItemNo)}</td>
+                        <td className="px-4 py-2 text-foreground">{item.Description ?? "—"}</td>
+                        <td className="px-4 py-2 text-right font-medium tabular-nums text-foreground">
                           {formatCurrency(item.Extended ?? item.Amount)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 font-medium">
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300" colSpan={2}>
+                    <tr className="border-t border-border bg-muted/40 font-medium">
+                      <td className="px-4 py-3 text-foreground" colSpan={2}>
                         Fixed Price total
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                      <td className="px-4 py-3 text-right tabular-nums text-foreground">
                         {formatCurrency(fixedSubTotal)}
                       </td>
                     </tr>

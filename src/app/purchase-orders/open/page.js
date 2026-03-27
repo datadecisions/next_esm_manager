@@ -142,14 +142,14 @@ export default function OpenPurchaseOrdersPage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -167,17 +167,17 @@ export default function OpenPurchaseOrdersPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-semibold text-foreground">
               Open Purchase Orders
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               View and manage open purchase orders by branch and department.
             </p>
           </div>
         </motion.div>
 
         {/* Filters */}
-        <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+        <div className="mb-6 rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm">
           <div className="flex flex-wrap items-center gap-4">
             <Button
               variant="outline"
@@ -197,7 +197,7 @@ export default function OpenPurchaseOrdersPage() {
             )}
           </div>
           {showFilter && (
-            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="mt-4 border-t border-border pt-4">
               <p className="text-sm text-muted-foreground">Select a branch and optionally a department to filter open POs.</p>
             </div>
           )}
@@ -242,7 +242,7 @@ export default function OpenPurchaseOrdersPage() {
         </div>
 
         {/* Table */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm overflow-hidden dark:border-slate-700/50 dark:bg-slate-800/50">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-16 text-muted-foreground">
               <Loader2 className="h-6 w-6 animate-spin" />
@@ -254,35 +254,35 @@ export default function OpenPurchaseOrdersPage() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center">
-              <FileText className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
-              <p className="mt-2 text-slate-500 dark:text-slate-400">No open purchase orders found.</p>
+              <FileText className="mx-auto h-12 w-12 text-muted-foreground/60" />
+              <p className="mt-2 text-muted-foreground">No open purchase orders found.</p>
               <p className="text-sm text-muted-foreground">Try adjusting your filters or create a new PO.</p>
             </div>
           ) : (
             <div ref={scrollContainerRef} className="max-h-[60vh] overflow-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800/80 sticky top-0 z-10">
-                    <TableHead className="font-semibold bg-slate-50 dark:bg-slate-800/80">PO #</TableHead>
-                    <TableHead className="font-semibold bg-slate-50 dark:bg-slate-800/80">Vendor</TableHead>
-                    <TableHead className="font-semibold text-right bg-slate-50 dark:bg-slate-800/80">Amount</TableHead>
-                    <TableHead className="font-semibold text-right bg-slate-50 dark:bg-slate-800/80">Line Items</TableHead>
-                    <TableHead className="font-semibold bg-slate-50 dark:bg-slate-800/80">Vendor Date</TableHead>
-                    <TableHead className="font-semibold bg-slate-50 dark:bg-slate-800/80">Comments</TableHead>
+                  <TableRow className="sticky top-0 z-10 bg-muted/40">
+                    <TableHead className="bg-muted/40 font-semibold">PO #</TableHead>
+                    <TableHead className="bg-muted/40 font-semibold">Vendor</TableHead>
+                    <TableHead className="bg-muted/40 text-right font-semibold">Amount</TableHead>
+                    <TableHead className="bg-muted/40 text-right font-semibold">Line Items</TableHead>
+                    <TableHead className="bg-muted/40 font-semibold">Vendor Date</TableHead>
+                    <TableHead className="bg-muted/40 font-semibold">Comments</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {displayed.map((po) => (
                     <TableRow
                       key={po.PONo}
-                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                      className="cursor-pointer hover:bg-muted/40"
                       onClick={() => router.push(`/purchase-orders/${po.PONo}`)}
                     >
-                      <TableCell className="font-semibold text-cyan-600 dark:text-cyan-400">
+                      <TableCell className="font-semibold text-primary">
                         #{po.PONo}
                       </TableCell>
                       <TableCell>{po.VendorName ?? "—"}</TableCell>
-                      <TableCell className="text-right font-medium text-green-600 dark:text-green-400">
+                      <TableCell className="text-right font-medium text-primary">
                         {formatCurrency(po.amount)}
                       </TableCell>
                       <TableCell className="text-right">{po.items ?? "—"}</TableCell>
@@ -310,7 +310,7 @@ export default function OpenPurchaseOrdersPage() {
             </div>
           )}
           {filtered.length > 0 && (
-            <div className="px-4 py-3 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+            <div className="flex items-center justify-between border-t border-border bg-muted/30 px-4 py-3">
               <p className="text-sm text-muted-foreground">
                 Showing {displayed.length} of {filtered.length} purchase orders
               </p>

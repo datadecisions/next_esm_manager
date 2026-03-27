@@ -154,14 +154,14 @@ export default function PartsReceivePage() {
   if (authLoading || !token) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-full bg-gradient-to-b from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900"
+      className="min-h-full text-foreground"
       initial={fadeIn.initial}
       animate={fadeIn.animate}
       transition={fadeIn.transition}
@@ -179,16 +179,16 @@ export default function PartsReceivePage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-semibold text-foreground">
               <Truck className="h-5 w-5" />
               Receive Orders
               {selectedPO && (
-                <span className="text-xl font-normal text-slate-600 dark:text-slate-400">
+                <span className="text-xl font-normal text-muted-foreground">
                   #{selectedPO.PONo} {selectedPO.VendorName ?? ""}
                 </span>
               )}
             </h1>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-muted-foreground">
               Search for a purchase order and receive parts.
             </p>
           </div>
@@ -199,7 +199,7 @@ export default function PartsReceivePage() {
           animate={fadeInUp.animate}
           transition={{ ...fadeInUp.transition, delay: 0.05 }}
         >
-          <Card className="dark:border-slate-700 dark:bg-slate-800/50">
+          <Card className="border-border bg-card text-card-foreground">
             <CardContent className="pt-6 space-y-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Purchase Order</label>
@@ -225,7 +225,7 @@ export default function PartsReceivePage() {
               )}
 
               {!loading && poData && poData.parts?.length === 0 && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   There are no parts in this purchase order.
                 </div>
               )}
@@ -246,11 +246,11 @@ export default function PartsReceivePage() {
                     {filteredParts.map((part) => (
                       <Card
                         key={part.ID}
-                        className="w-full sm:w-[320px] dark:border-slate-700 dark:bg-slate-800/30"
+                        className="w-full border-border bg-card text-card-foreground sm:w-[320px]"
                       >
                         <CardContent className="pt-4 pb-4">
                           <div className="text-center mb-3">
-                            <h5 className="font-semibold text-slate-900 dark:text-white">
+                            <h5 className="font-semibold text-foreground">
                               {part.PartNo} ({part.Qty}) {formatCurrency(part.CostEach)}
                             </h5>
                             <p className="text-sm text-muted-foreground mt-0.5 truncate" title={part.Description}>
@@ -262,14 +262,12 @@ export default function PartsReceivePage() {
                               </p>
                             )}
                           </div>
-                          <div className="flex items-center justify-between gap-2 border-t dark:border-slate-700 pt-3">
+                          <div className="flex items-center justify-between gap-2 border-t border-border pt-3">
                             <div className="flex items-center gap-1">
                               <Button
                                 size="icon"
                                 variant={part.answer === true ? "default" : "ghost"}
-                                className={`h-8 w-8 ${
-                                  part.answer === true ? "bg-green-600 hover:bg-green-700" : ""
-                                }`}
+                                className="h-8 w-8"
                                 onClick={() => handleCheckInventory(part, true)}
                                 title="Pass (full qty)"
                               >
@@ -317,13 +315,13 @@ export default function PartsReceivePage() {
               )}
 
               {!loading && !poData && selectedPO && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   Could not load purchase order. Try selecting again.
                 </div>
               )}
 
               {!loading && !selectedPO && (
-                <div className="rounded-lg border dark:border-slate-700 p-12 text-center text-muted-foreground">
+                <div className="rounded-lg border border-border p-12 text-center text-muted-foreground">
                   Search for a purchase order by PO number or vendor name.
                 </div>
               )}

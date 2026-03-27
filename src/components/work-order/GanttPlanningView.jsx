@@ -350,7 +350,7 @@ export default function GanttPlanningView({ woNo, token }) {
 
   if (loading) {
     return (
-      <Card className="rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
+      <Card className="rounded-xl border border-border bg-card text-card-foreground">
         <CardContent className="py-12 text-center text-muted-foreground">
           Loading planning tasks…
         </CardContent>
@@ -360,7 +360,7 @@ export default function GanttPlanningView({ woNo, token }) {
 
   if (svarTasks.length === 0) {
     return (
-      <Card className="rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
+      <Card className="rounded-xl border border-border bg-card text-card-foreground">
         <CardContent className="py-12 text-center">
           <p className="text-sm text-muted-foreground">
             No sections yet. Add a section above to create sections in the Gantt. Use the + on a section row to add subtasks.
@@ -372,13 +372,13 @@ export default function GanttPlanningView({ woNo, token }) {
 
   return (
     <>
-      <Card className="rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 overflow-hidden p-0">
-        <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/80">
+      <Card className="overflow-hidden rounded-xl border border-border bg-card p-0 text-card-foreground">
+        <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+            <span className="text-sm font-medium text-muted-foreground">
               Gantt Planning
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-500 flex items-center gap-3 flex-wrap">
+            <span className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MoveHorizontal className="h-3 w-3 shrink-0" />
                 Shift + scroll or trackpad to pan horizontally
@@ -390,7 +390,7 @@ export default function GanttPlanningView({ woNo, token }) {
                 Double-click task to edit name, dates, type (milestone), progress
               </span>
               <span className="flex items-center gap-1.5">
-                <kbd className="rounded border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 text-[10px] font-mono">Ctrl+F</kbd>
+                <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono">Ctrl+F</kbd>
                 to expand
               </span>
             </span>
@@ -399,11 +399,11 @@ export default function GanttPlanningView({ woNo, token }) {
             variant="ghost"
             size="sm"
             onClick={() => setExpanded(true)}
-            className="gap-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+            className="gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <Maximize2 className="h-4 w-4" />
             Expand
-            <kbd className="ml-1 rounded border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 text-[10px] font-mono hidden sm:inline">Ctrl+F</kbd>
+            <kbd className="ml-1 hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono sm:inline">Ctrl+F</kbd>
           </Button>
         </div>
         <CardContent className="p-0 [&_.wx-willow-theme]:rounded-b-xl [&_.wx-willow-dark-theme]:rounded-b-xl">

@@ -83,15 +83,15 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
   });
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Service Admin</h2>
+    <div className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+      <div className="border-b border-border px-6 py-4">
+        <h2 className="text-xl font-semibold">Service Admin</h2>
       </div>
       <form name="serviceAdmin" className="p-6 space-y-8" onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
         {/* Quotes & Dates */}
         <div className="grid md:grid-cols-2 gap-8">
           <section>
-            <h4 className="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-4">Quotes</h4>
+            <h4 className="mb-4 text-lg font-semibold text-primary">Quotes</h4>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Quote Hours</Label>
@@ -121,7 +121,7 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
           </section>
 
           <section>
-            <h4 className="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-4">Dates</h4>
+            <h4 className="mb-4 text-lg font-semibold text-primary">Dates</h4>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Shop Recv Date</Label>
@@ -147,12 +147,12 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
           </section>
         </div>
 
-        <hr className="border-slate-200 dark:border-slate-700" />
+        <hr className="border-border" />
 
         {/* Other & Inbound/Outbound */}
         <div className="grid md:grid-cols-2 gap-8">
           <section>
-            <h4 className="text-lg font-semibold text-cyan-700 dark:text-cyan-400 mb-4">Other</h4>
+            <h4 className="mb-4 text-lg font-semibold text-primary">Other</h4>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Shop Status</Label>
@@ -176,24 +176,24 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
           <section>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <h5 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Inbound</h5>
+                <h5 className="mb-2 text-sm font-semibold text-foreground">Inbound</h5>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" name="ShopInboundDroppedOff" defaultChecked={shopInboundDroppedOff} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                  <input type="checkbox" name="ShopInboundDroppedOff" defaultChecked={shopInboundDroppedOff} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                   <span className="text-sm">Dropped Off</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" name="ShopInboundPickedUp" defaultChecked={shopInboundPickedUp} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                  <input type="checkbox" name="ShopInboundPickedUp" defaultChecked={shopInboundPickedUp} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                   <span className="text-sm">Picked Up</span>
                 </label>
               </div>
               <div>
-                <h5 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Outbound</h5>
+                <h5 className="mb-2 text-sm font-semibold text-foreground">Outbound</h5>
                 <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                  <input type="checkbox" name="ShopOutboundDroppedOff" defaultChecked={shopOutboundDroppedOff} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                  <input type="checkbox" name="ShopOutboundDroppedOff" defaultChecked={shopOutboundDroppedOff} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                   <span className="text-sm">Dropped Off</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" name="ShopOutboundPickedUp" defaultChecked={shopOutboundPickedUp} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                  <input type="checkbox" name="ShopOutboundPickedUp" defaultChecked={shopOutboundPickedUp} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                   <span className="text-sm">Picked Up</span>
                 </label>
               </div>
@@ -201,12 +201,12 @@ export default function StatusDatesTab({ wo, token, onStatusUpdate }) {
 
             <div className="space-y-4">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="PaperWorkComplete" defaultChecked={paperWorkComplete} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                <input type="checkbox" name="PaperWorkComplete" defaultChecked={paperWorkComplete} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                 <span className="text-sm font-medium">Paperwork turned in?</span>
               </label>
-              {wo?.PaperWorkDate && <p className="text-xs text-slate-500 dark:text-slate-400 ml-6">Date submitted: <em>{formatDate(wo.PaperWorkDate)}</em></p>}
+              {wo?.PaperWorkDate && <p className="ml-6 text-xs text-muted-foreground">Date submitted: <em>{formatDate(wo.PaperWorkDate)}</em></p>}
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="ShopRentalGiven" defaultChecked={shopRentalGiven} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-slate-300 text-cyan-600" />
+                <input type="checkbox" name="ShopRentalGiven" defaultChecked={shopRentalGiven} onChange={() => setDirty(true)} className="h-4 w-4 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
                 <span className="text-sm font-medium">Rental issued?</span>
               </label>
               <div className="space-y-2">
