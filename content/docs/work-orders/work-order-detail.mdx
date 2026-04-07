@@ -64,13 +64,20 @@ Click **Close** in the header (or **Generate Invoice & Close** for open/accepted
 
 Click any of these to open a popup with line-item details and actions. For Open, Quote, and Accepted orders you can add, edit, and remove items. For Closed orders the popup shows read-only line items.
 
-**Parts** — View and manage parts on the work order.
+**Parts** — Opens a dialog to view and manage parts on the work order (pending requests and approved lines).
 
-- **Add Part** — Add parts from inventory
-- **Approve / Deny** — For requested parts (e.g. from tech app), approve to add to the order or deny to remove
+- **Add Part** — Search by part number or description (type at least two characters). Search results can show **on hand**, **available** (when it differs from on hand because of open technician part requests), and **on back order** when that data exists for the part and warehouse. Choose warehouse, quantity, and section, then submit.
+  - **Reserve for this work order (pick later)** — On by default. Parts are committed to the order using **allocation**; **on-hand** is **not** reduced until someone **records a pick** (see below). Uncheck this option to **issue immediately** (legacy behavior: on-hand drops as soon as the part is added).
+- **Picking (reserve-mode lines)** — Lines added with reserve enabled show **picked / ship** in the **Pick** column (`ship` is the quantity expected from stock for that line, excluding full back-order quantity). While quantity is still waiting to be picked from the shelf, a **Reserved** badge appears next to the part number; it **hides** after the line is **fully picked**. You can:
+  - Enter a **total picked** quantity in the right-hand detail panel and click **Record pick**
+  - Use **Pick full line** from the row **⋯** menu
+  - Use **Pick all reserved** in the toolbar to fully pick every line that still has open pick quantity
+- **Approve / Deny** — For requested parts (e.g. from the technician app), approve to add to the order or deny to remove
 - **Edit** — Change sell price, section, or refresh price from catalog
 - **Delete** — Remove a part from the work order
 - **Download CSV** — Export approved parts to a CSV file
+
+The same **Add Part** reserve option and picking behavior apply from [Parts Approval](/docs/parts/approval) when you add or pick parts from there. Reserve/pick requires the corresponding database and API support on your environment.
 
 **Labor** — View and manage labor entries.
 

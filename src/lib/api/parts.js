@@ -246,6 +246,56 @@ export async function addPartToOrder(data, token) {
   return text ? JSON.parse(text) : {};
 }
 
+/**
+ * Add a part in reserve mode: increases Parts.Allocated, does not reduce OnHand until pick.
+ * Requires DB migration `migrations/woparts_defer_consumption.sql`. Use addPartToOrder for legacy immediate issue.
+ * @param {{ WONo: number|string; PartNo: string; Warehouse: string; Qty: number; Section: string; RepairCode?: string; BOQty?: number }} data
+ * @param {string} token
+ */
+export async function addPartToOrderReserved(data, token) {
+  const res = await fetchWithAuth("/api/v1/parts/post_reserved", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      WONo: data.WONo,
+      PartNo: data.PartNo,
+      Warehouse: data.Warehouse,
+      Qty: data.Qty,
+      Section: data.Section,
+      RepairCode: data.RepairCode ?? data.Section,
+      BOQty: data.BOQty,
+    }),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to add reserved part");
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
+}
+
+/**
+ * Record picks for reserve-mode WOParts lines. PickQty is the new total picked per line.
+ * @param {{ WONo: number|string; picks: Array<{ ID: number|string; PickQty: number }> }} data
+ * @param {string} token
+ */
+export async function pickWorkOrderParts(data, token) {
+  const res = await fetchWithAuth("/api/v1/parts/pick", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      WONo: data.WONo,
+      picks: data.picks,
+    }),
+  }, token);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to pick parts");
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
+}
+
 // ─── Parts inventory module APIs ───────────────────────────────────────────
 
 /**

@@ -20,8 +20,58 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import { addPartToOrder, searchParts, getWarehouses } from "@/lib/api/parts";
+import { addPartToOrder, addPartToOrderReserved, searchParts, getWarehouses } from "@/lib/api/parts";
 import { getSectionsList } from "@/lib/api/work-order";
+
+/** Search API returns OnHand as Count (MSSQL); Qty may be lower when open web part requests hold stock. */
+function partSearchStockHint(part) {
+  const onHand = part.OnHand ?? part.Count;
+  const nOh =
+    onHand !== undefined && onHand !== null && onHand !== ""
+      ? Number(onHand)
+      : NaN;
+  const nQty =
+    part.Qty !== undefined && part.Qty !== null && part.Qty !== ""
+      ? Number(part.Qty)
+      : NaN;
+  if (!Number.isFinite(nOh) && !Number.isFinite(nQty)) return null;
+  if (Number.isFinite(nOh) && Number.isFinite(nQty) && nQty !== nOh) {
+    return {
+      text: `${nOh} on hand · ${nQty} avail.`,
+      title:
+        "Physical on hand in this warehouse vs. available after open technician part requests.",
+    };
+  }
+  if (Number.isFinite(nOh)) {
+    return { text: `${nOh} on hand`, title: "Quantity on hand in this warehouse" };
+  }
+  if (Number.isFinite(nQty)) {
+    return { text: `${nQty} avail.`, title: "Available quantity" };
+  }
+  return null;
+}
+
+/** Parts search includes BackOrder from inventory (qty or flag depending on data). */
+function partSearchBackOrderHint(part) {
+  const bo = part.BackOrder;
+  if (bo === undefined || bo === null || bo === "") return null;
+  const n = Number(bo);
+  if (Number.isFinite(n)) {
+    if (n <= 0) return null;
+    return {
+      text: n === 1 ? "1 on back order" : `${n} on back order`,
+      title: "Reported back-order quantity for this part in this warehouse.",
+    };
+  }
+  const s = String(bo).trim().toLowerCase();
+  if (s === "y" || s === "yes" || s === "true") {
+    return {
+      text: "On back order",
+      title: "This part is flagged on back order for this warehouse.",
+    };
+  }
+  return null;
+}
 
 export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess }) {
   const [warehouses, setWarehouses] = useState([]);
@@ -32,6 +82,8 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  /** When true (default), uses POST /parts/post_reserved (Allocated only until pick). Uncheck for immediate OnHand issue. */
+  const [reserveInventory, setReserveInventory] = useState(true);
 
   const [form, setForm] = useState({
     PartNo: "",
@@ -77,6 +129,7 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
     setSearchResults([]);
     setShowSearchResults(false);
     setError(null);
+    setReserveInventory(true);
   }, [open, token]);
 
   useEffect(() => {
@@ -138,21 +191,24 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
     const section = (form.Section === "__none__" || (typeof form.Section === "string" && form.Section.startsWith("__empty_"))) ? "" : (form.Section || "").trim();
     setSaving(true);
     setError(null);
+    const payload = {
+      WONo: wo.WONo,
+      PartNo: partNo,
+      Warehouse: form.Warehouse,
+      Qty: qty,
+      Section: section,
+      RepairCode: section,
+    };
     try {
-      await addPartToOrder(
-        {
-          WONo: wo.WONo,
-          PartNo: partNo,
-          Warehouse: form.Warehouse,
-          Qty: qty,
-          Section: section,
-          RepairCode: section,
-        },
-        token
-      );
+      if (reserveInventory) {
+        await addPartToOrderReserved(payload, token);
+        toast.success("Part added (reserved — pick when pulled from shelf)");
+      } else {
+        await addPartToOrder(payload, token);
+        toast.success("Part added");
+      }
       onSuccess?.();
       onOpenChange(false);
-      toast.success("Part added");
     } catch (err) {
       setError(err?.message || "Failed to add part");
       toast.error(err?.message || "Failed to add part");
@@ -189,19 +245,52 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
                 <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
               )}
               {showSearchResults && searchResults.length > 0 && (
-                <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover py-1 shadow-md max-h-48 overflow-auto">
-                  {searchResults.map((part) => (
-                    <button
-                      key={`${part.PartNo}-${part.Warehouse}`}
-                      type="button"
-                      className="w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
-                      onClick={() => handleSelectPart(part)}
-                    >
-                      <span className="font-medium">{part.PartNo}</span>
-                      <span className="text-muted-foreground ml-2">{part.Description}</span>
-                      <span className="text-muted-foreground text-xs ml-2">({part.Warehouse})</span>
-                    </button>
-                  ))}
+                <div className="absolute z-50 mt-1 w-full min-w-[min(100%,22rem)] rounded-md border bg-popover py-1 shadow-md max-h-56 overflow-auto">
+                  {searchResults.map((part) => {
+                    const stock = partSearchStockHint(part);
+                    const backOrder = partSearchBackOrderHint(part);
+                    const meta = stock || backOrder;
+                    return (
+                      <button
+                        key={`${part.PartNo}-${part.Warehouse}`}
+                        type="button"
+                        className="flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => handleSelectPart(part)}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-medium">{part.PartNo}</span>
+                            <span className="text-muted-foreground text-xs">({part.Warehouse})</span>
+                          </div>
+                          {part.Description ? (
+                            <div className="truncate text-xs text-muted-foreground" title={part.Description}>
+                              {part.Description}
+                            </div>
+                          ) : null}
+                        </div>
+                        {meta ? (
+                          <div className="flex shrink-0 flex-col items-end gap-0.5 text-right">
+                            {stock ? (
+                              <span
+                                className="tabular-nums text-xs font-medium text-muted-foreground"
+                                title={stock.title}
+                              >
+                                {stock.text}
+                              </span>
+                            ) : null}
+                            {backOrder ? (
+                              <span
+                                className="text-xs font-medium text-amber-800 dark:text-amber-400"
+                                title={backOrder.title}
+                              >
+                                {backOrder.text}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -239,6 +328,24 @@ export default function AddPartDialog({ open, onOpenChange, wo, token, onSuccess
               onChange={(e) => setForm((p) => ({ ...p, Qty: e.target.value }))}
               disabled={loading}
             />
+          </div>
+          <div className="flex items-start gap-3 rounded-md border border-border bg-muted/30 px-3 py-2.5">
+            <input
+              id="reserveInventory"
+              type="checkbox"
+              className="mt-1 h-4 w-4 shrink-0 rounded border-input"
+              checked={reserveInventory}
+              onChange={(e) => setReserveInventory(e.target.checked)}
+              disabled={loading || saving}
+            />
+            <div className="min-w-0">
+              <Label htmlFor="reserveInventory" className="cursor-pointer font-medium leading-tight">
+                Reserve for this work order (pick later)
+              </Label>
+              <p className="text-muted-foreground mt-1 text-xs leading-snug">
+                On by default: on-hand stays on the shelf until you record a pick. Uncheck to issue from inventory immediately.
+              </p>
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="section">Section</Label>

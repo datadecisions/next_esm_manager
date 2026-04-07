@@ -40,6 +40,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${plexSans.variable} ${plexMono.variable} flex min-h-screen flex-col antialiased`}
+        suppressHydrationWarning
       >
         <script
           dangerouslySetInnerHTML={{ __html: themeScript }}

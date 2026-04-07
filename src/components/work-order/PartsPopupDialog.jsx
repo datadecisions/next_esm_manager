@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Package, Pencil, Check, X, Loader2, Trash2, RefreshCw, Plus, Download, ArrowRight, MoreHorizontal, CheckCircle, XCircle } from "lucide-react";
+import { Package, Pencil, Check, X, Loader2, Trash2, RefreshCw, Plus, Download, ArrowRight, MoreHorizontal, CheckCircle, XCircle, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { getParts, getApprovedParts, updatePart, refreshPartPrice, deletePart, deleteRequestedPart, approvePart, downloadPartsCsv } from "@/lib/api/parts";
+import { getParts, getApprovedParts, updatePart, refreshPartPrice, deletePart, deleteRequestedPart, approvePart, downloadPartsCsv, pickWorkOrderParts } from "@/lib/api/parts";
 import AddPartDialog from "./AddPartDialog";
 import { getSectionsList } from "@/lib/api/work-order";
 
@@ -42,6 +42,31 @@ function formatDate(val) {
   if (!val) return "—";
   const d = new Date(val);
   return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "2-digit" });
+}
+
+function isDeferredPart(part) {
+  if (!part || part.type === "WebPartsOrder") return false;
+  const d = part.DeferConsumption;
+  return d === true || d === 1 || Number(d) === 1;
+}
+
+function pickedQty(part) {
+  const p = Number(part?.PickQty);
+  return isNaN(p) ? 0 : p;
+}
+
+function shipQtyForPick(part) {
+  const s = Number(part?.ShipQty);
+  if (!isNaN(s) && s >= 0) return s;
+  const q = Number(part?.Qty) || 0;
+  const bo = Number(part?.BOQty) || 0;
+  return Math.max(0, q - bo);
+}
+
+/** Reserve-mode line still has shelf qty to pick (hide “Reserved” once fully picked). */
+function deferredLineAwaitingPick(part) {
+  if (!isDeferredPart(part)) return false;
+  return pickedQty(part) < shipQtyForPick(part);
 }
 
 export default function PartsPopupDialog({ open, onOpenChange, wo, billing, token, onPartsUpdate }) {
@@ -62,6 +87,8 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
   const [addPartOpen, setAddPartOpen] = useState(false);
   const [sortProp, setSortProp] = useState("Section");
   const [sortReverse, setSortReverse] = useState(false);
+  const [pickingId, setPickingId] = useState(null);
+  const [pickQtyDraft, setPickQtyDraft] = useState("");
 
   const lineItems = billing?.lineItems ?? billing?.printableLineItems ?? [];
   const partsLineItems = lineItems.filter(
@@ -103,6 +130,75 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
       getSectionsList(wo.WONo, token).then(setSections).catch(() => setSections([]));
     }
   }, [open, wo?.WONo, token]);
+
+  useEffect(() => {
+    if (!selectedPart || selectedPart.type === "WebPartsOrder" || !isDeferredPart(selectedPart)) {
+      setPickQtyDraft("");
+      return;
+    }
+    if (!deferredLineAwaitingPick(selectedPart)) {
+      setPickQtyDraft("");
+      return;
+    }
+    setPickQtyDraft(String(shipQtyForPick(selectedPart)));
+  }, [
+    selectedPart?.ID,
+    selectedPart?.PickQty,
+    selectedPart?.Qty,
+    selectedPart?.ShipQty,
+    selectedPart?.BOQty,
+    selectedPart?.DeferConsumption,
+  ]);
+
+  const handlePickLine = async (part, newTotalPick) => {
+    if (!wo?.WONo || !token || !part?.ID) return;
+    const ship = shipQtyForPick(part);
+    const picked = pickedQty(part);
+    const next = parseInt(newTotalPick, 10);
+    if (isNaN(next) || next < picked || next > ship) {
+      toast.error(`Pick total must be between ${picked} and ${ship}.`);
+      return;
+    }
+    if (next === picked) return;
+    setPickingId(part.ID);
+    try {
+      await pickWorkOrderParts({ WONo: wo.WONo, picks: [{ ID: part.ID, PickQty: next }] }, token);
+      await fetchParts();
+      onPartsUpdate?.();
+      toast.success(next === ship && picked < ship ? "Line fully picked" : "Pick updated");
+    } catch (err) {
+      toast.error(err?.message || "Failed to record pick");
+    } finally {
+      setPickingId(null);
+    }
+  };
+
+  const handlePickSubmitDetail = () => {
+    if (!selectedPart) return;
+    handlePickLine(selectedPart, pickQtyDraft);
+  };
+
+  const handlePickAllReserved = async () => {
+    if (!wo?.WONo || !token) return;
+    const picks = parts
+      .filter((p) => deferredLineAwaitingPick(p))
+      .map((p) => ({ ID: p.ID, PickQty: shipQtyForPick(p) }));
+    if (picks.length === 0) {
+      toast.info("No reserved lines left to pick.");
+      return;
+    }
+    setPickingId("all");
+    try {
+      await pickWorkOrderParts({ WONo: wo.WONo, picks }, token);
+      await fetchParts();
+      onPartsUpdate?.();
+      toast.success(`Picked ${picks.length} line(s).`);
+    } catch (err) {
+      toast.error(err?.message || "Failed to pick lines");
+    } finally {
+      setPickingId(null);
+    }
+  };
 
   const handleSaveSell = async () => {
     if (!selectedPart || !token || !wo?.WONo) return;
@@ -306,6 +402,7 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                             <th className="w-10 px-3 py-2.5 text-left font-medium text-muted-foreground"></th>
                             <th className="cursor-pointer px-3 py-2.5 text-left font-medium text-muted-foreground hover:underline" onClick={() => sortBy("Section")}>Part</th>
                             <th className="w-16 px-3 py-2.5 text-left font-medium text-muted-foreground">Qty</th>
+                            <th className="w-18 px-2 py-2.5 text-center font-medium text-muted-foreground" title="Picked / ship qty (reserved lines)">Pick</th>
                             <th className="cursor-pointer px-3 py-2.5 text-right font-medium text-muted-foreground hover:underline" onClick={() => sortBy("Sell")}>Sale</th>
                             <th className="text-left py-2.5 px-2 w-10"></th>
                           </tr>
@@ -327,12 +424,28 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                 )}
                               </td>
                               <td className="py-2 px-3">
-                                <div className="font-medium">{part.PartNo || part.RequestedPartNo}</div>
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className="font-medium">{part.PartNo || part.RequestedPartNo}</span>
+                                  {deferredLineAwaitingPick(part) ? (
+                                    <span className="rounded border border-border bg-muted/50 px-1 py-0 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                                      Reserved
+                                    </span>
+                                  ) : null}
+                                </div>
                                 <div className="max-w-[200px] truncate text-sm text-muted-foreground" title={part.Description}>
                                   {part.Description}
                                 </div>
                               </td>
                               <td className="py-2 px-3">{part.Qty ?? "—"}</td>
+                              <td className="py-2 px-2 text-center tabular-nums text-xs">
+                                {isDeferredPart(part) ? (
+                                  <span title="Picked / quantity to pull from stock">
+                                    {pickedQty(part)}/{shipQtyForPick(part)}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </td>
                               <td className="py-2 px-3 text-right font-medium tabular-nums">{formatCurrency(part.Sell)}</td>
                               <td className="py-2 px-2" onClick={(e) => e.stopPropagation()}>
                                 <Popover>
@@ -341,7 +454,22 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                                       <MoreHorizontal className="h-4 w-4" />
                                     </Button>
                                   </PopoverTrigger>
-                                  <PopoverContent align="end" className="w-48 p-1">
+                                  <PopoverContent align="end" className="w-52 p-1">
+                                    {deferredLineAwaitingPick(part) ? (
+                                      <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        disabled={pickingId === part.ID}
+                                        onClick={() => handlePickLine(part, shipQtyForPick(part))}
+                                      >
+                                        {pickingId === part.ID ? (
+                                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                          <ClipboardList className="h-4 w-4 mr-2" />
+                                        )}
+                                        Pick full line
+                                      </Button>
+                                    ) : null}
                                     <Button
                                       variant="ghost"
                                       className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive"
@@ -432,6 +560,43 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                               Requested: {selectedPart.Qty ?? "—"} · BO: {selectedPart.BOQty ?? "—"}
                             </div>
                           </div>
+                          {canEdit && deferredLineAwaitingPick(selectedPart) ? (
+                            <div className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                              <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+                                <ClipboardList className="h-3.5 w-3.5" />
+                                Pick from shelf
+                              </label>
+                              <p className="text-xs text-muted-foreground leading-snug">
+                                Enter total quantity pulled for this line (now {pickedQty(selectedPart)} of {shipQtyForPick(selectedPart)}).
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                <Input
+                                  type="number"
+                                  className="h-9 w-24"
+                                  min={pickedQty(selectedPart)}
+                                  max={shipQtyForPick(selectedPart)}
+                                  value={pickQtyDraft}
+                                  onChange={(e) => setPickQtyDraft(e.target.value)}
+                                  disabled={pickingId === selectedPart.ID}
+                                />
+                                <Button
+                                  size="sm"
+                                  className="h-9"
+                                  onClick={handlePickSubmitDetail}
+                                  disabled={
+                                    pickingId === selectedPart.ID ||
+                                    pickedQty(selectedPart) >= shipQtyForPick(selectedPart)
+                                  }
+                                >
+                                  {pickingId === selectedPart.ID ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    "Record pick"
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          ) : null}
                           <div>
                             <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sale price</label>
                             {editingSell ? (
@@ -564,6 +729,22 @@ export default function PartsPopupDialog({ open, onOpenChange, wo, billing, toke
                   <Plus className="h-4 w-4 mr-1.5" />
                   Add Part
                 </Button>
+                {parts.some((p) => deferredLineAwaitingPick(p)) ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handlePickAllReserved}
+                    disabled={pickingId === "all"}
+                    title="Set each reserved line to fully picked"
+                  >
+                    {pickingId === "all" ? (
+                      <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                    ) : (
+                      <ClipboardList className="h-4 w-4 mr-1.5" />
+                    )}
+                    Pick all reserved
+                  </Button>
+                ) : null}
                 {parts.length > 0 && (
                   <Button size="sm" variant="outline" onClick={handleDownload}>
                     <Download className="h-4 w-4 mr-1.5" />

@@ -23,6 +23,41 @@ import {
 import { useTheme } from "@/components/ThemeProvider";
 import GanttTaskEditDialog from "./GanttTaskEditDialog";
 
+function GanttHints({ compact = false }) {
+  const kbd = (
+    <kbd className="rounded border border-border bg-background/60 px-1.5 py-0.5 text-[10px] font-mono leading-none">
+      Ctrl+F
+    </kbd>
+  );
+
+  const chipBase =
+    "inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2 py-1 leading-none";
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <span className={chipBase}>
+        <MoveHorizontal className="h-3 w-3 shrink-0" />
+        <span>Shift + scroll / trackpad pans horizontally</span>
+      </span>
+      <span className={chipBase}>
+        <span>Add sections above; use</span>
+        <span className="font-medium text-foreground/80">+</span>
+        <span>to add subtasks</span>
+      </span>
+      <span className={chipBase}>
+        <span>Double-click task to</span>
+        <span className="font-medium text-foreground/80">
+          {compact ? "edit" : "edit name, dates, type, progress"}
+        </span>
+      </span>
+      <span className={chipBase}>
+        {kbd}
+        <span>expands</span>
+      </span>
+    </div>
+  );
+}
+
 function sortTasksParentsFirst(tasks) {
   const byId = new Map(tasks.map((t) => [t.id, t]));
   const result = [];
@@ -130,6 +165,20 @@ function GanttChart({ tasks, links, start, end, woNo, token, onRefetch, onTaskUp
   const [ganttApi, setGanttApi] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const lastUserEditedTaskIdRef = React.useRef(null);
+  const pendingSavesRef = React.useRef(new Map());
+  const latestSavePayloadByIdRef = React.useRef(new Map());
+  const pointerDownRef = React.useRef(false);
+  const flushPendingSavesRef = React.useRef(() => {});
+
+  useEffect(() => {
+    return () => {
+      for (const t of pendingSavesRef.current.values()) {
+        clearTimeout(t);
+      }
+      pendingSavesRef.current.clear();
+      latestSavePayloadByIdRef.current.clear();
+    };
+  }, []);
   const init = React.useCallback(
     (api) => {
       setGanttApi(api);
@@ -152,6 +201,10 @@ function GanttChart({ tasks, links, start, end, woNo, token, onRefetch, onTaskUp
         const isUserEdit = lastUserEditedTaskIdRef.current !== null && Number(lastUserEditedTaskIdRef.current) === Number(id);
         if (isUserEdit) lastUserEditedTaskIdRef.current = null;
         const originalTask = Array.isArray(tasks) ? tasks.find((x) => Number(x.id) === Number(id)) : null;
+        // The Gantt library often auto-updates section (summary) rows when a child changes.
+        // Persisting those derived updates causes extra refetch/rerender churn and feels "wonky" during subtask edits.
+        // Only persist sections when the user explicitly edited that section.
+        if (isSection && !isUserEdit) return;
         // For sections: use original dates when Gantt auto-updated (child edit cascade), else use user's dates
         const useOriginalForSection = isSection && !isUserEdit && originalTask;
         const useStart = useOriginalForSection && originalTask?.start ? originalTask.start : t.start;
@@ -175,11 +228,48 @@ function GanttChart({ tasks, links, start, end, woNo, token, onRefetch, onTaskUp
         try {
           await updateProjectTask(payload, token);
           onRefetch();
-          toast.success("Task updated");
+          toast.success("Task updated", { id: `task-updated-${id}` });
         } catch (err) {
           onRefetch();
           throw err;
         }
+      };
+
+      const flushPendingSaves = () => {
+        for (const t of pendingSavesRef.current.values()) clearTimeout(t);
+        pendingSavesRef.current.clear();
+        const entries = Array.from(latestSavePayloadByIdRef.current.entries());
+        latestSavePayloadByIdRef.current.clear();
+        entries.forEach(async ([id, task]) => {
+          try {
+            await persistTaskUpdate(id, task);
+          } catch (err) {
+            toast.error(err?.message || "Failed to update task");
+          }
+        });
+      };
+      flushPendingSavesRef.current = flushPendingSaves;
+
+      const schedulePersistTaskUpdate = (id, t) => {
+        const key = String(id);
+        latestSavePayloadByIdRef.current.set(key, t);
+        const existing = pendingSavesRef.current.get(key);
+        if (existing) clearTimeout(existing);
+        const timeout = setTimeout(async () => {
+          pendingSavesRef.current.delete(key);
+          if (pointerDownRef.current) {
+            schedulePersistTaskUpdate(key, latestSavePayloadByIdRef.current.get(key) ?? t);
+            return;
+          }
+          const latest = latestSavePayloadByIdRef.current.get(key) ?? t;
+          latestSavePayloadByIdRef.current.delete(key);
+          try {
+            await persistTaskUpdate(key, latest);
+          } catch (err) {
+            toast.error(err?.message || "Failed to update task");
+          }
+        }, 450);
+        pendingSavesRef.current.set(key, timeout);
       };
 
       api.intercept("add-task", async (ev) => {
@@ -217,14 +307,9 @@ function GanttChart({ tasks, links, start, end, woNo, token, onRefetch, onTaskUp
 
       api.intercept("update-task", async (ev) => {
         if (ev.inProgress) return;
-        try {
-          const storeTask = api.getState()?.tasks?.byId?.(ev.id) ?? api.getState()?.tasks?.get?.(ev.id);
-          const t = storeTask ? { ...storeTask, ...(ev.task ?? {}) } : (ev.task ?? ev);
-          await persistTaskUpdate(ev.id ?? t.id, t);
-        } catch (err) {
-          toast.error(err?.message || "Failed to update task");
-          return false;
-        }
+        const storeTask = api.getState()?.tasks?.byId?.(ev.id) ?? api.getState()?.tasks?.get?.(ev.id);
+        const t = storeTask ? { ...storeTask, ...(ev.task ?? {}) } : (ev.task ?? ev);
+        schedulePersistTaskUpdate(ev.id ?? t.id, t);
       });
 
       api.intercept("delete-task", async (ev) => {
@@ -247,7 +332,20 @@ function GanttChart({ tasks, links, start, end, woNo, token, onRefetch, onTaskUp
   );
 
   return (
-    <div className={`min-h-[400px] [&_.wx-willow-theme]:rounded-xl [&_.wx-willow-dark-theme]:rounded-xl gantt-scrollbar-fix ${className}`}>
+    <div
+      className={`min-h-[400px] [&_.wx-willow-theme]:rounded-xl [&_.wx-willow-dark-theme]:rounded-xl gantt-scrollbar-fix ${className}`}
+      onPointerDownCapture={() => {
+        pointerDownRef.current = true;
+      }}
+      onPointerUpCapture={() => {
+        pointerDownRef.current = false;
+        // Persist any queued updates only after user finishes interaction (prevents mid-drag refetch/layout shifts)
+        flushPendingSavesRef.current?.();
+      }}
+      onPointerCancelCapture={() => {
+        pointerDownRef.current = false;
+      }}
+    >
       <style>{`
         /* Hide horizontal scrollbar to avoid overlap with last task row; scroll via Shift+wheel or trackpad */
         .gantt-scrollbar-fix [class*="wx-chart"] {
@@ -378,22 +476,7 @@ export default function GanttPlanningView({ woNo, token }) {
             <span className="text-sm font-medium text-muted-foreground">
               Gantt Planning
             </span>
-            <span className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <MoveHorizontal className="h-3 w-3 shrink-0" />
-                Shift + scroll or trackpad to pan horizontally
-              </span>
-              <span className="flex items-center gap-1.5">
-                Add sections above; use + on a section to add subtasks
-              </span>
-              <span className="flex items-center gap-1.5">
-                Double-click task to edit name, dates, type (milestone), progress
-              </span>
-              <span className="flex items-center gap-1.5">
-                <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono">Ctrl+F</kbd>
-                to expand
-              </span>
-            </span>
+            <GanttHints />
           </div>
           <Button
             variant="ghost"
@@ -427,24 +510,9 @@ export default function GanttPlanningView({ woNo, token }) {
           className="flex flex-col p-0 gap-0 max-h-[calc(100vh-2rem)] overflow-hidden"
           showCloseButton={true}
         >
-          <DialogHeader className="px-6 py-4 border-b shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <DialogHeader className="px-6 py-4 pr-16 border-b shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <DialogTitle>Gantt Planning — Full View</DialogTitle>
-            <span className="text-xs text-muted-foreground flex items-center gap-3 flex-wrap">
-              <span className="flex items-center gap-1.5">
-                <MoveHorizontal className="h-3 w-3 shrink-0" />
-                Shift + scroll or trackpad to pan horizontally
-              </span>
-              <span className="flex items-center gap-1.5">
-                Add sections above; use + on a section to add subtasks
-              </span>
-              <span className="flex items-center gap-1.5">
-                Double-click task to edit
-              </span>
-              <span className="flex items-center gap-1.5">
-                <kbd className="rounded border px-1.5 py-0.5 text-[10px] font-mono bg-muted">Ctrl+F</kbd>
-                to expand
-              </span>
-            </span>
+            <GanttHints compact />
           </DialogHeader>
           <div className="flex-1 min-h-0 overflow-auto p-4">
             <GanttChart

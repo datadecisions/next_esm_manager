@@ -13,6 +13,7 @@ import {
   Plus,
   Package,
   Trash2,
+  ClipboardList,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import {
@@ -22,6 +23,7 @@ import {
   approvePart,
   deleteRequestedPart,
   deletePart,
+  pickWorkOrderParts,
 } from "@/lib/api/parts";
 import { updateWOCommentFields } from "@/lib/api/work-order";
 import { BranchDeptFilter } from "@/components/BranchDeptFilter";
@@ -71,6 +73,25 @@ function formatDate(val) {
   return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
+function isDeferredPart(part) {
+  if (!part || part.type === "WebPartsOrder") return false;
+  const d = part.DeferConsumption;
+  return d === true || d === 1 || Number(d) === 1;
+}
+
+function pickedQty(part) {
+  const p = Number(part?.PickQty);
+  return isNaN(p) ? 0 : p;
+}
+
+function shipQtyForPick(part) {
+  const s = Number(part?.ShipQty);
+  if (!isNaN(s) && s >= 0) return s;
+  const q = Number(part?.Qty) || 0;
+  const bo = Number(part?.BOQty) || 0;
+  return Math.max(0, q - bo);
+}
+
 export default function PartsApprovalPage() {
   const { token, isLoading: authLoading } = useAuth({ redirectToSignIn: true });
   const [branchDeptFilter, setBranchDeptFilter] = useBranchDeptFilter();
@@ -84,6 +105,7 @@ export default function PartsApprovalPage() {
   const [addPartOpen, setAddPartOpen] = useState(false);
   const [denyCommentsOpen, setDenyCommentsOpen] = useState(false);
   const [deletingPartId, setDeletingPartId] = useState(null);
+  const [pickingId, setPickingId] = useState(null);
   const [approveAllProcessing, setApproveAllProcessing] = useState(false);
 
   const branches = useMemo(() => branchDeptFilter?.branches ?? [], [branchDeptFilter?.branches]);
@@ -269,6 +291,48 @@ export default function PartsApprovalPage() {
       toast.error(err?.message || "Failed to delete part");
     } finally {
       setDeletingPartId(null);
+    }
+  };
+
+  const handlePickApprovedFull = async (part) => {
+    if (!token || !selectedWO?.WONo || !part?.ID || !isDeferredPart(part)) return;
+    const ship = shipQtyForPick(part);
+    if (pickedQty(part) >= ship) return;
+    setPickingId(part.ID);
+    try {
+      await pickWorkOrderParts(
+        { WONo: selectedWO.WONo, picks: [{ ID: part.ID, PickQty: ship }] },
+        token
+      );
+      toast.success(`${part.PartNo ?? "Part"} fully picked.`);
+      loadPanelData();
+      loadRequests();
+    } catch (err) {
+      toast.error(err?.message || "Failed to record pick");
+    } finally {
+      setPickingId(null);
+    }
+  };
+
+  const handlePickAllApprovedReserved = async () => {
+    if (!token || !selectedWO?.WONo) return;
+    const picks = approvedParts
+      .filter((p) => isDeferredPart(p) && pickedQty(p) < shipQtyForPick(p))
+      .map((p) => ({ ID: p.ID, PickQty: shipQtyForPick(p) }));
+    if (picks.length === 0) {
+      toast.info("No reserved lines left to pick.");
+      return;
+    }
+    setPickingId("all");
+    try {
+      await pickWorkOrderParts({ WONo: selectedWO.WONo, picks }, token);
+      toast.success(`Picked ${picks.length} line(s).`);
+      loadPanelData();
+      loadRequests();
+    } catch (err) {
+      toast.error(err?.message || "Failed to pick");
+    } finally {
+      setPickingId(null);
     }
   };
 
@@ -539,6 +603,20 @@ export default function PartsApprovalPage() {
                     <Plus className="h-4 w-4 mr-2" />
                     Add Part
                   </Button>
+                  {approvedParts.some((p) => isDeferredPart(p) && pickedQty(p) < shipQtyForPick(p)) ? (
+                    <Button
+                      variant="outline"
+                      onClick={handlePickAllApprovedReserved}
+                      disabled={pickingId === "all"}
+                    >
+                      {pickingId === "all" ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <ClipboardList className="h-4 w-4 mr-2" />
+                      )}
+                      Pick all reserved
+                    </Button>
+                  ) : null}
                 </div>
 
                 {approvedParts.length > 0 && (
@@ -553,6 +631,7 @@ export default function PartsApprovalPage() {
                             <TableHead>Description</TableHead>
                             <TableHead>Wh</TableHead>
                             <TableHead className="w-14">Qty</TableHead>
+                            <TableHead className="w-24 text-center">Pick</TableHead>
                             <TableHead>Sell</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -579,6 +658,33 @@ export default function PartsApprovalPage() {
                               <TableCell className="max-w-[180px] truncate">{p.Description}</TableCell>
                               <TableCell>{p.Warehouse}</TableCell>
                               <TableCell>{p.Qty}</TableCell>
+                              <TableCell className="text-center">
+                                {isDeferredPart(p) ? (
+                                  <div className="flex flex-col items-center gap-1">
+                                    <span className="tabular-nums text-xs text-muted-foreground">
+                                      {pickedQty(p)}/{shipQtyForPick(p)}
+                                    </span>
+                                    {pickedQty(p) < shipQtyForPick(p) ? (
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-7 px-2 text-xs"
+                                        disabled={pickingId === p.ID}
+                                        onClick={() => handlePickApprovedFull(p)}
+                                      >
+                                        {pickingId === p.ID ? (
+                                          <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                          "Pick"
+                                        )}
+                                      </Button>
+                                    ) : null}
+                                  </div>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
                               <TableCell>{formatCurrency(p.Sell)}</TableCell>
                             </TableRow>
                           ))}
